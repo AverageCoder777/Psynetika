@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "name": "UI",
+    "maps": [
+        {
+            "name": "New action map",
+            "id": "b1bed863-e133-4a84-bbd1-50c81e70dc8f",
+            "actions": [
+                {
+                    "name": "Menu activate",
+                    "type": "Button",
+                    "id": "9fd0d014-19e6-475c-b2ae-d364dc2b9615",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "f88eb758-e098-4413-8f75-1193693ff25b",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Menu activate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
