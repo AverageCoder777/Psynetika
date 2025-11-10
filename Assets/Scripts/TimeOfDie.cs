@@ -5,7 +5,7 @@ public class TimeOfDie : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI timerText;
     [SerializeField] UIScript ui;
-    [SerializeField] int start = 10;
+    [SerializeField] int start = 9;
     [SerializeField] int end = 0;
 
     private float timer;
