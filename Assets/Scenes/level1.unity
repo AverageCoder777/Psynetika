@@ -2860,7 +2860,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1285425307155928244, guid: bdc8f8e242f8899479a8dd90c145e551, type: 3}
       propertyPath: destroyChestAfterOpen
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1285425307155928244, guid: bdc8f8e242f8899479a8dd90c145e551, type: 3}
       propertyPath: popCurve.m_Curve.Array.data[1].time

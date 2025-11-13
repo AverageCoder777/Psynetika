@@ -89,6 +89,7 @@ public class ChestScript : MonoBehaviour
     {
         if (opened) return;
         opened = true;
+        Debug.Log("ChestScript: Chest opened");
         // запустить спавн монеток корутиной (2D физика)
         StartCoroutine(SpawnCoinsRoutine());
         onOpened?.Invoke();
