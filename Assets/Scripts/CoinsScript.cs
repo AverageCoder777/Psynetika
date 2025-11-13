@@ -8,7 +8,6 @@ public class CoinsScript : MonoBehaviour
         if (other.CompareTag(("Player")))
         {
             coinsManager.coins++;
-            print("Coins: " + coinsManager.coins);
             Destroy(gameObject);
         }
     }

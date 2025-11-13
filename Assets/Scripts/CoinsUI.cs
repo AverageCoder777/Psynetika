@@ -8,9 +8,6 @@ public class CoinsUI : MonoBehaviour
     public int coins = 0;
     void Update()
     {
-        
         coinsText.text = "Coins: " + coins;
-        Debug.Log("Coins updated: " + coins); // Обновляем текст
-        
     }
 }
