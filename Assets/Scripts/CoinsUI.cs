@@ -8,9 +8,9 @@ public class CoinsUI : MonoBehaviour
     public int coins = 0;
     void Update()
     {
-        if (coinsScript != null && coinsText != null)
-        {
-            coinsText.text = "Coins: " + coins; // Обновляем текст
-        }
+        
+        coinsText.text = "Coins: " + coins;
+        Debug.Log("Coins updated: " + coins); // Обновляем текст
+        
     }
 }

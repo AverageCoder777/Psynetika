@@ -39,7 +39,7 @@
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Hold",
+                    "interactions": "",
                     "initialStateCheck": false
                 },
                 {
@@ -73,7 +73,7 @@
                     "name": "Next",
                     "type": "Button",
                     "id": "b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -100,24 +100,6 @@
                     "name": "Double Jump",
                     "type": "Button",
                     "id": "05507a70-d152-4d34-9585-efb53e56ab58",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "HP TEST",
-                    "type": "Button",
-                    "id": "9160cec5-b4d5-467f-8b86-5b813f3f257c",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "HP TEST 2",
-                    "type": "Button",
-                    "id": "c4e96429-8a9d-4c02-9b56-7423cdd070c5",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -549,28 +531,6 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Double Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "723803e6-f399-4f9a-a784-ed3d28d06c6a",
-                    "path": "<Keyboard>/h",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "HP TEST",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1fdea43d-26d4-4cbf-8edb-c05a42d97e72",
-                    "path": "<Keyboard>/j",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "HP TEST 2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
