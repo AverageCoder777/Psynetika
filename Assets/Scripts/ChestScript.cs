@@ -125,6 +125,7 @@ public class ChestScript : MonoBehaviour
 
             // создаём префаб без вращения (спрайт будет ориентирован как в префабе)
             GameObject coin = Instantiate(coinPrefab, spawnPos, Quaternion.identity, spawnParent);
+            coin.SetActive(true);
             coin.transform.rotation = Quaternion.identity;
 
             if (coin.TryGetComponent<Rigidbody2D>(out var rb2))

@@ -54,13 +54,11 @@ public class PlayerController : MonoBehaviour
 
     Rigidbody2D rb;
     CapsuleCollider2D capsule;
-    BoxCollider2D footTrigger;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         capsule = GetComponent<CapsuleCollider2D>();
-        footTrigger = GetComponent<BoxCollider2D>();
 
         if (capsule != null)
         {
@@ -264,8 +262,8 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (activeAnimator != null) activeAnimator.SetFloat("Velocity", rb.linearVelocity.y);
-        if (activeAnimator != null) activeAnimator.SetBool("Grounded", grounded);
+        activeAnimator.SetFloat("Velocity", rb.linearVelocity.y);
+        activeAnimator.SetBool("Grounded", grounded);
 
         if (firstJump)
         {
@@ -285,7 +283,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             if (grounded && !isRolling) rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
-            if (activeAnimator != null) activeAnimator.SetBool("Moving", false);
+            activeAnimator.SetBool("Moving", false);
         }
     }
 
@@ -301,26 +299,28 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = new Vector2(movementInput.x * speed, rb.linearVelocity.y);
         if (grounded && Mathf.Abs(movementInput.x) > 0.01f)
             if (activeAnimator != null) activeAnimator.SetBool("Moving", true);
-        else
+            else
             if (activeAnimator != null) activeAnimator.SetBool("Moving", false);
 
         if (movementInput.x > 0.01f && activeSR != null) activeSR.flipX = false;
         if (movementInput.x < -0.01f && activeSR != null) activeSR.flipX = true;
     }
 
-    void OnTriggerStay2D(Collider2D col)
+    void OnTriggerStay2D(Collider2D ground)
     {
-        if (col.CompareTag("Floor") || col.CompareTag("Platform"))
+        if (ground.CompareTag("Floor") || ground.CompareTag("Platform"))
         {
             grounded = true;
             firstJump = false;
             canDoubleJump = false;
         }
     }
-
-    void OnTriggerExit2D(Collider2D col)
+    void OnTriggerExit2D(Collider2D ground)
     {
-        grounded = false;
+        if (rb.linearVelocity.y!=0)
+        {
+            grounded = false;
+        }
     }
 
     public void TakeDamage(int damage)

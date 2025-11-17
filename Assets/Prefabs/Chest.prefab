@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 155847458390158203}
   - component: {fileID: 1285425307155928244}
   - component: {fileID: 6088672541705245855}
+  - component: {fileID: 6020487348148700237}
   m_Layer: 0
   m_Name: Chest
   m_TagString: Untagged
@@ -106,16 +107,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ChestScript
   coinPrefab: {fileID: 0}
   spawnParent: {fileID: 0}
-  use3DPhysics: 0
-  minCoins: 3
+  spawnBox: {fileID: 6020487348148700237}
+  spawnRadius: 8
+  minCoins: 5
   maxCoins: 8
-  spawnRadius: 0.5
-  minForce: 2
-  maxForce: 6
-  upwardBias: 0.6
-  useRandomRotation: 1
-  destroyChestAfterOpen: 0
-  destroyDelay: 2
+  minForce: 5
+  maxForce: 8
+  upwardBias: 0.713
+  popDuration: 0.45
+  popCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  enablePhysicsAfterPop: 1
+  postPopImpulse: 0.5
+  destroyChestAfterOpen: 1
+  destroyDelay: 1
   playerTag: Player
   onOpened:
     m_PersistentCalls:
@@ -165,4 +192,50 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   m_Size: {x: 0.3935014, y: 0.24813613}
+  m_EdgeRadius: 0
+--- !u!61 &6020487348148700237
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7263528627581627652}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.25}
+  m_SpriteTilingProperty:
+    border: {x: 0.049999997, y: 0.049999997, z: 0.049999997, w: 0.049999997}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.16, y: 0.16}
+    newSize: {x: 0.16, y: 0.16}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.8, y: 0.7}
   m_EdgeRadius: 0
