@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0ebf110512704c74fb216acfa38de78f
+guid: 89c004d0a19738c478e3a1548408598d
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -127,9 +127,10 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: Frame_0
+  - name: "\u043A\u0430\u043A\u0430\u044F-\u0442\u043E \u0445\u0440\u0435\u043D\u044C
+      \u0441\u043F\u0435\u0440\u0435\u0434\u0438"
     originalName: 
-    pivot: {x: 0.5199999, y: -0.17142858}
+    pivot: {x: 0.50145346, y: -0.09210527}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -137,9 +138,9 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 25
-      height: 35
-    spriteID: 16fe6cd1fed606d4ab11861626ff0d0f
+      width: 344
+      height: 152
+    spriteID: d670e4b0eb9554a47b349cf4d0e26a6f
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -148,60 +149,32 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4}
-  - name: Frame_1
-    originalName: 
-    pivot: {x: 0.5199999, y: -0.17142858}
-    alignment: 9
-    border: {x: 0, y: 0, z: 0, w: 0}
-    customData: 
-    rect:
-      serializedVersion: 2
-      x: 4
-      y: 47
-      width: 25
-      height: 35
-    spriteID: 9c23dfb01bb45504faf23546323be6cc
-    spriteBone: []
-    spriteOutline: []
-    vertices: []
-    spritePhysicsOutline: []
-    indices: 
-    edges: []
-    tessellationDetail: 0
-    uvTransform: {x: 4, y: 47}
   spriteSheetImportData: []
   tileSetImportData: []
   asepriteLayers:
   - layerIndex: 0
     uuid:
-      value0: 433369
+      value0: 3617116957
       value1: 0
       value2: 0
       value3: 0
     guid: 0
-    name: "\u043F\u0435\u0440\u0435\u0445\u043E\u0434 \u0441\u0442\u0430\u0442\u0438\u043A-\u043F\u0440\u0438\u0441\u0435\u0434"
+    name: "\u043A\u0430\u043A\u0430\u044F-\u0442\u043E \u0445\u0440\u0435\u043D\u044C
+      \u0441\u043F\u0435\u0440\u0435\u0434\u0438"
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: Frame_0
+    - name: "\u043A\u0430\u043A\u0430\u044F-\u0442\u043E \u0445\u0440\u0435\u043D\u044C
+        \u0441\u043F\u0435\u0440\u0435\u0434\u0438"
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 11
-        y: 6
-        width: 25
-        height: 35
-      spriteId: 16fe6cd1fed606d4ab11861626ff0d0f
-    - name: Frame_1
-      frameIndex: 1
-      additiveSortOrder: 0
-      cellRect:
-        x: 11
-        y: 6
-        width: 25
-        height: 35
-      spriteId: 9c23dfb01bb45504faf23546323be6cc
+        x: 0
+        y: 14
+        width: 344
+        height: 152
+      spriteId: d670e4b0eb9554a47b349cf4d0e26a6f
     linkedCells: []
     tileCells: []
     tileSetIndex: 0
@@ -211,5 +184,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 48, y: 52}
-  previousTextureSize: {x: 64, y: 128}
+  canvasSize: {x: 345, y: 193}
+  previousTextureSize: {x: 512, y: 256}
