@@ -315,6 +315,7 @@ public class PlayerController : MonoBehaviour
         hp -= damage;
         if (hp < 0) hp = 0;
         Debug.Log("Player took " + damage + " damage. Current HP: " + hp);
+        activeAnimator.SetTrigger("Hurt");
         UpdateHealthUI();
         GameOverActive();
     }

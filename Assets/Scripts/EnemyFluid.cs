@@ -12,10 +12,9 @@ public class EnemyFluid : MonoBehaviour
     {
         if (damageActive == false && other.CompareTag("Player"))
         {
-            currentPlayer = other.GetComponent<PlayerController>();
-            currentPlayer.TakeDamage(damageAmount);
-            damageCoroutine = StartCoroutine(DamageOverTime(currentPlayer));
             damageActive = true;
+            currentPlayer = other.GetComponent<PlayerController>();
+            damageCoroutine = StartCoroutine(DamageOverTime(currentPlayer));
             Debug.Log("Player has entered enemy fluid! Status of damageactive: "+ damageActive);
 
         }
