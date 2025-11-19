@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIScript : MonoBehaviour
 {
@@ -6,6 +7,11 @@ public class UIScript : MonoBehaviour
     [SerializeField] GameObject GameOverMenu;
     [SerializeField] PlayerController player;
     [SerializeField] TimeOfDie timeOfDie;
+
+    public void StartGame()
+    {
+        SceneManager.LoadScene("Level1");
+    }
 
     public void Continue()
     {
