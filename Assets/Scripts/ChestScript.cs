@@ -62,12 +62,14 @@ public class ChestScript : MonoBehaviour
     {
         if (IsPlayerCollider2D(other))
             playerInRangeObj = other.transform.root.gameObject;
+            animator.SetBool("CanOpen", true);
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (playerInRangeObj != null && other.transform.root.gameObject == playerInRangeObj)
             playerInRangeObj = null;
+            animator.SetBool("CanOpen", false);
     }
 
     private bool IsPlayerCollider2D(Collider2D c)
