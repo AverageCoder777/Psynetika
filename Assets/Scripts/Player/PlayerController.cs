@@ -154,7 +154,7 @@ public class PlayerController : MonoBehaviour
     {
         isSwitching = true;
 
-        if (activeAnimator != null) activeAnimator.SetBool("isSwitching", true);
+        if (activeAnimator != null) activeAnimator.SetTrigger("isSwitching");
 
         yield return new WaitForSeconds(switchDelay);
 
