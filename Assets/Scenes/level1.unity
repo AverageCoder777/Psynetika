@@ -1277,7 +1277,7 @@ Transform:
   m_GameObject: {fileID: 444891937}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.13, y: -22.55, z: 0}
+  m_LocalPosition: {x: 35, y: -22.55, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1326,10 +1326,6 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 351f2ccd-1f9f-44bf-9bec-d62ac5c5f408
     m_ActionName: 'Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 6b444451-8a00-4d00-a97e-f47457f736a8
-    m_ActionName: 'Player/Look[/Mouse/delta,/Pen/delta]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 6c2ab1b8-8984-453a-af3d-a3c78ae1679a
@@ -1940,7 +1936,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraScript
   target: {fileID: 238797158}
-  targetOffset: {x: 0, y: 2, z: 0}
+  targetOffset: {x: 0, y: 4, z: 0}
   smoothTime: 0
   deadZoneSize: {x: 2, y: 0}
 --- !u!1001 &527850509
@@ -4320,6 +4316,71 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 990cc9fe024265f478a77ff27c7a89b8, type: 3}
+--- !u!1 &1804352895 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1037108640793278796, guid: d708e649fa812a441acea08f6c70ea09, type: 3}
+  m_PrefabInstance: {fileID: 7303481528121504416}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &1804352900
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1804352895}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.77, y: 0.195}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.9031414, y: 0}
+    oldSize: {x: 1.91, y: 0.39}
+    newSize: {x: 1.91, y: 0.39}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1.9099998, y: 0.39}
+  m_EdgeRadius: 0
+--- !u!114 &1804352901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1804352895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccb22e5df554e3b4c829fc123627ab63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyFluid
+  damageTime: 1.5
+  damageAmount: 10
 --- !u!1001 &1810826755
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5383,7 +5444,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2205061120825066101, guid: 744e62ccc91c4e2469436b0c7068a802, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 1.114
       objectReference: {fileID: 0}
     - target: {fileID: 2205061120825066101, guid: 744e62ccc91c4e2469436b0c7068a802, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5492,12 +5553,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 254865007701856553, guid: d708e649fa812a441acea08f6c70ea09, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 5.7439194
+      objectReference: {fileID: 0}
+    - target: {fileID: 254865007701856553, guid: d708e649fa812a441acea08f6c70ea09, type: 3}
       propertyPath: m_LocalPosition.x
       value: 45.4786
       objectReference: {fileID: 0}
     - target: {fileID: 254865007701856553, guid: d708e649fa812a441acea08f6c70ea09, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -24.84
+      value: -24.9285
       objectReference: {fileID: 0}
     - target: {fileID: 254865007701856553, guid: d708e649fa812a441acea08f6c70ea09, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5538,7 +5603,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1037108640793278796, guid: d708e649fa812a441acea08f6c70ea09, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1804352901}
+    - targetCorrespondingSourceObject: {fileID: 1037108640793278796, guid: d708e649fa812a441acea08f6c70ea09, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1804352900}
   m_SourcePrefab: {fileID: 100100000, guid: d708e649fa812a441acea08f6c70ea09, type: 3}
 --- !u!1001 &7765259979227554063
 PrefabInstance:
@@ -5685,9 +5756,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1282780128178424785, guid: 727947eb5822c3847a47c75a40323fa0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2693352523969853472, guid: 727947eb5822c3847a47c75a40323fa0, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4374728272669269121, guid: 727947eb5822c3847a47c75a40323fa0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4374728272669269121, guid: 727947eb5822c3847a47c75a40323fa0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

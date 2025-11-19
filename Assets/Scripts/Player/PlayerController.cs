@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (isCrouching || isRolling)
+        if (isRolling)
         {
             movementInput = Vector2.zero;
             isMoving = false;
@@ -148,16 +148,6 @@ public class PlayerController : MonoBehaviour
     {
         if (context.performed && !isSwitching)
             StartCoroutine(SwitchCharacter());
-    }
-
-    public void DecreasingHealth(InputAction.CallbackContext context)
-    {
-        if (context.performed) TakeDamage(10);
-    }
-
-    public void HealHealth(InputAction.CallbackContext context)
-    {
-        if (context.performed) Heal(10);
     }
 
     IEnumerator SwitchCharacter()
@@ -221,22 +211,19 @@ public class PlayerController : MonoBehaviour
 
     void StartCrouch()
     {
-        if (isCrouching || !grounded || capsule == null) return;
+        if (isCrouching || !grounded) return;
         isCrouching = true;
         Vector2 newSize = new Vector2(originalCapsuleSize.x, originalCapsuleSize.y * CROUCH_HEIGHT_MULTIPLIER);
         float delta = originalCapsuleSize.y - newSize.y;
         capsule.size = newSize;
         capsule.offset = new Vector2(originalCapsuleOffset.x, originalCapsuleOffset.y - delta / 2f);
 
-        if (activeAnimator != null) activeAnimator.SetBool("Crouching", true);
-        movementInput = Vector2.zero;
-        isMoving = false;
-        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+        activeAnimator.SetBool("Crouching", true);
     }
 
     void StopCrouch()
     {
-        if (!isCrouching || capsule == null) return;
+        if (!isCrouching) return;
         capsule.size = originalCapsuleSize;
         capsule.offset = originalCapsuleOffset;
         isCrouching = false;
@@ -289,7 +276,7 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        if (isCrouching || isRolling)
+        if (isRolling)
         {
             if (activeAnimator != null) activeAnimator.SetBool("Moving", false);
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
@@ -298,9 +285,9 @@ public class PlayerController : MonoBehaviour
 
         rb.linearVelocity = new Vector2(movementInput.x * speed, rb.linearVelocity.y);
         if (grounded && Mathf.Abs(movementInput.x) > 0.01f)
-            if (activeAnimator != null) activeAnimator.SetBool("Moving", true);
-            else
-            if (activeAnimator != null) activeAnimator.SetBool("Moving", false);
+            activeAnimator.SetBool("Moving", true);
+        else
+            activeAnimator.SetBool("Moving", false);
 
         if (movementInput.x > 0.01f && activeSR != null) activeSR.flipX = false;
         if (movementInput.x < -0.01f && activeSR != null) activeSR.flipX = true;
@@ -327,6 +314,7 @@ public class PlayerController : MonoBehaviour
     {
         hp -= damage;
         if (hp < 0) hp = 0;
+        Debug.Log("Player took " + damage + " damage. Current HP: " + hp);
         UpdateHealthUI();
         GameOverActive();
     }
