@@ -33,6 +33,7 @@ public class ChestScript : MonoBehaviour
     [SerializeField] private bool enablePhysicsAfterPop = true;
     [Tooltip("Impulse applied after pop when physics enabled")]
     [SerializeField] private float postPopImpulse = 0.5f;
+    [SerializeField] private Animator animator;
 
     [Header("Behavior")]
     [SerializeField] private bool destroyChestAfterOpen = false;
@@ -89,12 +90,12 @@ public class ChestScript : MonoBehaviour
     {
         if (opened) return;
         opened = true;
+        if (animator != null)
+            animator.SetTrigger("Open");
         Debug.Log("ChestScript: Chest opened");
         // запустить спавн монеток корутиной (2D физика)
         StartCoroutine(SpawnCoinsRoutine());
         onOpened?.Invoke();
-        if (destroyChestAfterOpen)
-            Destroy(gameObject, destroyDelay);
     }
 
     private IEnumerator SpawnCoinsRoutine()
