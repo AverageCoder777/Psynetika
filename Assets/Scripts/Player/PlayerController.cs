@@ -53,12 +53,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dropThroughDuration = 0.5f;
 
     Rigidbody2D rb;
-    CapsuleCollider2D capsule;
+    BoxCollider2D capsule;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        capsule = GetComponent<CapsuleCollider2D>();
+        BoxCollider2D[] colliders = GetComponents<BoxCollider2D>();
+        capsule = colliders[1];
 
         if (capsule != null)
         {
@@ -213,7 +214,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isCrouching || !grounded) return;
         isCrouching = true;
-        Vector2 newSize = new Vector2(originalCapsuleSize.x, originalCapsuleSize.y * CROUCH_HEIGHT_MULTIPLIER);
+        Vector2 newSize = new(originalCapsuleSize.x, originalCapsuleSize.y * CROUCH_HEIGHT_MULTIPLIER);
         float delta = originalCapsuleSize.y - newSize.y;
         capsule.size = newSize;
         capsule.offset = new Vector2(originalCapsuleOffset.x, originalCapsuleOffset.y - delta / 2f);
@@ -293,7 +294,7 @@ public class PlayerController : MonoBehaviour
         if (movementInput.x < -0.01f && activeSR != null) activeSR.flipX = true;
     }
 
-    void OnTriggerStay2D(Collider2D ground)
+    void OnTriggerEnter2D(Collider2D ground)
     {
         if (ground.CompareTag("Floor") || ground.CompareTag("Platform"))
         {
