@@ -52,8 +52,6 @@ public class CameraScript : MonoBehaviour
         }
         else
             Debug.Log("Rooms уже назначен");
-        camMinBounds = new Vector3(float.MinValue, float.MinValue, 0);
-        camMaxBounds = new Vector3(float.MaxValue, float.MaxValue, 0);
     }
 
     void LateUpdate()
@@ -120,27 +118,45 @@ public class CameraScript : MonoBehaviour
         {
             cachedRoomCollider = roomCol;
             BoxCollider2D boxCol = roomCol.GetComponent<BoxCollider2D>();
-            camMinBounds = boxCol.bounds.min;
-            camMaxBounds = boxCol.bounds.max;
+            Bounds roomBounds = boxCol.bounds;
 
-            float boundsHeight = camMaxBounds.y - camMinBounds.y;
+            // размеры комнаты
+            float roomWidth = roomBounds.size.x;
+            float roomHeight = roomBounds.size.y;
 
-            // ← ПРОВЕРКА ТОНКОСТИ
-            isThinRoom = boundsHeight < thinRoomThreshold;
+            // размеры камеры в мировых единицах (ортографическая камера)
+            float camHalfHeight = cam.orthographicSize;
+            float camHalfWidth = camHalfHeight * cam.aspect;
+
+            if (roomWidth <= camHalfWidth * 2f)
+            {
+                float centerX = roomBounds.center.x;
+                camMinBounds.x = centerX;
+                camMaxBounds.x = centerX;
+            }
+            else
+            {
+                camMinBounds.x = roomBounds.min.x + camHalfWidth;
+                camMaxBounds.x = roomBounds.max.x - camHalfWidth;
+            }
+            // ПРОВЕРКА ТОНКОЙ КОМНАТЫ
+            isThinRoom = roomHeight < thinRoomThreshold;
             if (isThinRoom)
             {
-                fixedY = (camMinBounds.y + camMaxBounds.y) * 0.5f; // Центр по Y
+                fixedY = roomBounds.center,y; // Центр по Y
                 if (debugThinRooms)
-                    Debug.Log($"THIN ROOM: {roomCol.name} (H={boundsHeight:F1} < {thinRoomThreshold}) → Y fixed at {fixedY:F1}");
+                    Debug.Log($"THIN ROOM: {roomCol.name} (H={roomHeight:F1} < {thinRoomThreshold}) → Y fixed at {fixedY:F1}");
             }
             else if (debugThinRooms)
             {
-                Debug.Log($"NORMAL ROOM: {roomCol.name} (H={boundsHeight:F1})");
+                Debug.Log($"NORMAL ROOM: {roomCol.name} (H={roomHeight:F1})");
             }
+            camMinBounds.z = 0f;
+            camMaxBounds.z = 0f;
         }
         else
         {
-            // Fallback infinite
+            // Камера вне заданных roombox двигается без ограничений
             isThinRoom = false;
             camMinBounds = new Vector3(float.MinValue, float.MinValue, 0);
             camMaxBounds = new Vector3(float.MaxValue, float.MaxValue, 0);
