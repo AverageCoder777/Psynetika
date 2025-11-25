@@ -2,78 +2,148 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
-    [SerializeField] private Transform target;
+    [SerializeField]
+    private Transform player;
 
     [Tooltip("Смещение центра рамки относительно центра игрока (в мировых единицах)")]
-    [SerializeField] private Vector3 targetOffset = Vector3.zero;
+    [SerializeField]
+    private Vector2 offset;
+    [Header("Тонкие комнаты (узкие коридоры)")]
+    [SerializeField] private float thinRoomThreshold = 12f; // Если bounds.height < этого → фиксируем Y
+    [SerializeField] private bool debugThinRooms = true;
 
     [Tooltip("Время сглаживания: меньше = камера быстрее подстраивается")]
-    [SerializeField] private float smoothTime = 0.15f;
+    [SerializeField]
+    private float smoothTime = 0.3f;
 
-    [Tooltip("Размер невидимой рамки в локальных единицах камеры (ширина, высота). Камера следует, только если цель выходит за рамку.")]
-    [SerializeField] private Vector2 deadZoneSize = new Vector2(2f, 1f);
+    [Tooltip(
+        "Размер невидимой рамки в локальных единицах камеры (ширина, высота). Камера следует, только если цель выходит за рамку."
+    )]
+    [SerializeField]
+    private LayerMask roomLayerMask = 0;
 
-    private float minY, maxY, minX, maxX;
+    private Vector3 camMinBounds;
+    private Vector3 camMaxBounds;
+    private Collider2D cachedRoomCollider = null;
+    private float lastRoomUpdateTime = 0f;
+    private const float roomUpdateInterval = 0.1f; // Как часто обновлять комнату
     private Camera cam;
+    private bool isThinRoom;
+    private float fixedY;
+    private Vector3 velocityX = Vector3.zero;
+    private Vector3 velocityY = Vector3.zero;
 
-    void Awake()
+    private void Awake()
     {
         cam = GetComponent<Camera>();
-        if (cam == null || !cam.orthographic)
-        {
-            Debug.LogError("CameraScript: Камера должна быть ортографической!");
+    }
+
+    private void Start()
+    {
+        if (player == null)
+            player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        if (player == null)
+            Debug.LogError("Player не найден! Tag='Player' обязателен.");
+
+        if (roomLayerMask == 0)
+        { // Авто-назначить layer "Rooms" если не задан
+            roomLayerMask = LayerMask.GetMask("Rooms");
+            Debug.LogWarning("Rooms назначен");
         }
+        else
+            Debug.Log("Rooms уже назначен");
+        camMinBounds = new Vector3(float.MinValue, float.MinValue, 0);
+        camMaxBounds = new Vector3(float.MaxValue, float.MaxValue, 0);
     }
 
     void LateUpdate()
     {
-        if (target == null || cam == null) return;
-
-        // Положение цели в локальных координатах камеры
-        Vector3 localTargetPos = transform.InverseTransformPoint(target.position + targetOffset);
-        Vector2 half = deadZoneSize * 0.5f;
-
-        // Вычисление смещения в локальных координатах, если цель вышла за рамку
-        Vector3 localDelta = Vector3.zero;
-
-        if (localTargetPos.x > half.x)
-            localDelta.x = localTargetPos.x - half.x;
-        else if (localTargetPos.x < -half.x)
-            localDelta.x = localTargetPos.x + half.x;
-
-        if (localTargetPos.y > half.y)
-            localDelta.y = localTargetPos.y - half.y;
-        else if (localTargetPos.y < -half.y)
-            localDelta.y = localTargetPos.y + half.y;
-
-        // Переводим локальное смещение в мировые координаты
-        Vector3 worldDelta = transform.TransformVector(localDelta);
-
-        // Целевая позиция камеры — текущая позиция + смещение (движение только на необходимую дельту)
-        Vector3 targetPosition = transform.position + worldDelta;
-
+        if (player == null || cam == null)
+        {
+            Debug.LogError("Player или Camera не назначены!");
+            return;
+        }
+        if (Time.time - lastRoomUpdateTime > roomUpdateInterval)
+        {
+            UpdateCameraBounds();
+            lastRoomUpdateTime = Time.time;
+        }
         // Учитываем размеры камеры
-        float cameraHalfHeight = cam.orthographicSize;
-        float cameraHalfWidth = cam.aspect * cameraHalfHeight;
+        Vector3 desiredPosition = new Vector3(
+            player.position.x + offset.x,
+            player.position.y + offset.y,
+            transform.position.z
+        );
 
-        // Ограничиваем положение камеры так, чтобы её края не выходили за границы
-        targetPosition.x = Mathf.Clamp(targetPosition.x, minX + cameraHalfWidth, maxX - cameraHalfWidth);
-        targetPosition.y = Mathf.Clamp(targetPosition.y, minY + cameraHalfHeight, maxY - cameraHalfHeight);
+        // Clamp по bounds
+        desiredPosition.x = Mathf.Clamp(desiredPosition.x, camMinBounds.x, camMaxBounds.x);
+        if (isThinRoom)
+        {
+            desiredPosition.y = fixedY; // Фиксируем Y в центре комнаты
+        }
+        else
+        {
+            // Нормальный clamp Y
+            desiredPosition.y = Mathf.Clamp(desiredPosition.y, camMinBounds.y, camMaxBounds.y);
+        }
 
-        // Применяем новое положение камеры
-        transform.position = targetPosition;
+        // Плавно
+        Vector3 currentPos = transform.position;
+        currentPos.x = Mathf.SmoothDamp(
+            currentPos.x,
+            desiredPosition.x,
+            ref velocityX.x,
+            smoothTime
+        );
+        currentPos.y = Mathf.SmoothDamp(
+            currentPos.y,
+            desiredPosition.y,
+            ref velocityY.y,
+            smoothTime
+        );
+        transform.position = currentPos;
+        if (Time.frameCount % 60 == 0)
+        {
+            string roomName = cachedRoomCollider
+                ? cachedRoomCollider.name
+                : "NONE (infinite bounds)";
+            Debug.Log(
+                $"Player: {player.position:F1} | Cam: {transform.position:F1} | Room: {roomName} | MinB: {camMinBounds.x:F1},{camMinBounds.y:F1} | MaxB: {camMaxBounds.x:F1},{camMaxBounds.y:F1}"
+            );
+        }
     }
 
-    public void SetTarget(Transform newTarget)
+    private void UpdateCameraBounds()
     {
-        target = newTarget;
-    }
+        Collider2D roomCol = Physics2D.OverlapPoint(player.position, roomLayerMask);
+        if (roomCol != null && roomCol.GetComponent<BoxCollider2D>() != null)
+        {
+            cachedRoomCollider = roomCol;
+            BoxCollider2D boxCol = roomCol.GetComponent<BoxCollider2D>();
+            camMinBounds = boxCol.bounds.min;
+            camMaxBounds = boxCol.bounds.max;
 
-    public void SetRoomBounds(float newMinX, float newMaxX, float newMinY, float newMaxY)
-    {
-        minX = newMinX;
-        maxX = newMaxX;
-        minY = newMinY;
-        maxY = newMaxY;
+            float boundsHeight = camMaxBounds.y - camMinBounds.y;
+
+            // ← ПРОВЕРКА ТОНКОСТИ
+            isThinRoom = boundsHeight < thinRoomThreshold;
+            if (isThinRoom)
+            {
+                fixedY = (camMinBounds.y + camMaxBounds.y) * 0.5f; // Центр по Y
+                if (debugThinRooms)
+                    Debug.Log($"THIN ROOM: {roomCol.name} (H={boundsHeight:F1} < {thinRoomThreshold}) → Y fixed at {fixedY:F1}");
+            }
+            else if (debugThinRooms)
+            {
+                Debug.Log($"NORMAL ROOM: {roomCol.name} (H={boundsHeight:F1})");
+            }
+        }
+        else
+        {
+            // Fallback infinite
+            isThinRoom = false;
+            camMinBounds = new Vector3(float.MinValue, float.MinValue, 0);
+            camMaxBounds = new Vector3(float.MaxValue, float.MaxValue, 0);
+        }
     }
 }

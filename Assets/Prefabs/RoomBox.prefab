@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5268609412629132589}
   - component: {fileID: 2358369299738966298}
-  - component: {fileID: 7895940919490310789}
   m_Layer: 0
   m_Name: RoomBox
   m_TagString: CameraBarrier
@@ -79,15 +78,3 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.4167938, y: 2.0206742}
   m_EdgeRadius: 0
---- !u!114 &7895940919490310789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2518474069334403544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0e60fe3d3ea49e4da13b78f23b0329e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Room
