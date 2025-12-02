@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour
     bool crouchRequested = false;
     Vector2 originalCapsuleSize;
     Vector2 originalCapsuleOffset;
+    [SerializeField] private LayerMask obstacleMask; // "Walls"
+    [SerializeField] private float headCheckDistanceBuffer = 0.02f;
 
     [Header("Roll")]
     [SerializeField] float rollDistance = 4f;
@@ -225,10 +227,36 @@ public class PlayerController : MonoBehaviour
     void StopCrouch()
     {
         if (!isCrouching) return;
+
+        // Текущий центр и верх crouch-коллайдера (сдвиг вниз для избежания edge case)
+        Vector2 crouchCenter = (Vector2)transform.position + capsule.offset;
+        float crouchTop = crouchCenter.y + (capsule.size.y / 2f) - headCheckDistanceBuffer;
+
+        // Дистанция проверки = delta высоты + buffer
+        float deltaHeight = originalCapsuleSize.y - capsule.size.y;
+        float headroomNeeded = deltaHeight + headCheckDistanceBuffer;
+
+        // 3 луча: left, center, right для покрытия ширины
+        float halfWidth = capsule.size.x / 2f * 0.8f; // 80% ширины, чтобы не ловить бока
+        Vector2 originCenter = new(transform.position.x, crouchTop);
+        RaycastHit2D hitLeft = Physics2D.Raycast(originCenter + Vector2.left * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
+        RaycastHit2D hitCenter = Physics2D.Raycast(originCenter, Vector2.up, headroomNeeded, obstacleMask);
+        RaycastHit2D hitRight = Physics2D.Raycast(originCenter + Vector2.right * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
+
+        if ((hitLeft.collider != null && !hitLeft.collider.isTrigger) ||
+            (hitCenter.collider != null && !hitCenter.collider.isTrigger) ||
+            (hitRight.collider != null && !hitRight.collider.isTrigger))
+        {
+            Debug.Log($"Cannot stand: hit '{hitCenter.collider?.name}' at distance {hitCenter.distance}/{headroomNeeded}");
+            return; // Остаёмся в crouch
+        }
+
+        // Места хватает — встаём
         capsule.size = originalCapsuleSize;
         capsule.offset = originalCapsuleOffset;
         isCrouching = false;
         if (activeAnimator != null) activeAnimator.SetBool("Crouching", false);
+        Debug.Log("Stood up successfully");
     }
 
     void Jump()
@@ -273,6 +301,10 @@ public class PlayerController : MonoBehaviour
             if (grounded && !isRolling) rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
             activeAnimator.SetBool("Moving", false);
         }
+        if (isCrouching && !crouchRequested)
+    {
+        StopCrouch();
+    }
     }
 
     void Move()
@@ -305,7 +337,7 @@ public class PlayerController : MonoBehaviour
     }
     void OnTriggerExit2D(Collider2D ground)
     {
-        if (rb.linearVelocity.y!=0)
+        if (rb.linearVelocity.y != 0)
         {
             grounded = false;
         }
