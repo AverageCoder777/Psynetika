@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalScale.x
-      value: 6
+      value: 6.3966
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalScale.y
@@ -30,11 +30,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.01
+      value: 24.8058
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -25.007
+      value: -24.75552
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalPosition.z
@@ -46,15 +46,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -74,14 +74,14 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: -2253911629886400664, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1404062481573690127}
+      addedObject: {fileID: 1557716710876997722}
   m_SourcePrefab: {fileID: -8435245712485981826, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
 --- !u!1 &8438541581041815505 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2253911629886400664, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
   m_PrefabInstance: {fileID: 1559309298652387513}
   m_PrefabAsset: {fileID: 0}
---- !u!61 &1404062481573690127
+--- !u!61 &1557716710876997722
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

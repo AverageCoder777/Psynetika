@@ -803,7 +803,7 @@
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "Open",
                     "isComposite": false,
                     "isPartOfComposite": false

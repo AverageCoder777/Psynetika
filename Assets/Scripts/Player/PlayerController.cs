@@ -214,7 +214,7 @@ public class PlayerController : MonoBehaviour
 
     void StartCrouch()
     {
-        if (isCrouching || !grounded) return;
+        if (isCrouching || !grounded || isRolling) return;
         isCrouching = true;
         Vector2 newSize = new(originalCapsuleSize.x, originalCapsuleSize.y * CROUCH_HEIGHT_MULTIPLIER);
         float delta = originalCapsuleSize.y - newSize.y;
