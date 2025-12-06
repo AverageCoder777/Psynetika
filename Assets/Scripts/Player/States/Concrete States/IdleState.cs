@@ -1,18 +1,20 @@
 using UnityEngine;
 
-public class PlayerIdleState : PlayerGroundedState
+public class IdleState : GroundedState
 {
     private bool jump;
     private bool crouch;
     private bool rollRequest;
-    public PlayerIdleState(Player player, PlayerStateMachine playerStateMachine)
-        : base(player, playerStateMachine)
+    private bool switchRequest;
+    public IdleState(Player player, StateMachine stateMachine)
+        : base(player, stateMachine)
     {
     }
     public override void Enter()
     {
         base.Enter();
         animator.SetBool("Moving", false);
+        grounded = true;
         player.Rb.linearVelocity = new Vector2(0, player.Rb.linearVelocity.y);
         Debug.Log("Entered Idle State");
 
@@ -23,6 +25,7 @@ public class PlayerIdleState : PlayerGroundedState
         crouch = player.playerInput.actions["Crouch"].IsPressed();
         jump = player.playerInput.actions["Jump"].WasPressedThisFrame();
         rollRequest = player.playerInput.actions["Roll"].WasPressedThisFrame();
+        switchRequest = player.playerInput.actions["Switch"].WasPressedThisFrame();
     }
     public override void LogicUpdate()
     {
@@ -33,21 +36,30 @@ public class PlayerIdleState : PlayerGroundedState
         }
         else if (jump)
         {
+            grounded = false;
             stateMachine.ChangeState(player.JumpingState);
         }
         if (player.Rb.linearVelocity.y < 0)
         {
+            grounded = false;
             stateMachine.ChangeState(player.FallingState);
         }
         if (rollRequest)
         {
             stateMachine.ChangeState(player.RollingState);
         }
+        if (switchRequest)
+        {
+            stateMachine.ChangeState(player.SwitchState);
+        }
     }
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
     }
-
-
+    public override void Exit()
+    {
+        base.Exit();
+        Debug.Log("Exited Idle State");
+    }
 }

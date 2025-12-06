@@ -97,7 +97,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Character Switch",
+                    "name": "Switch",
                     "type": "Button",
                     "id": "f4543994-b2c4-4726-acef-23a37beeaf2c",
                     "expectedControlType": "",
@@ -235,7 +235,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Character Switch",
+                    "action": "Switch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

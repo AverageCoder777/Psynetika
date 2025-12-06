@@ -1,19 +1,27 @@
 using UnityEngine;
-
-public abstract class PlayerState
+public abstract class States
 {
     protected Player player;
-    protected PlayerStateMachine stateMachine;
-    protected Animator animator;
-    public PlayerState(Player player, PlayerStateMachine playerStateMachine)
+    protected StateMachine stateMachine;
+    protected Animator animator => player.ActiveAnimator;
+    public States(Player player, StateMachine playerStateMachine)
     {
         this.player = player;
         this.stateMachine = playerStateMachine;
-        animator = player.GetActiveAnimator();
     }
     public virtual void Enter() { }
     public virtual void Exit() { }
-    public virtual void LogicUpdate() { }
+    public virtual void LogicUpdate()
+    {
+        if (player.MovementInput.x != 0)
+        {
+            animator.SetBool("Moving", true);
+        }
+        else
+        {
+            animator.SetBool("Moving", false);
+        }
+    }
     public virtual void HandleInput()
     {
         player.MovementInput = player.playerInput.actions["Move"].ReadValue<Vector2>();
@@ -22,9 +30,9 @@ public abstract class PlayerState
     {
         player.Rb.linearVelocity = new Vector2(player.MovementInput.x * player.Speed, player.Rb.linearVelocity.y);
         if (player.MovementInput.x > 0.01f)
-            player.GetActiveSpriteRenderer().flipX = false;
+            player.ActiveSR.flipX = false;
         else if (player.MovementInput.x < -0.01f)
-            player.GetActiveSpriteRenderer().flipX = true;
+            player.ActiveSR.flipX = true;
     }
     public virtual void AnimationTriggerEvent(Player.AnimationTriggerType triggerType) { }
 }

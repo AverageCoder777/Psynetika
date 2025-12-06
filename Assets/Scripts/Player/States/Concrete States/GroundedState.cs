@@ -1,14 +1,19 @@
 using UnityEngine;
 
-public class PlayerGroundedState : PlayerState
+public class GroundedState : States
 {
-    public PlayerGroundedState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine)
+    protected bool grounded = true;
+    public GroundedState(Player player, StateMachine stateMachine) : base(player, stateMachine)
     {
     }
     public override void Enter()
     {
         player.MovementInput = Vector2.zero;
         animator.SetBool("Grounded", true);
+    }
+    public override void LogicUpdate()
+    {
+        base.LogicUpdate();
     }
     public override void HandleInput()
     {

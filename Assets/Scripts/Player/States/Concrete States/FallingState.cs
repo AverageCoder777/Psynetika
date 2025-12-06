@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class PlayerFallingState : PlayerState
+public class FallingState : States
 {
-    public PlayerFallingState(Player player, PlayerStateMachine stateMachine) : base(player, stateMachine) { }
+    public FallingState(Player player, StateMachine stateMachine) : base(player, stateMachine) { }
     public override void Enter()
     {
         animator.SetTrigger("Falling");
@@ -18,6 +18,7 @@ public class PlayerFallingState : PlayerState
     }
     public override void LogicUpdate()
     {
+        base.LogicUpdate();//Подтягиваем логику переменной moving
         if (player.Rb.linearVelocity.y == 0) stateMachine.ChangeState(player.IdleState);
     }
     public override void Exit()

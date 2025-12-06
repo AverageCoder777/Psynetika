@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class PlayerJumpingState : PlayerState
+public class JumpingState : States
 {
     private bool canDoubleJump;
     private bool doubleJumpInput;
-    public PlayerJumpingState(Player player, PlayerStateMachine playerStateMachine)
-        : base(player, playerStateMachine)
+    public JumpingState(Player player, StateMachine stateMachine)
+        : base(player, stateMachine)
     {
     }
 
@@ -26,11 +26,12 @@ public class PlayerJumpingState : PlayerState
     }
     public override void HandleInput()
     {
-        doubleJumpInput = player.playerInput.actions["Jump"].WasPressedThisFrame();
-        player.MovementInput = player.playerInput.actions["Move"].ReadValue<Vector2>();   
+        base.HandleInput();
+        doubleJumpInput = player.playerInput.actions["Jump"].WasPressedThisFrame(); 
     }
     public override void LogicUpdate()
     {
+        base.LogicUpdate();
         if (doubleJumpInput && canDoubleJump && player.transform.position.y < player.MaxDoubleJumpHeight)
         {
             Jump();

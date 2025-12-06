@@ -1,16 +1,16 @@
 using UnityEngine;
 using System.Collections;
 
-public class PlayerRollingState : PlayerState
+public class RollingState : States
 {
     private Coroutine rollCoroutine;
     private bool rollEnd;
 
-    public PlayerRollingState(Player player, PlayerStateMachine stateMachine) : base(player, stateMachine) { }
+    public RollingState(Player player, StateMachine stateMachine) : base(player, stateMachine) { }
 
     public override void Enter()
     {
-        float dir = player.GetActiveSpriteRenderer().flipX ? -1f : 1f;
+        float dir = player.ActiveSR.flipX ? -1f : 1f;
         rollCoroutine = player.StartCoroutine(RollCoroutine(dir));
         animator.SetTrigger("Rolling");
     }
