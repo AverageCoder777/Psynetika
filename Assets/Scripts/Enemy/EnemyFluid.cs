@@ -6,14 +6,14 @@ public class EnemyFluid : MonoBehaviour
     [SerializeField] private float damageTime = 1.5f;
     [SerializeField] private int damageAmount = 10;
     private Coroutine damageCoroutine;
-    private PlayerController currentPlayer;
+    private Player currentPlayer;
     private bool damageActive = false;
     void OnTriggerEnter2D(Collider2D other)
     {
         if (damageActive == false && other.CompareTag("Player"))
         {
             damageActive = true;
-            currentPlayer = other.GetComponent<PlayerController>();
+            currentPlayer = other.GetComponent<Player>();
             damageCoroutine = StartCoroutine(DamageOverTime(currentPlayer));
             Debug.Log("Player has entered enemy fluid! Status of damageactive: "+ damageActive);
 
@@ -34,7 +34,7 @@ public class EnemyFluid : MonoBehaviour
             Debug.Log("Player has exited enemy fluid! Status of damageactive: " + damageActive);
         }
     }
-    private IEnumerator DamageOverTime(PlayerController player)
+    private IEnumerator DamageOverTime(Player player)
     {
         if (damageTime <= 0f || damageActive == false)
             yield break;

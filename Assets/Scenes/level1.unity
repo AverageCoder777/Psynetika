@@ -2569,7 +2569,6 @@ GameObject:
   - component: {fileID: 444891943}
   - component: {fileID: 444891944}
   - component: {fileID: 444891946}
-  - component: {fileID: 444891945}
   - component: {fileID: 444891948}
   - component: {fileID: 444891949}
   - component: {fileID: 444891950}
@@ -2811,19 +2810,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 519420031}
---- !u!114 &444891945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 444891937}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee6979b33b8bae84c8e73e4b726636d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  hp: 100
 --- !u!114 &444891946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2842,10 +2828,6 @@ MonoBehaviour:
   thrust: 6
   doubleJumpThrust: 6
   maxDoubleJumpHeight: 20
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 8
-  headCheckDistanceBuffer: 0.02
   rollDistance: 4
   rollDuration: 0.25
   ui: {fileID: 2143360659}
@@ -2855,6 +2837,7 @@ MonoBehaviour:
   switchDelay: 0.5
   platformLayerName: Platform
   dropThroughDuration: 0.7
+  playerInput: {fileID: 0}
 --- !u!50 &444891948
 Rigidbody2D:
   serializedVersion: 5
@@ -3314,7 +3297,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -110.55459, y: -10.416851, z: -10}
+  m_LocalPosition: {x: -108.63496, y: -10.410656, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

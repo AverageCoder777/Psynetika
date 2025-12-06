@@ -5,7 +5,7 @@ public class UIScript : MonoBehaviour
 {
     [SerializeField] GameObject pauseMenu;
     [SerializeField] GameObject GameOverMenu;
-    [SerializeField] PlayerController player;
+    [SerializeField] Player player;
     [SerializeField] TimeOfDie timeOfDie;
 
     public void StartGame()
