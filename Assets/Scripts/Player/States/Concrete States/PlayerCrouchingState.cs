@@ -6,7 +6,7 @@ public class PlayerCrouchingState : PlayerGroundedState
     Vector2 originalCapsuleSize;
     Vector2 originalCapsuleOffset;
     private LayerMask obstacleMask = LayerMask.GetMask("Walls"); // Слой препятствий
-    private float headCheckDistanceBuffer = 0.02f;
+    private float headCheckDistanceBuffer = 0.5f;
     private bool crouchHeld;
 
     public PlayerCrouchingState(Player player, PlayerStateMachine stateMachine) : base(player, stateMachine) { }
@@ -33,8 +33,9 @@ public class PlayerCrouchingState : PlayerGroundedState
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        if (!crouchHeld)
+        if (!crouchHeld&&CanStandUp())
         {
+            StopCrouch();
             stateMachine.ChangeState(player.IdleState);
         }
     }
@@ -50,11 +51,10 @@ public class PlayerCrouchingState : PlayerGroundedState
     public override void Exit()
     {
         base.Exit();
-        StopCrouch();
         animator.SetBool("Crouching", false);
         Debug.Log("Exited Crouching State");
     }
-    public bool StopCrouch()
+    private bool CanStandUp()
     {
         Vector2 crouchCenter = (Vector2)player.transform.position + capsule.offset;
         float crouchTop = crouchCenter.y + (capsule.size.y / 2f) - headCheckDistanceBuffer;
@@ -64,26 +64,32 @@ public class PlayerCrouchingState : PlayerGroundedState
         float headroomNeeded = deltaHeight + headCheckDistanceBuffer;
 
         // 3 луча: left, center, right для покрытия ширины
-        float halfWidth = capsule.size.x / 2f * 0.8f; // 80% ширины, чтобы не ловить бока
+        float halfWidth = capsule.size.x / 2f;
         Vector2 originCenter = new(player.transform.position.x, crouchTop);
         RaycastHit2D hitLeft = Physics2D.Raycast(originCenter + Vector2.left * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
         RaycastHit2D hitCenter = Physics2D.Raycast(originCenter, Vector2.up, headroomNeeded, obstacleMask);
         RaycastHit2D hitRight = Physics2D.Raycast(originCenter + Vector2.right * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
 
-        if ((hitLeft.collider != null && !hitLeft.collider.isTrigger) ||
-            (hitCenter.collider != null && !hitCenter.collider.isTrigger) ||
-            (hitRight.collider != null && !hitRight.collider.isTrigger))
+        if ((hitLeft.collider != null&&!hitLeft.collider.isTrigger) ||
+            (hitCenter.collider != null&&!hitCenter.collider.isTrigger) ||
+            (hitRight.collider != null&&!hitRight.collider.isTrigger))
         {
             Debug.Log($"Cannot stand: hit '{hitCenter.collider?.name}' at distance {hitCenter.distance}/{headroomNeeded}");
-            return false; // Остаёмся в crouch
+            return false;
         }
-
-        // Места хватает — встаём
+        else
+        {
+            Debug.Log("Can stand up: no obstacles detected above");
+            return true;
+        }
+    }
+    public void StopCrouch()
+    {
         capsule.size = originalCapsuleSize;
         capsule.offset = originalCapsuleOffset;
         animator.SetBool("Crouching", false);
         Debug.Log("Stood up successfully");
-        return true;
+        return;
     }
     
 }

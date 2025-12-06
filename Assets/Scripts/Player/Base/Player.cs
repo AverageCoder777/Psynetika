@@ -23,18 +23,15 @@ public class Player : MonoBehaviour
     bool grounded = true;
     bool firstJump = false;
     bool canDoubleJump = false;
-    bool doubleJump = false;
 
     [Header("Приседание")]
     float CROUCH_HEIGHT_MULTIPLIER = 0.5f;
     bool isCrouching = false;
-    bool crouchRequested = false;
 
     [Header("Рывок/кувырок")]
     [SerializeField] float rollDistance = 4f;
     [SerializeField] float rollDuration = 0.25f;
     bool isRolling = false;
-    bool rollRequested = false;
 
     [Header("Здоровье и его UI")]
     [SerializeField] UIScript ui;
@@ -59,21 +56,12 @@ public class Player : MonoBehaviour
     public Animator GetActiveAnimator() => activeAnimator;
     public SpriteRenderer GetActiveSpriteRenderer() => activeSR;
     public Vector2 MovementInput { get => movementInput; set => movementInput = value; }
-    public bool FirstJump { get => firstJump; set => firstJump = value; }
-    public bool DoubleJump { get => doubleJump; set => doubleJump = value; }
-    public bool CanDoubleJump { get => canDoubleJump; set => canDoubleJump = value; }
-    public bool Grounded { get => grounded; set => grounded = value; }
-    public bool IsRolling { get => isRolling; set => isRolling = value; }
-    public bool IsCrouching { get => isCrouching; set => isCrouching = value; }
-    public bool IsSwitching { get => isSwitching; set => isSwitching = value; }
-    public bool CrouchRequested { get => crouchRequested; set => crouchRequested = value; }
+
     public float Speed => speed;
     public float Thrust => thrust;
-    public float DoubleJumpThrust => doubleJumpThrust;
     public float MaxDoubleJumpHeight => maxDoubleJumpHeight;
     public float RollDistance => rollDistance;
     public float RollDuration => rollDuration;
-    public bool RollRequested { get => rollRequested; set => rollRequested = value; }
     public float CrouchHeightMultiplier => CROUCH_HEIGHT_MULTIPLIER;
 
     #endregion
