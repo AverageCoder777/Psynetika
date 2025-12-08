@@ -3,48 +3,55 @@ using System.Collections;
 
 public class RollingState : States
 {
-    private Coroutine rollCoroutine;
-    private bool rollEnd;
+    private float rollElapsed = 0f;
+    private float rollDir = 1f;
+    private bool rollEnd = false;
 
     public RollingState(Player player, StateMachine stateMachine) : base(player, stateMachine) { }
 
     public override void Enter()
     {
-        float dir = player.ActiveSR.flipX ? -1f : 1f;
-        rollCoroutine = player.StartCoroutine(RollCoroutine(dir));
+        base.Enter();
+        rollElapsed = 0f;
+        rollDir = player.ActiveSR != null && player.ActiveSR.flipX ? -1f : 1f;
         animator.SetTrigger("Rolling");
+        animator.SetBool("Grounded", true);
+        Debug.Log("Entered Rolling State");
     }
     public override void LogicUpdate()
     {
-        base.LogicUpdate();
-        if (rollEnd && player.Rb.linearVelocity.y == 0)
+        if (rollEnd)
         {
-            player.StopCoroutine(rollCoroutine);
-            stateMachine.ChangeState(player.IdleState);
+            if (player.Rb.linearVelocity.y == 0f)
+                stateMachine.ChangeState(player.IdleState);
+            else if (player.Rb.linearVelocity.y < 0f)
+            {
+                animator.SetBool("Grounded", false);
+                stateMachine.ChangeState(player.FallingState);
+            }
         }
-        else if (rollEnd && player.Rb.linearVelocity.y < 0)
+    }
+    public override void PhysicsUpdate()
+    {
+        if (!rollEnd)
         {
-            player.StopCoroutine(rollCoroutine);
-            stateMachine.ChangeState(player.FallingState);
+            float duration = player.RollDuration > 0f ? player.RollDuration : 0.0001f;
+            float rollSpeed = player.RollDistance / duration;
+            player.Rb.linearVelocity = new Vector2(rollDir * rollSpeed, player.Rb.linearVelocity.y);
+
+            rollElapsed += Time.fixedDeltaTime;
+            if (rollElapsed >= duration)
+            {
+                rollEnd = true;
+                player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
+            }
         }
     }
     public override void Exit()
     {
+        base.Exit();
         animator.ResetTrigger("Rolling");
-    }
-
-    private IEnumerator RollCoroutine(float dir)
-    {
-        float rollSpeed = (player.RollDuration > 0f) ? player.RollDistance / player.RollDuration : 0f;
-        float elapsed = 0f;
-
-        while (elapsed < player.RollDuration)
-        {
-            player.Rb.linearVelocity = new Vector2(dir * rollSpeed, player.Rb.linearVelocity.y);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
-        rollEnd = true;
+        rollEnd = false;
+        Debug.Log("Exited Rolling State");
     }
 }

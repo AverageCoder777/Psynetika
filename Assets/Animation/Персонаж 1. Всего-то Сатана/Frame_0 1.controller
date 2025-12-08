@@ -65,9 +65,6 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 2
-    m_ConditionEvent: Moving
-    m_EventTreshold: 0
   - m_ConditionMode: 1
     m_ConditionEvent: Rolling
     m_EventTreshold: 0

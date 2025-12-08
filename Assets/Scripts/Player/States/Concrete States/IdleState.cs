@@ -4,8 +4,9 @@ public class IdleState : GroundedState
 {
     private bool jump;
     private bool crouch;
-    private bool rollRequest;
-    private bool switchRequest;
+    private bool roll;
+    private bool @switch;
+    private bool hit;
     public IdleState(Player player, StateMachine stateMachine)
         : base(player, stateMachine)
     {
@@ -24,8 +25,9 @@ public class IdleState : GroundedState
         base.HandleInput();
         crouch = player.playerInput.actions["Crouch"].IsPressed();
         jump = player.playerInput.actions["Jump"].WasPressedThisFrame();
-        rollRequest = player.playerInput.actions["Roll"].WasPressedThisFrame();
-        switchRequest = player.playerInput.actions["Switch"].WasPressedThisFrame();
+        roll = player.playerInput.actions["Roll"].WasPressedThisFrame();
+        @switch = player.playerInput.actions["Switch"].WasPressedThisFrame();
+        hit = player.playerInput.actions["Attack"].WasPressedThisFrame();
     }
     public override void LogicUpdate()
     {
@@ -44,13 +46,17 @@ public class IdleState : GroundedState
             grounded = false;
             stateMachine.ChangeState(player.FallingState);
         }
-        if (rollRequest)
+        if (roll)
         {
             stateMachine.ChangeState(player.RollingState);
         }
-        if (switchRequest)
+        if (@switch)
         {
             stateMachine.ChangeState(player.SwitchState);
+        }
+        if (hit)
+        {
+            stateMachine.ChangeState(player.HittingState);
         }
     }
     public override void PhysicsUpdate()

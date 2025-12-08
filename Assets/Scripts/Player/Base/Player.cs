@@ -40,12 +40,23 @@ public class Player : MonoBehaviour
     [SerializeField] private string platformLayerName = "Platform";
     [Tooltip("Время, в течение которого игрок не будет сталкиваться с платформами при провале")]
     [SerializeField] private float dropThroughDuration = 0.5f;
+    [Header("Удар")]
+    [Tooltip("Скорость удара задает время на один удар")]
+    [SerializeField] private float hittingSpeedSobaka = 1f;
+    [Tooltip("Скорость удара задает время на один удар")]
+    [SerializeField] private float hittingSpeedSatana = 2f;
+    [Tooltip("Дистанция удара")]
+    [SerializeField] private float hitDistanceSobaka = 1f;
+    [Tooltip("Дистанция удара")]
+    [SerializeField] private float hitDistanceSatana = 2f;
+    [Tooltip("Урон от удара")]
+    [SerializeField] private int hittingDamageSobaka = 10;
+    [Tooltip("Урон от удара")]
+    [SerializeField] private int hittingDamageSatana = 22;
     Rigidbody2D rb;
     public PlayerInput playerInput;
     #endregion
     #region Publlic Properties
-    public string PlatformLayerName => platformLayerName;
-    public float DropThroughDuration => dropThroughDuration;
     public Rigidbody2D Rb { get { return rb; } }
     public Animator ActiveAnimator { get => activeAnimator; set => activeAnimator = value; }
     public SpriteRenderer ActiveSR { get => activeSR; set => activeSR = value; }
@@ -53,7 +64,8 @@ public class Player : MonoBehaviour
     public GameObject CharacterA { get => characterA; set => characterA = value; }
     public GameObject CharacterB { get => characterB; set => characterB = value; }
     public Vector2 MovementInput { get => movementInput; set => movementInput = value; }
-
+    public string PlatformLayerName => platformLayerName;
+    public float DropThroughDuration => dropThroughDuration;
     public float Speed => speed;
     public float Thrust => thrust;
     public float MaxDoubleJumpHeight => maxDoubleJumpHeight;
@@ -61,6 +73,40 @@ public class Player : MonoBehaviour
     public float RollDuration => rollDuration;
     public float CrouchHeightMultiplier => CROUCH_HEIGHT_MULTIPLIER;
     public float SwitchDelay => switchDelay;
+    public float GetHittingSpeed()
+    {
+        if (ActiveCharacter == CharacterA)
+        {
+            return hittingSpeedSatana;
+        }
+        else
+        {
+            return hittingSpeedSobaka;
+        }
+    }
+
+    public float GetHitDistance()
+    {
+        if (ActiveCharacter == CharacterA)
+        {
+            return hitDistanceSatana;
+        }
+        else
+        {
+            return hitDistanceSobaka;
+        }
+    }
+    public int GetHittingDamage()
+    {
+        if (ActiveCharacter == CharacterA)
+        {
+            return hittingDamageSobaka;
+        }
+        else
+        {
+            return hittingDamageSatana;
+        }
+    }
 
     #endregion
     #region Unity MonoBehaviour Callbacks
@@ -90,6 +136,7 @@ public class Player : MonoBehaviour
         RollingState = new RollingState(this, playerSM);
         FallingState = new FallingState(this, playerSM);
         SwitchState = new SwitchState(this, playerSM);
+        HittingState = new HittingState(this, playerSM);
         playerSM.Initialize(IdleState);
 
     }
@@ -163,6 +210,7 @@ public class Player : MonoBehaviour
     public RollingState RollingState { get; set; }
     public FallingState FallingState { get; set; }
     public SwitchState SwitchState { get; set; }
+    public HittingState HittingState { get; set; }
 
     #endregion
 }

@@ -4,10 +4,10 @@ public abstract class States
     protected Player player;
     protected StateMachine stateMachine;
     protected Animator animator => player.ActiveAnimator;
-    public States(Player player, StateMachine playerStateMachine)
+    public States(Player player, StateMachine stateMachine)
     {
         this.player = player;
-        this.stateMachine = playerStateMachine;
+        this.stateMachine = stateMachine;
     }
     public virtual void Enter() { }
     public virtual void Exit() { }
