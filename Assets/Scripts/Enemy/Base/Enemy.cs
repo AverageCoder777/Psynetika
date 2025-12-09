@@ -3,11 +3,16 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
 
-    [SerializeField] private float enemyHealth = 100f;
+    [SerializeField] private int enemyHealth = 100;
     [SerializeField] private float enemySpeed = 2f;
-    [SerializeField] private float enemyDamage = 10f;
+    [SerializeField] private int enemyDamage = 10;
+    [SerializeField] private float enemyHitDuration = 2f;
     private Animator animator;
     public Animator Animator => animator;
+    public int EnemyHealth => enemyHealth;
+    public float EnemySpeed => enemySpeed;
+    public int EnemyDamage => enemyDamage;
+    public float EnemyHitDuration => enemyHitDuration;
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -21,16 +26,12 @@ public class Enemy : MonoBehaviour
     {
         
     }
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
         enemyHealth -= damage;
         if (enemyHealth <= 0)
         {
             Die();
-        }
-        else
-        {
-            enemySM.ChangeState(hitState);
         }
     }
     void Die()
@@ -39,9 +40,9 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject);
     }
     #region State Machine Variables
-    private EnemyStateMachine enemySM;
-    private EnemyIdleState idleState;
-    private FollowState followState;
-    private EnemyHitState hitState;
+    public EnemyStateMachine enemySM;
+    public EnemyIdleState idleState;
+    public FollowState followState;
+    public EnemyHitState hitState;
     #endregion
 }
