@@ -6,8 +6,7 @@ public class UIScript : MonoBehaviour
     [SerializeField] GameObject pauseMenu;
     [SerializeField] GameObject GameOverMenu;
     [SerializeField] Player player;
-    [SerializeField] TimeOfDie timeOfDie;
-
+    
     public void StartGame()
     {
         SceneManager.LoadScene("Level1");
@@ -27,8 +26,6 @@ public class UIScript : MonoBehaviour
         {
             player.ResetHealth();
         }
-        timeOfDie.ResetTimer();
-
     }
 
     public void Open()

@@ -14,7 +14,7 @@ public class JumpingState : States
         Jump();
         canDoubleJump = true;
         animator.SetTrigger("Jumping");
-        Debug.Log("Entered Jumping State");
+        if (player.DebugMessages) Debug.Log("Entered Jumping State");
     }
     private void Jump()
     {
@@ -27,7 +27,7 @@ public class JumpingState : States
     public override void HandleInput()
     {
         base.HandleInput();
-        doubleJumpInput = player.playerInput.actions["Jump"].WasPressedThisFrame(); 
+        doubleJumpInput = player.PlayerInput.actions["Jump"].WasPressedThisFrame(); 
     }
     public override void LogicUpdate()
     {
@@ -53,6 +53,6 @@ public class JumpingState : States
         base.Exit();
         animator.ResetTrigger("Jumping");
         animator.ResetTrigger("DoubleJumping");
-        Debug.Log("Exited Jumping State");
+        if (player.DebugMessages) Debug.Log("Exited Jumping State");
     }
 }

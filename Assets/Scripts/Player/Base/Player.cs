@@ -53,8 +53,9 @@ public class Player : MonoBehaviour
     [SerializeField] private int hittingDamageSobaka = 10;
     [Tooltip("Урон от удара")]
     [SerializeField] private int hittingDamageSatana = 22;
+    [SerializeField] private bool debugMessages = false;
     Rigidbody2D rb;
-    public PlayerInput playerInput;
+    private PlayerInput playerInput;
     #endregion
     #region Publlic Properties
     public Rigidbody2D Rb { get { return rb; } }
@@ -64,6 +65,7 @@ public class Player : MonoBehaviour
     public GameObject CharacterA { get => characterA; set => characterA = value; }
     public GameObject CharacterB { get => characterB; set => characterB = value; }
     public Vector2 MovementInput { get => movementInput; set => movementInput = value; }
+    public PlayerInput PlayerInput => playerInput;
     public string PlatformLayerName => platformLayerName;
     public float DropThroughDuration => dropThroughDuration;
     public float Speed => speed;
@@ -73,6 +75,7 @@ public class Player : MonoBehaviour
     public float RollDuration => rollDuration;
     public float CrouchHeightMultiplier => CROUCH_HEIGHT_MULTIPLIER;
     public float SwitchDelay => switchDelay;
+    public bool DebugMessages =>debugMessages;
     public float GetHittingSpeed()
     {
         if (ActiveCharacter == CharacterA)
@@ -157,10 +160,10 @@ public class Player : MonoBehaviour
     {
         hp -= damage;
         if (hp < 0) hp = 0;
-        Debug.Log("Player took " + damage + " damage. Current HP: " + hp);
+        if (debugMessages) Debug.Log("Player took " + damage + " damage. Current HP: " + hp);
         activeAnimator.SetTrigger("Hurt");
         UpdateHealthUI();
-        if (hp < 0) Die();
+        if (hp <= 0) Die();
     }
 
     public void Heal(int amount)

@@ -7,33 +7,47 @@ public class EnemyHitState : EnemyStates
     private float hitSpeed => enemy.EnemySpeed;
     private int hitDamage => enemy.EnemyDamage;
     private bool hitCompleted = false;
-    private Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
+    private bool damageDone = false;
+    private Player playerScript;
 
     public EnemyHitState(Enemy enemy, EnemyStateMachine stateMachine)
         : base(enemy, stateMachine) { }
 
     public override void Enter()
     {
-        enemy.Animator.SetTrigger("Hit");
+        if (playerScript == null)
+        {
+            playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
+        }
+        //enemy.Animator.SetTrigger("Hit");
         Debug.Log("Enemy Entered Hit State");
+        hitElapsed = 0f;
+        hitCompleted = false;
+        damageDone = false;
     }
 
     public override void LogicUpdate()
     {
-        if (hitElapsed < hitDuration)
+        if (!hitCompleted&&enemy.PlayerInHitRange)
         {
-            enemy.Animator.SetBool("Hit", true);
+            //enemy.Animator.SetBool("Hit", true);
             hitElapsed += Time.deltaTime;
+            if (hitElapsed >= hitDuration && !damageDone)
+            {
+                playerScript.TakeDamage(hitDamage);
+                damageDone = true;
+            }
+            if (hitElapsed >= hitDuration)
+            {
+                //enemy.Animator.SetBool("Hit", false);
+                hitCompleted = true;
+                stateMachine.ChangeState(enemy.idleState);
+            }
         }
-        else
+        else if (!enemy.PlayerInHitRange)
         {
-            enemy.Animator.SetBool("Hit", false);
-            hitCompleted = true;
+            //enemy.Animator.SetBool("Hit", false);
             stateMachine.ChangeState(enemy.idleState);
-        }
-        if (hitCompleted)
-        {
-            player.TakeDamage(hitDamage);
         }
     }
 
@@ -43,9 +57,10 @@ public class EnemyHitState : EnemyStates
 
     public override void Exit()
     {
-        enemy.Animator.SetBool("Hit", false);
+        //enemy.Animator.SetBool("Hit", false);
         Debug.Log("Enemy Exited Hit State");
         hitElapsed = 0f;
         hitCompleted = false;
+        damageDone = false;
     }
 }

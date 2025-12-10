@@ -6,7 +6,7 @@ public class FallingState : States
     public override void Enter()
     {
         animator.SetTrigger("Falling");
-        Debug.Log("Entered Falling State");
+        if (player.DebugMessages) Debug.Log("Entered Falling State");
     }
     public override void HandleInput()
     {
@@ -24,6 +24,6 @@ public class FallingState : States
     public override void Exit()
     {
         animator.ResetTrigger("Falling");
-        Debug.Log("Exited Falling State");
+        if (player.DebugMessages) Debug.Log("Exited Falling State");
     }
 }

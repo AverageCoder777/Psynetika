@@ -24,7 +24,7 @@ public abstract class States
     }
     public virtual void HandleInput()
     {
-        player.MovementInput = player.playerInput.actions["Move"].ReadValue<Vector2>();
+        player.MovementInput = player.PlayerInput.actions["Move"].ReadValue<Vector2>();
     }
     public virtual void PhysicsUpdate()
     {

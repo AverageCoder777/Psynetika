@@ -9,7 +9,7 @@ AnimatorState:
   m_PrefabAsset: {fileID: 0}
   m_Name: "\u0410\u043D\u0438\u043C \u043F\u0440\u044B\u0436\u043A\u0430 \u043F\u043E\u043B\u0435\u0442
     \u0432\u043D\u0438\u0437_Clip"
-  m_Speed: 1
+  m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 6300939532477841730}
@@ -148,7 +148,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 4
     m_ConditionEvent: Velocity
-    m_EventTreshold: 0.001
+    m_EventTreshold: 0.2
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 248226766707806863}
   m_Solo: 0
@@ -731,7 +731,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0.5
-  m_HasExitTime: 1
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -843,7 +843,7 @@ AnimatorState:
   m_PrefabAsset: {fileID: 0}
   m_Name: "\u043F\u0435\u0440\u0435\u0445\u043E\u0434 \u043F\u043E\u043B\u0435\u0442
     \u0432\u0432\u0435\u0440\u0445 - \u043F\u043E\u043B\u0435\u0442 \u0432\u043D\u0438\u0437_Clip"
-  m_Speed: 1
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 6337499033458433068}

@@ -6,6 +6,8 @@ public class RollingState : States
     private float rollElapsed = 0f;
     private float rollDir = 1f;
     private bool rollEnd = false;
+    int playerLayer = LayerMask.NameToLayer("Player");
+    int enemyLayer = LayerMask.NameToLayer("Enemy");
 
     public RollingState(Player player, StateMachine stateMachine) : base(player, stateMachine) { }
 
@@ -16,7 +18,8 @@ public class RollingState : States
         rollDir = player.ActiveSR != null && player.ActiveSR.flipX ? -1f : 1f;
         animator.SetTrigger("Rolling");
         animator.SetBool("Grounded", true);
-        Debug.Log("Entered Rolling State");
+        Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
+        if (player.DebugMessages) Debug.Log("Entered Rolling State");
     }
     public override void LogicUpdate()
     {
@@ -43,6 +46,7 @@ public class RollingState : States
             if (rollElapsed >= duration)
             {
                 rollEnd = true;
+                Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, false);
                 player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
             }
         }
@@ -52,6 +56,6 @@ public class RollingState : States
         base.Exit();
         animator.ResetTrigger("Rolling");
         rollEnd = false;
-        Debug.Log("Exited Rolling State");
+        if (player.DebugMessages) Debug.Log("Exited Rolling State");
     }
 }

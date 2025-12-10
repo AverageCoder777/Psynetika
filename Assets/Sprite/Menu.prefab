@@ -103,6 +103,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -147,7 +148,6 @@ GameObject:
   - component: {fileID: 1775157270037195305}
   - component: {fileID: 7307725007511448408}
   - component: {fileID: 2980085872322189039}
-  - component: {fileID: 8987150306392989426}
   m_Layer: 5
   m_Name: GameMenu
   m_TagString: Untagged
@@ -216,19 +216,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8987150306392989426
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2693352523969853472}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84775812b9f28ae44957551344139ffc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UIscript
-  pauseMenu: {fileID: 6717320531128438250}
 --- !u!1 &6717320531128438250
 GameObject:
   m_ObjectHideFlags: 0
@@ -494,10 +481,6 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6366779078785228613, guid: 0d70a9190057ea4468445849d9e1e66d, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 8987150306392989426}
-    - target: {fileID: 6366779078785228613, guid: 0d70a9190057ea4468445849d9e1e66d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
@@ -643,10 +626,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 6366779078785228613, guid: 0d70a9190057ea4468445849d9e1e66d, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 8987150306392989426}
     - target: {fileID: 6366779078785228613, guid: 0d70a9190057ea4468445849d9e1e66d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2

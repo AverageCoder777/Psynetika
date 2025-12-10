@@ -18,7 +18,7 @@ public class CrouchingState : GroundedState
         capsule = player.GetComponent<BoxCollider2D>();
         originalCapsuleSize = capsule.size;
         originalCapsuleOffset = capsule.offset;
-        Debug.Log("Entered Crouching State");
+        if (player.DebugMessages) Debug.Log("Entered Crouching State");
         Vector2 newSize = new(originalCapsuleSize.x, originalCapsuleSize.y * player.CrouchHeightMultiplier);
         float delta = originalCapsuleSize.y - newSize.y;
         capsule.size = newSize;
@@ -28,8 +28,8 @@ public class CrouchingState : GroundedState
     public override void HandleInput()
     {
         base.HandleInput();
-        crouchHeld = player.playerInput.actions["Crouch"].IsPressed();
-        jumpInput = player.playerInput.actions["Jump"].WasPressedThisFrame();
+        crouchHeld = player.PlayerInput.actions["Crouch"].IsPressed();
+        jumpInput = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
     }
     public override void LogicUpdate()
     {
@@ -60,7 +60,7 @@ public class CrouchingState : GroundedState
     {
         base.Exit();
         animator.SetBool("Crouching", false);
-        Debug.Log("Exited Crouching State");
+        if (player.DebugMessages) Debug.Log("Exited Crouching State");
     }
     private bool CanStandUp()
     {
@@ -82,12 +82,12 @@ public class CrouchingState : GroundedState
             (hitCenter.collider != null&&!hitCenter.collider.isTrigger) ||
             (hitRight.collider != null&&!hitRight.collider.isTrigger))
         {
-            Debug.Log($"Cannot stand: hit '{hitCenter.collider?.name}' at distance {hitCenter.distance}/{headroomNeeded}");
+            if (player.DebugMessages) Debug.Log($"Cannot stand: hit '{hitCenter.collider?.name}' at distance {hitCenter.distance}/{headroomNeeded}");
             return false;
         }
         else
         {
-            Debug.Log("Can stand up: no obstacles detected above");
+            if (player.DebugMessages) Debug.Log("Can stand up: no obstacles detected above");
             return true;
         }
     }
@@ -96,7 +96,7 @@ public class CrouchingState : GroundedState
         capsule.size = originalCapsuleSize;
         capsule.offset = originalCapsuleOffset;
         animator.SetBool("Crouching", false);
-        Debug.Log("Stood up successfully");
+        if (player.DebugMessages) Debug.Log("Stood up successfully");
         return;
     }
     IEnumerator DropThroughPlatform()

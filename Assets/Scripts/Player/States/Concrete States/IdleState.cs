@@ -17,17 +17,17 @@ public class IdleState : GroundedState
         animator.SetBool("Moving", false);
         grounded = true;
         player.Rb.linearVelocity = new Vector2(0, player.Rb.linearVelocity.y);
-        Debug.Log("Entered Idle State");
+        if (player.DebugMessages) Debug.Log("Entered Idle State");
 
     }
     public override void HandleInput()
     {
         base.HandleInput();
-        crouch = player.playerInput.actions["Crouch"].IsPressed();
-        jump = player.playerInput.actions["Jump"].WasPressedThisFrame();
-        roll = player.playerInput.actions["Roll"].WasPressedThisFrame();
-        @switch = player.playerInput.actions["Switch"].WasPressedThisFrame();
-        hit = player.playerInput.actions["Attack"].WasPressedThisFrame();
+        crouch = player.PlayerInput.actions["Crouch"].IsPressed();
+        jump = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
+        roll = player.PlayerInput.actions["Roll"].WasPressedThisFrame();
+        @switch = player.PlayerInput.actions["Switch"].WasPressedThisFrame();
+        hit = player.PlayerInput.actions["Attack"].WasPressedThisFrame();
     }
     public override void LogicUpdate()
     {
@@ -66,6 +66,6 @@ public class IdleState : GroundedState
     public override void Exit()
     {
         base.Exit();
-        Debug.Log("Exited Idle State");
+        if (player.DebugMessages) Debug.Log("Exited Idle State");
     }
 }

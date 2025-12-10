@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class HittingState : States
+public class HittingState : GroundedState
 {
     private float hitElapsed = 0f;
     private float hitDir = 1f;
     private float hittingSpeed = 0f;
-    private float hitDistance = 0f; 
+    private float hitDistance = 0f;
     private bool hitComplete = false;
     private LayerMask enemyMask = LayerMask.GetMask("Enemy");
 
@@ -19,11 +19,22 @@ public class HittingState : States
         hitDir = player.ActiveSR != null && player.ActiveSR.flipX ? -1f : 1f;
         hitDistance = player.GetHitDistance();
         animator.SetTrigger("Hitting");
-        Debug.Log("Entered Hitting State");
+        if (player.DebugMessages) Debug.Log("Entered Hitting State");
     }
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        bool jumpRequested = false;
+        var jumpAction = player.PlayerInput.actions["Jump"];
+        if (jumpAction.WasPressedThisFrame()) jumpRequested = true;
+        if (jumpRequested)
+        {
+            animator.ResetTrigger("Hitting");
+            hitComplete = true;
+            if (player.DebugMessages) Debug.Log("Hitting interrupted by jump input -> switching to JumpingState");
+            stateMachine.ChangeState(player.JumpingState);
+            return;
+        }
         if (hitComplete)
         {
             stateMachine.ChangeState(player.IdleState);
@@ -46,11 +57,12 @@ public class HittingState : States
             if (hit.collider != null)
             {
                 Debug.DrawLine(origin, hit.point, Color.green);
-                Debug.Log("Hit " + hit.collider.name);
+                if (player.DebugMessages) Debug.Log("Hit " + hit.collider.name);
                 Enemy enemy = hit.collider.GetComponent<Enemy>();
                 if (enemy != null)
                 {
                     enemy.TakeDamage(player.GetHittingDamage());
+                    Debug.Log("Player hitted enemy with "+player.GetHittingDamage()+" damage points");
                 }
             }
             else
@@ -66,6 +78,6 @@ public class HittingState : States
         hitElapsed = 0f;
         hitComplete = false;
         animator.ResetTrigger("Hitting");
-        Debug.Log("Exited Hitting State");
+        if (player.DebugMessages) Debug.Log("Exited Hitting State");
     }
 }

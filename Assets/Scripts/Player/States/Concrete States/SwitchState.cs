@@ -9,7 +9,7 @@ public class SwitchState : States
     public override void Enter()
     {
         base.Enter();
-        Debug.Log("Entered Switch State");
+        if (player.DebugMessages) Debug.Log("Entered Switch State");
         player.StartCoroutine(SwitchCharacter());
     }
     private IEnumerator SwitchCharacter()
@@ -22,19 +22,19 @@ public class SwitchState : States
             player.CharacterA.SetActive(false);
             player.ActiveCharacter = player.CharacterB;
             player.CharacterB.SetActive(true);
-            Debug.Log("Switched to Character B");
+            if (player.DebugMessages) Debug.Log("Switched to Character B");
         }
         else if (player.CharacterA != null)
         {
             player.CharacterB.SetActive(false);
             player.ActiveCharacter = player.CharacterA;
             player.CharacterA.SetActive(true);
-            Debug.Log("Switched to Character A");
+            if (player.DebugMessages) Debug.Log("Switched to Character A");
         }
         player.ActiveAnimator.SetBool("isSwitching", false);
         CacheActiveVisuals();
 
-        Debug.Log("Switched character");
+        if (player.DebugMessages) Debug.Log("Switched character");
         stateMachine.ChangeState(player.IdleState);
     }
     void CacheActiveVisuals()

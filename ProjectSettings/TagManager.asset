@@ -9,6 +9,8 @@ TagManager:
   - Coin
   - CameraBarrier
   - Enemy
+  - Satana
+  - Dog
   layers:
   - Default
   - TransparentFX
