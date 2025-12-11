@@ -1284,6 +1284,14 @@ PrefabInstance:
       value: "\u0423\u043A\u0443\u0440\u043E\u043A\u043E\u0438\u043D"
       objectReference: {fileID: 0}
     - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 117.6
       objectReference: {fileID: 0}
@@ -2253,6 +2261,14 @@ PrefabInstance:
     - target: {fileID: 3100125784294477904, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
       propertyPath: m_Name
       value: "\u0423\u043A\u0443\u0440\u043E\u043A\u043E\u0438\u043D"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3591,8 +3607,8 @@ PolygonCollider2D:
       - {x: 114.14444, y: 17.181608}
       - {x: 111.240456, y: 14.213083}
       - {x: 95.86395, y: 12.583094}
-      - {x: 92.92879, y: 7.7025404}
-      - {x: 92.1323, y: 1.5267706}
+      - {x: 92.36857, y: 6.280471}
+      - {x: 86.22854, y: 1.612958}
       - {x: 4.214122, y: 1.3771591}
   m_UseDelaunayMesh: 0
 --- !u!4 &617520838
@@ -3840,6 +3856,14 @@ PrefabInstance:
     - target: {fileID: 3752093316699282759, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
       propertyPath: m_SortingOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7871,7 +7895,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1858105391
 Transform:
   m_ObjectHideFlags: 0
@@ -8039,6 +8063,14 @@ PrefabInstance:
     - target: {fileID: 3100125784294477904, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
       propertyPath: m_Name
       value: "\u0423\u043A\u0443\u0440\u043E\u043A\u043E\u0438\u043D"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8628,6 +8660,14 @@ PrefabInstance:
     - target: {fileID: 3100125784294477904, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
       propertyPath: m_Name
       value: "\u0423\u043A\u0443\u0440\u043E\u043A\u043E\u0438\u043D"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4102032997454707478, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
       propertyPath: m_LocalPosition.x

@@ -39,7 +39,8 @@ public class FollowState : EnemyStates
         base.PhysicsUpdate();
 
         Vector2 currentPos = enemy.transform.position;
-        Vector2 targetPos = playerT.position;
+        float targetX = playerT.position.x;
+        Vector2 targetPos = new Vector2(targetX, currentPos.y);
         float step = enemy.EnemySpeed * Time.fixedDeltaTime;
         Vector2 newPos = Vector2.MoveTowards(currentPos, targetPos, step);
         enemy.transform.position = newPos;
