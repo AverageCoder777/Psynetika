@@ -5,8 +5,8 @@ public class Player : MonoBehaviour
 {
     #region Fields
     [Header("Персонажи")]
-    public GameObject characterA;
-    public GameObject characterB;
+    public GameObject satan;
+    public GameObject sobaka;
     private GameObject activeCharacter;
     private Animator activeAnimator;
     private SpriteRenderer activeSR;
@@ -40,19 +40,17 @@ public class Player : MonoBehaviour
     [SerializeField] private string platformLayerName = "Platform";
     [Tooltip("Время, в течение которого игрок не будет сталкиваться с платформами при провале")]
     [SerializeField] private float dropThroughDuration = 0.5f;
-    [Header("Удар")]
+    [Header("Удары Собаки")]
     [Tooltip("Скорость удара задает время на один удар")]
     [SerializeField] private float hittingSpeedSobaka = 1f;
-    [Tooltip("Скорость удара задает время на один удар")]
-    [SerializeField] private float hittingSpeedSatana = 2f;
-    [Tooltip("Дистанция удара")]
     [SerializeField] private float hitDistanceSobaka = 1f;
-    [Tooltip("Дистанция удара")]
-    [SerializeField] private float hitDistanceSatana = 2f;
-    [Tooltip("Урон от удара")]
     [SerializeField] private int hittingDamageSobaka = 10;
-    [Tooltip("Урон от удара")]
+    [Header("Стрельба Сатаны")]
+    public GameObject bulletPrefab;
     [SerializeField] private int hittingDamageSatana = 22;
+    [Tooltip("Скорость удара задает время на один выстрел")]
+    [SerializeField] private float hittingSpeedSatana = 2f;
+    [SerializeField] private float hitDistanceSatana = 2f;
     [SerializeField] private bool debugMessages = false;
     Rigidbody2D rb;
     private PlayerInput playerInput;
@@ -62,8 +60,8 @@ public class Player : MonoBehaviour
     public Animator ActiveAnimator { get => activeAnimator; set => activeAnimator = value; }
     public SpriteRenderer ActiveSR { get => activeSR; set => activeSR = value; }
     public GameObject ActiveCharacter {get => activeCharacter; set => activeCharacter = value; }
-    public GameObject CharacterA { get => characterA; set => characterA = value; }
-    public GameObject CharacterB { get => characterB; set => characterB = value; }
+    public GameObject Satan { get => satan; set => satan = value; }
+    public GameObject Sobaka { get => sobaka; set => sobaka = value; }
     public Vector2 MovementInput { get => movementInput; set => movementInput = value; }
     public PlayerInput PlayerInput => playerInput;
     public string PlatformLayerName => platformLayerName;
@@ -76,9 +74,20 @@ public class Player : MonoBehaviour
     public float CrouchHeightMultiplier => CROUCH_HEIGHT_MULTIPLIER;
     public float SwitchDelay => switchDelay;
     public bool DebugMessages =>debugMessages;
+    public bool CharacterIsSatan()
+    {
+        if (ActiveCharacter == Satan)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }    
+    }
     public float GetHittingSpeed()
     {
-        if (ActiveCharacter == CharacterA)
+        if (ActiveCharacter == Satan)
         {
             return hittingSpeedSatana;
         }
@@ -90,7 +99,7 @@ public class Player : MonoBehaviour
 
     public float GetHitDistance()
     {
-        if (ActiveCharacter == CharacterA)
+        if (ActiveCharacter == Satan)
         {
             return hitDistanceSatana;
         }
@@ -101,13 +110,13 @@ public class Player : MonoBehaviour
     }
     public int GetHittingDamage()
     {
-        if (ActiveCharacter == CharacterA)
+        if (ActiveCharacter == Satan)
         {
-            return hittingDamageSobaka;
+            return hittingDamageSatana;
         }
         else
         {
-            return hittingDamageSatana;
+            return hittingDamageSobaka;
         }
     }
 
@@ -118,12 +127,12 @@ public class Player : MonoBehaviour
 
         rb = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
-        characterA = transform.GetChild(0).gameObject;
-        characterB = transform.GetChild(1).gameObject;
+        satan = transform.GetChild(0).gameObject;
+        sobaka = transform.GetChild(1).gameObject;
 
-        activeCharacter = characterA;
-        characterA.SetActive(true);
-        characterB.SetActive(false);
+        activeCharacter = satan;
+        satan.SetActive(true);
+        sobaka.SetActive(false);
         
         activeAnimator = activeCharacter.GetComponent<Animator>();
         activeSR = activeCharacter.GetComponent<SpriteRenderer>();

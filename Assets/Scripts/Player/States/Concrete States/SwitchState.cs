@@ -17,18 +17,18 @@ public class SwitchState : States
         player.ActiveAnimator.SetTrigger("isSwitching");
         yield return new WaitForSeconds(player.SwitchDelay);
         
-        if (player.ActiveCharacter == player.CharacterA && player.CharacterB != null)
+        if (player.ActiveCharacter == player.Satan && player.Sobaka != null)
         {
-            player.CharacterA.SetActive(false);
-            player.ActiveCharacter = player.CharacterB;
-            player.CharacterB.SetActive(true);
+            player.Satan.SetActive(false);
+            player.ActiveCharacter = player.Sobaka;
+            player.Sobaka.SetActive(true);
             if (player.DebugMessages) Debug.Log("Switched to Character B");
         }
-        else if (player.CharacterA != null)
+        else if (player.Satan != null)
         {
-            player.CharacterB.SetActive(false);
-            player.ActiveCharacter = player.CharacterA;
-            player.CharacterA.SetActive(true);
+            player.Sobaka.SetActive(false);
+            player.ActiveCharacter = player.Satan;
+            player.Satan.SetActive(true);
             if (player.DebugMessages) Debug.Log("Switched to Character A");
         }
         player.ActiveAnimator.SetBool("isSwitching", false);

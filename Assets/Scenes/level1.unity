@@ -2779,8 +2779,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e39da343aa508247a9e83d884e243e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  characterA: {fileID: 2044833321}
-  characterB: {fileID: 238797153}
+  satan: {fileID: 238797153}
+  sobaka: {fileID: 2044833321}
   speed: 5
   thrust: 6
   maxDoubleJumpHeight: 20
@@ -2794,11 +2794,12 @@ MonoBehaviour:
   platformLayerName: Platform
   dropThroughDuration: 0.7
   hittingSpeedSobaka: 0.5
-  hittingSpeedSatana: 1
   hitDistanceSobaka: 1
-  hitDistanceSatana: 2
   hittingDamageSobaka: 10
+  bulletPrefab: {fileID: 7568458503567619839, guid: 19f0135fb9cbb644ab800844ea9cfc57, type: 3}
   hittingDamageSatana: 22
+  hittingSpeedSatana: 1
+  hitDistanceSatana: 2
   debugMessages: 0
 --- !u!50 &444891948
 Rigidbody2D:
@@ -3214,7 +3215,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -108.63602, y: -10.410656, z: -10}
+  m_LocalPosition: {x: -108.636536, y: -10.410656, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7895,7 +7896,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1858105391
 Transform:
   m_ObjectHideFlags: 0
@@ -7905,7 +7906,7 @@ Transform:
   m_GameObject: {fileID: 1858105390}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.30723, y: -18.74602, z: 0}
+  m_LocalPosition: {x: 15.19, y: -18.97, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

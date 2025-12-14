@@ -109,5 +109,4 @@ public class CrouchingState : GroundedState
         yield return new WaitForSeconds(player.DropThroughDuration);
         Physics2D.IgnoreLayerCollision(playerLayer, platformLayer, false);
     }
-    
 }

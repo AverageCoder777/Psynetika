@@ -18,7 +18,7 @@ public class HittingState : GroundedState
         hittingSpeed = player.GetHittingSpeed();
         hitDir = player.ActiveSR != null && player.ActiveSR.flipX ? -1f : 1f;
         hitDistance = player.GetHitDistance();
-        animator.SetTrigger("Hitting");
+        animator.SetTrigger(player.CharacterIsSatan() ? "Shooting" : "Hitting");
         if (player.DebugMessages) Debug.Log("Entered Hitting State");
     }
     public override void LogicUpdate()
@@ -53,21 +53,36 @@ public class HittingState : GroundedState
         }
         if (!hitComplete && hitElapsed >= hittingSpeed)
         {
-            RaycastHit2D hit = Physics2D.Raycast(origin, direction, hitDistance, enemyMask);
-            if (hit.collider != null)
+            if (player.CharacterIsSatan())
             {
-                Debug.DrawLine(origin, hit.point, Color.green);
-                if (player.DebugMessages) Debug.Log("Hit " + hit.collider.name);
-                Enemy enemy = hit.collider.GetComponent<Enemy>();
-                if (enemy != null)
+                Vector2 spawnPos = origin + direction * 0.5f;
+                GameObject bulletObj = Object.Instantiate(player.bulletPrefab, spawnPos, Quaternion.identity);
+                Bullet bullet = bulletObj.GetComponent<Bullet>();
+                if (bullet != null)
                 {
-                    enemy.TakeDamage(player.GetHittingDamage());
-                    Debug.Log("Player hitted enemy with "+player.GetHittingDamage()+" damage points");
+                    bullet.damage = player.GetHittingDamage();
+                    bullet.SetDirection(hitDir);
                 }
+                if (player.DebugMessages) Debug.Log("Shot a bullet in direction " + hitDir);
             }
             else
             {
-                Debug.DrawLine(origin, origin + direction * hitDistance, new Color(1f, 0.5f, 0f));
+                RaycastHit2D hit = Physics2D.Raycast(origin, direction, hitDistance, enemyMask);
+                if (hit.collider != null)
+                {
+                    Debug.DrawLine(origin, hit.point, Color.green);
+                    if (player.DebugMessages) Debug.Log("Hit " + hit.collider.name);
+                    Enemy enemy = hit.collider.GetComponent<Enemy>();
+                    if (enemy != null)
+                    {
+                        enemy.TakeDamage(player.GetHittingDamage());
+                        Debug.Log("Player hitted enemy with " + player.GetHittingDamage() + " damage points");
+                    }
+                }
+                else
+                {
+                    Debug.DrawLine(origin, origin + direction * hitDistance, new Color(1f, 0.5f, 0f));
+                }
             }
             hitComplete = true;
         }
@@ -77,7 +92,7 @@ public class HittingState : GroundedState
         base.Exit();
         hitElapsed = 0f;
         hitComplete = false;
-        animator.ResetTrigger("Hitting");
+        animator.ResetTrigger(player.CharacterIsSatan() ? "Shooting" : "Hitting");
         if (player.DebugMessages) Debug.Log("Exited Hitting State");
     }
 }
