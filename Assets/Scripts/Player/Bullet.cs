@@ -18,17 +18,17 @@ public class Bullet : MonoBehaviour
         GetComponent<Rigidbody2D>().linearVelocity = new Vector2(dir * speed, 0f);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnCollisionEnter2D(Collision2D other)
     {
         if ((enemyMask.value & (1 << other.gameObject.layer)) > 0)
         {
-            Enemy enemy = other.GetComponent<Enemy>();
+            Enemy enemy = other.gameObject.GetComponent<Enemy>();
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
                 Debug.Log("Bullet hit enemy with " + damage + " damage");
             }
-            Destroy(gameObject);  // Уничтожить пулю при попадании
         }
+        Destroy(gameObject);
     }
 }

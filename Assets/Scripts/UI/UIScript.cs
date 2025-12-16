@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class UIScript : MonoBehaviour
 {
     [SerializeField] GameObject pauseMenu;
     [SerializeField] GameObject GameOverMenu;
     [SerializeField] Player player;
+    [SerializeField] TextMeshProUGUI characterText;
     
     public void StartGame()
     {
@@ -46,5 +48,8 @@ public class UIScript : MonoBehaviour
     {
         Debug.Log("Выход из игры");
         Application.Quit();
+    }
+    public void UpdateText(string text){
+        characterText.text = text;
     }
 }
