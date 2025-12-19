@@ -11,6 +11,7 @@ public class HittingState : GroundedState
     private int comboCount = 0;
     private float lastHitTime = 0f;
     private const float comboResetTime = 4f;
+    private bool playerIsSatan;
 
     public HittingState(Player player, StateMachine playerStateMachine)
         : base(player, playerStateMachine) { }
@@ -18,21 +19,23 @@ public class HittingState : GroundedState
     public override void Enter()
     {
         base.Enter();
-        if (Time.time - lastHitTime >comboResetTime){
+        if (Time.time - lastHitTime > comboResetTime)
+        {
             comboCount = 0;
         }
+        playerIsSatan = player.CharacterIsSatan();
         hittingSpeed = player.GetHittingSpeed();
         hitDir = player.ActiveSR != null && player.ActiveSR.flipX ? -1f : 1f;
         hitDistance = player.GetHitDistance();
         comboCount++;
-        if (comboCount >3) comboCount = 1;
-        if (player.CharacterIsSatan())
+        if (comboCount > 3) comboCount = 1;
+        if (playerIsSatan)
         {
-            animator.SetTrigger("Shooting " + comboCount);
+            animator.SetBool("Shooting " + comboCount, true);
         }
         else
         {
-            animator.SetTrigger("Hitting " + comboCount);
+            animator.SetBool("Hitting " + comboCount, true);
         }
         lastHitTime = Time.time;
         if (player.DebugMessages)
@@ -48,7 +51,14 @@ public class HittingState : GroundedState
             jumpRequested = true;
         if (jumpRequested)
         {
-            animator.ResetTrigger("Hitting");
+            if (playerIsSatan)
+            {
+                animator.SetBool("Shooting " + comboCount, false);
+            }
+            else
+            {
+                animator.SetBool("Hitting " + comboCount, false);
+            }
             hitComplete = true;
             if (player.DebugMessages)
                 Debug.Log("Hitting interrupted by jump input -> switching to JumpingState");
@@ -121,13 +131,13 @@ public class HittingState : GroundedState
         base.Exit();
         hitElapsed = 0f;
         hitComplete = false;
-        if (player.CharacterIsSatan())
+        if (playerIsSatan)
         {
-            animator.ResetTrigger("Shooting " + comboCount);
+            animator.SetBool("Shooting " + comboCount,false);
         }
         else
         {
-            animator.ResetTrigger("Hitting " + comboCount);
+            animator.SetBool("Hitting " + comboCount,false);
         }
         if (player.DebugMessages)
             Debug.Log("Exited Hitting State");
