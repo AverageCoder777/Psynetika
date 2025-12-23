@@ -72,6 +72,7 @@ public class Enemy : MonoBehaviour
     {
         if (isDead) return;
         enemyHealth -= damage;
+        animator?.SetTrigger("Damage");
         if (enemyHealth <= 0)
         {
             Die();
