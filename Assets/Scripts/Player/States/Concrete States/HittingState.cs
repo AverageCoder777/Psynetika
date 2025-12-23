@@ -57,7 +57,6 @@ public class HittingState : GroundedState
 
     public override void LogicUpdate()
     {
-        base.LogicUpdate();
         bool jumpRequested = false;
         var jumpAction = player.PlayerInput.actions["Jump"];
         if (jumpAction.WasPressedThisFrame())

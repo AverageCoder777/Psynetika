@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private BoxCollider2D hitTrigger;
     [SerializeField] private BoxCollider2D followTrigger;
     private Animator animator;
+    private bool isDead = false;
     public Animator Animator => animator;
     public int EnemyHealth => enemyHealth;
     public float EnemySpeed => enemySpeed;
@@ -69,6 +70,7 @@ public class Enemy : MonoBehaviour
     }
     public void TakeDamage(int damage)
     {
+        if (isDead) return;
         enemyHealth -= damage;
         if (enemyHealth <= 0)
         {
@@ -77,8 +79,13 @@ public class Enemy : MonoBehaviour
     }
     void Die()
     {
-        animator.SetTrigger("Die");
-        Destroy(gameObject);
+        if (isDead) return;
+        isDead = true;
+        animator?.SetTrigger("Die");
+        if (hitTrigger != null) hitTrigger.enabled = false;
+        if (followTrigger != null) followTrigger.enabled = false;
+        this.enabled = false;
+        Destroy(gameObject, 0.7f);
     }
     #region State Machine Variables
     public EnemyStateMachine enemySM;
