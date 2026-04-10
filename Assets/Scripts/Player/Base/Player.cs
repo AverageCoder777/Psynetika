@@ -149,6 +149,7 @@ public class Player : MonoBehaviour
         FallingState = new FallingState(this, playerSM);
         SwitchState = new SwitchState(this, playerSM);
         HittingState = new HittingState(this, playerSM);
+        WallState = new WallState(this, playerSM);
         playerSM.Initialize(IdleState);
 
     }
@@ -223,6 +224,7 @@ public class Player : MonoBehaviour
     public FallingState FallingState { get; set; }
     public SwitchState SwitchState { get; set; }
     public HittingState HittingState { get; set; }
+    public WallState WallState { get; set; }
 
     #endregion
 }
