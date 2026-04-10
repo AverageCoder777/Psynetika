@@ -11,7 +11,13 @@ public class UIScript : MonoBehaviour
     
     public void StartGame()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene("Level1");
+    }
+
+    public void Menu()
+    {
+        SceneManager.LoadScene("Main menu");
     }
 
     public void Continue()
@@ -21,13 +27,8 @@ public class UIScript : MonoBehaviour
     }
     public void Restart()
     {
-        Time.timeScale = 1f; 
-        GameOverMenu.SetActive(false);
-
-        if (player != null)
-        {
-            player.ResetHealth();
-        }
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Level1");
     }
 
     public void Open()
