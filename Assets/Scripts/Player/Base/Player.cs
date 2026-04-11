@@ -10,6 +10,9 @@ public class Player : MonoBehaviour
     private GameObject activeCharacter;
     private Animator activeAnimator;
     private SpriteRenderer activeSR;
+    public HealthPlayerManager healthPlayerManager;
+    public float maxHP;
+    public bool isActive;
 
     [Header("Движение")]
     [SerializeField] float speed = 5f;
@@ -33,7 +36,7 @@ public class Player : MonoBehaviour
     [SerializeField] int hp = 100;
 
     [Header("Время смены персонажа")]
-    [SerializeField] public float switchDelay = 0.5f;
+    [SerializeField] public int switchDelay = 500;
 
     [Header("Прыжок через платформу вниз")]
     [Tooltip("Имя слоя для платформ")]
@@ -138,6 +141,8 @@ public class Player : MonoBehaviour
         activeSR = activeCharacter.GetComponent<SpriteRenderer>();
 
         UpdateHealthUI();
+
+        healthPlayerManager = new HealthPlayerManager(maxHP, isActive);
     }
     void Start()
     {
