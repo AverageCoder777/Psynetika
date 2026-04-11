@@ -4552,7 +4552,7 @@ MonoBehaviour:
   upGravityScale: 1.1
   downGravityScale: 2.1
   wallSlideSpeed: 1
-  wallJumpForce: 10
+  wallJumpForce: 21
   wallDetectionDistance: 0.5
   wallWaitTime: 0.1
   rollDistance: 4
@@ -4571,7 +4571,7 @@ MonoBehaviour:
   hittingDamageSatana: 22
   hittingSpeedSatana: 1
   hitDistanceSatana: 2
-  debugMessages: 0
+  debugMessages: 1
 --- !u!50 &444891948
 Rigidbody2D:
   serializedVersion: 5
@@ -5003,7 +5003,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Satana
+  m_text: Satan
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}

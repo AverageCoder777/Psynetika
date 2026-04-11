@@ -4,7 +4,6 @@ public class JumpingState : AirStates
 {
     private bool canDoubleJump;
     private bool doubleJumpInput;
-    private float wallContactTime = 0f;
 
     public JumpingState(Player player, StateMachine stateMachine)
         : base(player, stateMachine)
@@ -32,38 +31,11 @@ public class JumpingState : AirStates
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-
-        // Применяем гравитационный скейлинг
-        if (player.Rb.linearVelocity.y > 0)
-        {
-            player.Rb.gravityScale = player.UpGravityScale;
-        }
-        else
-        {
-            player.Rb.gravityScale = player.DownGravityScale;
-        }
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        
-        // Проверяем столкновение со стеной
-        bool touchingWall = DetectWall();
-        
-        if (touchingWall)
-        {
-            wallContactTime += Time.deltaTime;
-            if (wallContactTime >= player.WallWaitTime)
-            {
-                stateMachine.ChangeState(player.WallState);
-                return;
-            }
-        }
-        else
-        {
-            wallContactTime = 0f;
-        }
     }
 
     public override void HandleInput()
@@ -81,7 +53,7 @@ public class JumpingState : AirStates
 
         if (player.Rb.linearVelocity.y < -0.001f)
         {
-            stateMachine.ChangeState(player.FallingState);
+            stateMachine.ChangeState(player.AirState);
         }
     }
 
