@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HittingState : GroundedState
+public class HittingState : GroundedStates
 {
     private float hitElapsed = 0f;
     private float hitDir = 1f;

@@ -13,11 +13,21 @@ public class Player : MonoBehaviour
 
     [Header("Движение")]
     [SerializeField] float speed = 5f;
+    [SerializeField] float accelerationRate = 15f;
+    [SerializeField] float frictionRate = 20f;
     private Vector2 movementInput = Vector2.zero;
 
     [Header("Прыжок")]
     [SerializeField] float thrust = 12f;
-    [SerializeField] float maxDoubleJumpHeight = 40f;
+    [SerializeField] float doubleJumpThrust = 6f;
+    [SerializeField] float upGravityScale = 0.6f;
+    [SerializeField] float downGravityScale = 2f;
+
+    [Header("Цепление за стену")]
+    [SerializeField] float wallSlideSpeed = 1f;
+    [SerializeField] float wallJumpForce = 10f;
+    [SerializeField] float wallDetectionDistance = 0.5f;
+    [SerializeField] float wallWaitTime = 0.1f;
 
     [Header("Приседание")]
     float CROUCH_HEIGHT_MULTIPLIER = 0.5f;
@@ -67,8 +77,16 @@ public class Player : MonoBehaviour
     public string PlatformLayerName => platformLayerName;
     public float DropThroughDuration => dropThroughDuration;
     public float Speed => speed;
+    public float AccelerationRate => accelerationRate;
+    public float FrictionRate => frictionRate;
     public float Thrust => thrust;
-    public float MaxDoubleJumpHeight => maxDoubleJumpHeight;
+    public float DoubleJumpThrust => doubleJumpThrust;
+    public float UpGravityScale => upGravityScale;
+    public float DownGravityScale => downGravityScale;
+    public float WallSlideSpeed => wallSlideSpeed;
+    public float WallJumpForce => wallJumpForce;
+    public float WallDetectionDistance => wallDetectionDistance;
+    public float WallWaitTime => wallWaitTime;
     public float RollDistance => rollDistance;
     public float RollDuration => rollDuration;
     public float CrouchHeightMultiplier => CROUCH_HEIGHT_MULTIPLIER;
@@ -149,6 +167,7 @@ public class Player : MonoBehaviour
         FallingState = new FallingState(this, playerSM);
         SwitchState = new SwitchState(this, playerSM);
         HittingState = new HittingState(this, playerSM);
+        WallState = new WallState(this, playerSM);
         playerSM.Initialize(IdleState);
 
     }
@@ -215,7 +234,6 @@ public class Player : MonoBehaviour
     #endregion
     #region State Machine Variables
     public StateMachine playerSM { get; set; }
-    public GroundedState GroundedState { get; set; }
     public IdleState IdleState { get; set; }
     public JumpingState JumpingState { get; set; }
     public CrouchingState CrouchingState { get; set; }
@@ -223,6 +241,7 @@ public class Player : MonoBehaviour
     public FallingState FallingState { get; set; }
     public SwitchState SwitchState { get; set; }
     public HittingState HittingState { get; set; }
+    public WallState WallState { get; set; }
 
     #endregion
 }

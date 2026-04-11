@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class SwitchState : States
+public class SwitchState : GroundedStates
 {
     public SwitchState(Player player, StateMachine stateMachine)
         : base(player, stateMachine) { }
