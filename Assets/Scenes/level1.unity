@@ -4545,8 +4545,17 @@ MonoBehaviour:
   satan: {fileID: 238797153}
   sobaka: {fileID: 2044833321}
   speed: 5
-  thrust: 6
-  maxDoubleJumpHeight: 20
+  accelerationRate: 15
+  frictionRate: 20
+  thrust: 7
+  doubleJumpThrust: 4
+  maxDoubleJumpHeight: 8
+  upGravityScale: 1.1
+  downGravityScale: 2.1
+  wallSlideSpeed: 1
+  wallJumpForce: 10
+  wallDetectionDistance: 0.5
+  wallWaitTime: 0.1
   rollDistance: 4
   rollDuration: 0.25
   ui: {fileID: 782325298}
@@ -5207,7 +5216,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -110.302155, y: -10.4160385, z: -10}
+  m_LocalPosition: {x: -108.63344, y: -10.410643, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

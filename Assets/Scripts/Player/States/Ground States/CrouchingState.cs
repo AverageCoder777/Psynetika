@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-public class CrouchingState : GroundedState
+public class CrouchingState : GroundedStates
 {
     BoxCollider2D capsule;
     Vector2 originalCapsuleSize;
@@ -49,8 +49,20 @@ public class CrouchingState : GroundedState
     }
     public override void PhysicsUpdate()
     {
-        // Base не применяем от дочернего класса, чтобы не было движения с полной скоростью
-        player.Rb.linearVelocity = new Vector2(player.MovementInput.x * player.Speed * 0.5f, player.Rb.linearVelocity.y);
+        // Calculate target velocity with reduced speed for crouch
+        float targetVelocityX = player.MovementInput.x * player.Speed * 0.5f;
+        float currentVelocityX = player.Rb.linearVelocity.x;
+        
+        // Choose acceleration rate based on whether we're moving or stopping
+        float accelerationToUse = player.MovementInput.x != 0 ? player.AccelerationRate : player.FrictionRate;
+        
+        // Smoothly interpolate towards target velocity
+        float newVelocityX = Mathf.Lerp(currentVelocityX, targetVelocityX, accelerationToUse * Time.fixedDeltaTime);
+        
+        // Apply new velocity
+        player.Rb.linearVelocity = new Vector2(newVelocityX, player.Rb.linearVelocity.y);
+        
+        // Sprite flipping
         if (player.MovementInput.x > 0.01f)
             player.ActiveSR.flipX = false;
         else if (player.MovementInput.x < -0.01f)

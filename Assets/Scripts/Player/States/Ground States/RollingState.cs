@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class RollingState : States
+public class RollingState : GroundedStates
 {
     private float rollElapsed = 0f;
     private float rollDir = 1f;

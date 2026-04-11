@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class IdleState : GroundedState
+public class IdleState : GroundedStates
 {
     private bool jump;
     private bool crouch;
