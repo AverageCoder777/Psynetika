@@ -21,6 +21,23 @@ public abstract class AirStates : State
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
+        float targetVelocityX = player.MovementInput.x * player.Speed;
+        float currentVelocityX = player.Rb.linearVelocity.x;
+        
+        // Выбираем знак (+/-) для ускорения
+        float accelerationToUse = player.MovementInput.x != 0 ? player.AccelerationRate : player.FrictionRate;
+        
+        // Плавно интерполируем текущую скорость к целевой для эффекта инерции
+        float newVelocityX = Mathf.Lerp(currentVelocityX, targetVelocityX, accelerationToUse * Time.fixedDeltaTime);
+        
+        // Применяем новое ускорение, но оставляем горизонтальное неизменным
+        player.Rb.linearVelocity = new Vector2(newVelocityX, player.Rb.linearVelocity.y);
+        
+        // Крутим спрайт в зависимости от направления
+        if (player.MovementInput.x > 0.01f)
+            player.ActiveSR.flipX = false;
+        else if (player.MovementInput.x < -0.01f)
+            player.ActiveSR.flipX = true;
     }
     public override void Exit()
     {
