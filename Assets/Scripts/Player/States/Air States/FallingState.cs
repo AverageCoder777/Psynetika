@@ -27,29 +27,26 @@ public class FallingState : AirStates
 
     public override void LogicUpdate()
     {
-        base.LogicUpdate();//Подтягиваем логику переменной moving
+        base.LogicUpdate();
         
-        // Проверяем столкновение со стеной
-        if (player.Rb.linearVelocity.y < 0) // Падаем вниз
+        bool touchingWall = DetectWall();
+
+        if (touchingWall)
         {
-            bool touchingWall = DetectWall();
-            
-            if (touchingWall)
+            wallContactTime += Time.deltaTime;
+            if (wallContactTime >= player.WallWaitTime)
             {
-                wallContactTime += Time.deltaTime;
-                if (wallContactTime >= player.WallWaitTime)
-                {
-                    stateMachine.ChangeState(player.WallState);
-                    return;
-                }
-            }
-            else
-            {
-                wallContactTime = 0f;
+                stateMachine.ChangeState(player.WallState);
+                return;
             }
         }
-        
-        if (player.Rb.linearVelocity.y == 0) 
+        else
+        {
+            wallContactTime = 0f;
+        }
+
+
+        if (player.Rb.linearVelocity.y == 0)
         {
             stateMachine.ChangeState(player.IdleState);
         }

@@ -13,6 +13,7 @@ public abstract class AirStates : State
     public override void HandleInput()
     {
         base.HandleInput();
+        player.MovementInput = player.PlayerInput.actions["Move"].ReadValue<Vector2>();
     }
     public override void LogicUpdate()
     {
@@ -21,7 +22,7 @@ public abstract class AirStates : State
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-        float targetVelocityX = player.MovementInput.x * player.Speed;
+        float targetVelocityX = player.MovementInput.x * player.Speed* 0.75f;//0.5 - фактор скорости перемещения в воздухе, добавить переменную!!!
         float currentVelocityX = player.Rb.linearVelocity.x;
         
         // Выбираем знак (+/-) для ускорения
@@ -45,22 +46,24 @@ public abstract class AirStates : State
     }
     protected bool DetectWall()
     {
-        // Проверяем столкновение справа
-        RaycastHit2D hitRight = Physics2D.Raycast(
-            player.transform.position,
-            Vector2.right,
+        // Определяем направление взгляда игрока
+        Vector2 wallDetectionDirection = player.ActiveSR.flipX ? Vector2.left : Vector2.right;
+        
+        // Смещаем начальную позицию raycast чтобы избежать собственного коллайдера игрока
+        Vector2 raycastOrigin = (Vector2)player.transform.position + wallDetectionDirection * 0.1f;
+        
+        // Проверяем столкновение только в направлении взгляда
+        RaycastHit2D hit = Physics2D.Raycast(
+            raycastOrigin,
+            wallDetectionDirection,
             player.WallDetectionDistance,
             LayerMask.GetMask("Walls")
         );
 
-        // Проверяем столкновение слева
-        RaycastHit2D hitLeft = Physics2D.Raycast(
-            player.transform.position,
-            Vector2.left,
-            player.WallDetectionDistance,
-            LayerMask.GetMask("Walls")
-        );
+        // Отрисовка raycast для отладки (зеленый - столкновение, красный - нет)
+        Debug.DrawRay(raycastOrigin, wallDetectionDirection * player.WallDetectionDistance, 
+            hit.collider != null ? Color.green : Color.red);
 
-        return hitRight.collider != null || hitLeft.collider != null;
+        return hit.collider != null;
     }
 }

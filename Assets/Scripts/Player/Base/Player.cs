@@ -20,7 +20,6 @@ public class Player : MonoBehaviour
     [Header("Прыжок")]
     [SerializeField] float thrust = 12f;
     [SerializeField] float doubleJumpThrust = 6f;
-    [SerializeField] float maxDoubleJumpHeight = 40f;
     [SerializeField] float upGravityScale = 0.6f;
     [SerializeField] float downGravityScale = 2f;
 
@@ -82,7 +81,6 @@ public class Player : MonoBehaviour
     public float FrictionRate => frictionRate;
     public float Thrust => thrust;
     public float DoubleJumpThrust => doubleJumpThrust;
-    public float MaxDoubleJumpHeight => maxDoubleJumpHeight;
     public float UpGravityScale => upGravityScale;
     public float DownGravityScale => downGravityScale;
     public float WallSlideSpeed => wallSlideSpeed;

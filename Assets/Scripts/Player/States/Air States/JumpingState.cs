@@ -34,7 +34,7 @@ public class JumpingState : AirStates
         base.PhysicsUpdate();
 
         // Применяем гравитационный скейлинг
-        if (player.Rb.linearVelocity.y >= 0)
+        if (player.Rb.linearVelocity.y > 0)
         {
             player.Rb.gravityScale = player.UpGravityScale;
         }
