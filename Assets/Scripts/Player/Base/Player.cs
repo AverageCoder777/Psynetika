@@ -92,6 +92,7 @@ public class Player : MonoBehaviour
     public float CrouchHeightMultiplier => CROUCH_HEIGHT_MULTIPLIER;
     public float SwitchDelay => switchDelay;
     public bool DebugMessages =>debugMessages;
+    private InputAction openUI;
     public bool CharacterIsSatan()
     {
         if (ActiveCharacter == Satan)
@@ -145,6 +146,8 @@ public class Player : MonoBehaviour
 
         rb = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
+        openUI = playerInput.actions["Pause"];
+        
         satan = transform.GetChild(0).gameObject;
         sobaka = transform.GetChild(1).gameObject;
 
@@ -183,7 +186,7 @@ public class Player : MonoBehaviour
     }
     #endregion
     #region Abilities functions
-
+    
     public void TakeDamage(int damage)
     {
         hp -= damage;

@@ -8,6 +8,7 @@ public class UIScript : MonoBehaviour
     [SerializeField] GameObject GameOverMenu;
     [SerializeField] Player player;
     [SerializeField] TextMeshProUGUI characterText;
+    [SerializeField] TeleportManager teleportManager;
     
     public void StartGame()
     {
@@ -42,6 +43,16 @@ public class UIScript : MonoBehaviour
         Debug.Log("пРОИГРЫШ");
         GameOverMenu.SetActive(true);
         Time.timeScale = 0f; 
+    }
+
+    public void NextCheckPoint()
+    {
+        teleportManager.NextTeleportPoint();
+    }
+
+    public void BackCheckPoint()
+    {
+        teleportManager.BackTeleportPoint();
     }
 
 
