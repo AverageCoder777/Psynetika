@@ -44,7 +44,7 @@ public class IdleState : GroundedStates
         if (player.Rb.linearVelocity.y < 0)
         {
             grounded = false;
-            stateMachine.ChangeState(player.FallingState);
+            stateMachine.ChangeState(player.AirState);
         }
         if (roll)
         {

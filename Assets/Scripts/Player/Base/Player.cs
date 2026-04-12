@@ -167,7 +167,7 @@ public class Player : MonoBehaviour
         JumpingState = new JumpingState(this, playerSM);
         CrouchingState = new CrouchingState(this, playerSM);
         RollingState = new RollingState(this, playerSM);
-        FallingState = new FallingState(this, playerSM);
+        AirState = new AirState(this, playerSM);
         SwitchState = new SwitchState(this, playerSM);
         HittingState = new HittingState(this, playerSM);
         WallState = new WallState(this, playerSM);
@@ -241,7 +241,7 @@ public class Player : MonoBehaviour
     public JumpingState JumpingState { get; set; }
     public CrouchingState CrouchingState { get; set; }
     public RollingState RollingState { get; set; }
-    public FallingState FallingState { get; set; }
+    public AirState AirState { get; set; }
     public SwitchState SwitchState { get; set; }
     public HittingState HittingState { get; set; }
     public WallState WallState { get; set; }

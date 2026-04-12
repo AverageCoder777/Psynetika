@@ -44,7 +44,7 @@ public class CrouchingState : GroundedStates
             StopCrouch();
             grounded = false;
             player.StartCoroutine(DropThroughPlatform());
-            stateMachine.ChangeState(player.FallingState);
+            stateMachine.ChangeState(player.AirState);
         }
     }
     public override void PhysicsUpdate()
