@@ -9,6 +9,7 @@ public class TeleportManager : MonoBehaviour
 
    public void NextTeleportPoint()
    {
+      Debug.Log("NextTeleportPoint");
       if (!(teleportPointIndex + 1 < teleportPoints.Count))
          return;
       if (!teleportPoints[teleportPointIndex+1].isChecked)
@@ -23,6 +24,7 @@ public class TeleportManager : MonoBehaviour
 
    public void BackTeleportPoint()
    {
+      Debug.Log("BackTeleportPoint");
       if (teleportPointIndex - 1 < 0)
          return;
       if (!teleportPoints[teleportPointIndex-1].isChecked)
