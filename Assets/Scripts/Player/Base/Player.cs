@@ -61,6 +61,7 @@ public class Player : MonoBehaviour
     [Tooltip("Скорость удара задает время на один выстрел")]
     [SerializeField] private float hittingSpeedSatana = 2f;
     [SerializeField] private float hitDistanceSatana = 2f;
+    private State lastState;
 #if UNITY_EDITOR
     [SerializeField] private bool debugMessages = false;
 #endif
@@ -93,6 +94,7 @@ public class Player : MonoBehaviour
     public float RollDuration => rollDuration;
     public float CrouchHeightMultiplier => CROUCH_HEIGHT_MULTIPLIER;
     public float SwitchDelay => switchDelay;
+    public State LastState { get => lastState; set => lastState = value; }
     public bool DebugMessages =>debugMessages;
     public bool CharacterIsSatan()
     {

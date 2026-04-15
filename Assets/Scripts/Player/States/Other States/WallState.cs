@@ -17,6 +17,7 @@ public class WallState : State
         {
             Debug.Log("Entered Wall State");
         }
+        player.LastState = this;
     }
 
     public override void HandleInput()
@@ -29,17 +30,13 @@ public class WallState : State
     {
         base.LogicUpdate();
 
-        // Проверяем контакт со стеной и сохраняем нормаль
         DetectWall();
 
-        // Если достигли земли
         if (player.Rb.linearVelocity.y == 0)
         {
             stateMachine.ChangeState(player.IdleState);
-            return;
         }
 
-        // Если нажата кнопка прыжка, прыгаем от стены
         if (jumpInput)
         {
             WallJump();

@@ -55,6 +55,7 @@ public class HittingState : GroundedStates
         if (player.DebugMessages)
             Debug.Log("Entered Hitting State");
 #endif
+        player.LastState = this;
     }
 
     public override void LogicUpdate()

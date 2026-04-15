@@ -23,6 +23,7 @@ public class JumpingState : AirStates
             Debug.Log("Entered Jumping State");
         }
 #endif
+        player.LastState = this;
     }
 
     private void Jump(float jumpForce)

@@ -27,12 +27,29 @@ public class AirState : AirStates
 
     public override void HandleInput()
     {
-        base.HandleInput();
+        if (player.LastState is not WallState)
+        {
+            base.HandleInput();
+        }
     }
 
     public override void PhysicsUpdate()
     {
-        base.PhysicsUpdate();
+        if (player.LastState is not WallState)
+        {
+            base.PhysicsUpdate();
+        }
+        else
+        {
+            if (player.Rb.linearVelocity.y > 0)
+            {
+                player.Rb.gravityScale = player.UpGravityScale;
+            }
+            else
+            {
+                player.Rb.gravityScale = player.DownGravityScale;
+            }
+        }
     }
 
     public override void LogicUpdate()
@@ -45,6 +62,7 @@ public class AirState : AirStates
         }
         if (player.Rb.linearVelocity.y == 0 && !state_from_jump)
         {
+            player.LastState = this;
             stateMachine.ChangeState(player.IdleState);
         }
     }

@@ -20,6 +20,7 @@ public class RollingState : GroundedStates
         animator.SetBool("Grounded", true);
         Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
         if (player.DebugMessages) Debug.Log("Entered Rolling State");
+        player.LastState = this;
     }
     public override void LogicUpdate()
     {

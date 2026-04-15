@@ -27,6 +27,7 @@ public class CrouchingState : GroundedStates
 #if UNITY_EDITOR
         if (player.DebugMessages) Debug.Log("Entered crouching state");
 #endif
+        player.LastState = this;
     }
     public override void HandleInput()
     {
