@@ -17,10 +17,12 @@ public class JumpingState : AirStates
         animator.SetTrigger("Jumping");
         player.Rb.gravityScale = player.UpGravityScale;
         wallContactTime = 0f;
+#if UNITY_EDITOR
         if (player.DebugMessages)
         {
             Debug.Log("Entered Jumping State");
         }
+#endif
     }
 
     private void Jump(float jumpForce)
@@ -62,10 +64,11 @@ public class JumpingState : AirStates
         base.Exit();
         animator.ResetTrigger("Jumping");
         animator.ResetTrigger("DoubleJumping");
-
+#if UNITY_EDITOR
         if (player.DebugMessages)
         {
             Debug.Log("Exited Jumping State");
         }
+#endif
     }
 }

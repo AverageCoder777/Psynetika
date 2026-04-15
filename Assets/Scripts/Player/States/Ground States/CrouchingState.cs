@@ -24,6 +24,9 @@ public class CrouchingState : GroundedStates
         capsule.size = newSize;
         capsule.offset = new Vector2(originalCapsuleOffset.x, originalCapsuleOffset.y - delta / 2f);
         animator.SetBool("Crouching", true);
+#if UNITY_EDITOR
+        if (player.DebugMessages) Debug.Log("Entered crouching state");
+#endif
     }
     public override void HandleInput()
     {
@@ -72,7 +75,9 @@ public class CrouchingState : GroundedStates
     {
         base.Exit();
         animator.SetBool("Crouching", false);
+#if UNITY_EDITOR
         if (player.DebugMessages) Debug.Log("Exited Crouching State");
+#endif
     }
     private bool CanStandUp()
     {
@@ -94,12 +99,10 @@ public class CrouchingState : GroundedStates
             (hitCenter.collider != null&&!hitCenter.collider.isTrigger) ||
             (hitRight.collider != null&&!hitRight.collider.isTrigger))
         {
-            if (player.DebugMessages) Debug.Log($"Cannot stand: hit '{hitCenter.collider?.name}' at distance {hitCenter.distance}/{headroomNeeded}");
             return false;
         }
         else
         {
-            if (player.DebugMessages) Debug.Log("Can stand up: no obstacles detected above");
             return true;
         }
     }

@@ -20,7 +20,9 @@ public class AirState : AirStates
             state_from_jump = true;
             player.Rb.gravityScale = player.UpGravityScale;
         }
+#if UNITY_EDITOR
         if (player.DebugMessages) Debug.Log("Entered Air State");
+#endif
     }
 
     public override void HandleInput()
@@ -52,6 +54,8 @@ public class AirState : AirStates
         player.Rb.gravityScale = 1f;
         animator.ResetTrigger("Falling");
         animator.ResetTrigger("Jumping");
+#if UNITY_EDITOR
         if (player.DebugMessages) Debug.Log("Exited Air State");
+#endif
     }
 }

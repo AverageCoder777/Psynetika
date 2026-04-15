@@ -12,29 +12,29 @@ public class Player : MonoBehaviour
     private SpriteRenderer activeSR;
 
     [Header("Движение")]
-    [SerializeField] float speed = 5f;
-    [SerializeField] float accelerationRate = 15f;
-    [SerializeField] float frictionRate = 20f;
+    [SerializeField] float speed = 5f; // базовая скорость игрока
+    [SerializeField] float accelerationRate = 15f; //ускорение, с которым игрок начинает движение
+    [SerializeField] float frictionRate = 20f; // трение, которое замедляет персонажа, если игрок перестал идти
     private Vector2 movementInput = Vector2.zero;
 
     [Header("Прыжок")]
-    [SerializeField] float thrust = 12f;
-    [SerializeField] float doubleJumpThrust = 6f;
-    [SerializeField] float upGravityScale = 0.6f;
-    [SerializeField] float downGravityScale = 2f;
+    [SerializeField] float thrust = 12f; // ускорение, придаваемое персонажу при прыжке
+    [SerializeField] float doubleJumpThrust = 6f; // ускорение двойного прыжка
+    [SerializeField] float upGravityScale = 1.1f; // множитель гравитации в первой половине параболы прыжка
+    [SerializeField] float downGravityScale = 2f; // множитель гравитации во второй половине параболы прыжка
 
     [Header("Цепление за стену")]
-    [SerializeField] float wallSlideSpeed = 1f;
-    [SerializeField] float wallJumpForce = 10f;
-    [SerializeField] float wallDetectionDistance = 0.5f;
-    [SerializeField] float wallWaitTime = 0.1f;
+    [SerializeField] float wallSlideSpeed = 1f; //скорость соскальзывания по стене
+    [SerializeField] float wallJumpForce = 10f; //сила прыжка от стены
+    [SerializeField] float wallDetectionDistance = 0.5f; //Расстояние, на котором стена обнаруживается
+    [SerializeField] float wallWaitTime = 0.2f; //Время, которое игрок должен провести на стене, чтобы можно было отпрыгнуть от неё
 
     [Header("Приседание")]
-    float CROUCH_HEIGHT_MULTIPLIER = 0.5f;
+    float CROUCH_HEIGHT_MULTIPLIER = 0.5f; //Модификатор, который умножает высоту коллайдера при приседании
 
     [Header("Рывок/кувырок")]
-    [SerializeField] float rollDistance = 4f;
-    [SerializeField] float rollDuration = 0.25f;
+    [SerializeField] float rollDistance = 4f; //расстояние рывка/кувырка
+    [SerializeField] float rollDuration = 0.25f; //время рывка/кувырка
 
     [Header("Здоровье и его UI")]
     [SerializeField] UIScript ui;
@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
     [Tooltip("Имя слоя для платформ")]
     [SerializeField] private string platformLayerName = "Platform";
     [Tooltip("Время, в течение которого игрок не будет сталкиваться с платформами при провале")]
-    [SerializeField] private float dropThroughDuration = 0.5f;
+    [SerializeField] private float dropThroughDuration = 0.5f; //время, на которое платформы перестают иметь коллизию для персонажа
     [Header("Удары Собаки")]
     [Tooltip("Скорость удара задает время на один удар")]
     [SerializeField] private float hittingSpeedSobaka = 1f;
@@ -61,7 +61,9 @@ public class Player : MonoBehaviour
     [Tooltip("Скорость удара задает время на один выстрел")]
     [SerializeField] private float hittingSpeedSatana = 2f;
     [SerializeField] private float hitDistanceSatana = 2f;
+#if UNITY_EDITOR
     [SerializeField] private bool debugMessages = false;
+#endif
     Rigidbody2D rb;
     private PlayerInput playerInput;
     #endregion
@@ -215,21 +217,6 @@ public class Player : MonoBehaviour
     public void Die()
     {
         ui.GameOver();
-    }
-    #endregion
-    #region Animation Triggers
-    private void AnimationTriggerEvent(AnimationTriggerType triggerType)
-    {
-        playerSM.CurrentPlayerState.AnimationTriggerEvent(triggerType);
-
-    }
-    public enum AnimationTriggerType
-    {
-        Roll,
-        Jump,
-        DoubleJump,
-        Crouch,
-        StopCrouch
     }
     #endregion
     #region State Machine Variables
