@@ -4,10 +4,11 @@ using TMPro;
 
 public class UIScript : MonoBehaviour
 {
-    [SerializeField] GameObject pauseMenu;
+    [SerializeField] CanvasGroup pauseMenu;
     [SerializeField] GameObject GameOverMenu;
     [SerializeField] Player player;
     [SerializeField] TextMeshProUGUI characterText;
+    [SerializeField] TeleportManager teleportManager;
     
     public void StartGame()
     {
@@ -23,7 +24,9 @@ public class UIScript : MonoBehaviour
     public void Continue()
     {
         Time.timeScale = 1f;
-        pauseMenu.SetActive(false);
+        //pauseMenu.SetActive(false);
+        pauseMenu.alpha = 0f;
+        pauseMenu.interactable = false;
     }
     public void Restart()
     {
@@ -34,7 +37,9 @@ public class UIScript : MonoBehaviour
     public void Open()
     {
         Time.timeScale = 0f; 
-        pauseMenu.SetActive(true);
+        pauseMenu.alpha = 1f;
+        pauseMenu.interactable = true;
+        //pauseMenu.SetActive(true);
     }
 
     public void GameOver()
@@ -42,6 +47,16 @@ public class UIScript : MonoBehaviour
         Debug.Log("пРОИГРЫШ");
         GameOverMenu.SetActive(true);
         Time.timeScale = 0f; 
+    }
+
+    public void NextCheckPoint()
+    {
+        teleportManager.NextTeleportPoint();
+    }
+
+    public void BackCheckPoint()
+    {
+        teleportManager.BackTeleportPoint();
     }
 
 
