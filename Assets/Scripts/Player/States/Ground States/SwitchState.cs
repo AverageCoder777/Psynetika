@@ -22,6 +22,7 @@ public class SwitchState : GroundedStates
             }
         }
         player.StartCoroutine(SwitchCharacter());
+        player.LastState = this;
     }
 
     private IEnumerator SwitchCharacter()

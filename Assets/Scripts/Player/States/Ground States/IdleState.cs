@@ -18,6 +18,7 @@ public class IdleState : GroundedStates
         grounded = true;
         player.Rb.linearVelocity = new Vector2(0, player.Rb.linearVelocity.y);
         if (player.DebugMessages) Debug.Log("Entered Idle State");
+        player.LastState = this;
 
     }
     public override void HandleInput()

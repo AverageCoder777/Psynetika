@@ -14,4 +14,8 @@ public class StateMachine
         CurrentPlayerState = newState;
         CurrentPlayerState.Enter();
     }
+    public void SmartChangeState(State newState)
+    {
+        ChangeState(newState);
+    }
 }
