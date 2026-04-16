@@ -1,5 +1,3 @@
-using System.Timers;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -11,6 +9,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float enemyHitDuration = 2f;
     [SerializeField] private BoxCollider2D hitTrigger;
     [SerializeField] private BoxCollider2D followTrigger;
+    [SerializeField] private int coinsToDrop = 5;
+    [SerializeField] private GameObject coinPrefab;
     private Animator animator;
     private bool isDead = false;
     public Animator Animator => animator;
@@ -78,6 +78,14 @@ public class Enemy : MonoBehaviour
             Die();
         }
     }
+    void DropCoins()
+    {
+        for (int i = 0; i < coinsToDrop; i++)
+        {
+            GameObject coin = Instantiate(coinPrefab, transform.position, Quaternion.identity);
+            coin.SetActive(true);
+        }
+    }
     void Die()
     {
         if (isDead) return;
@@ -85,7 +93,8 @@ public class Enemy : MonoBehaviour
         animator?.SetTrigger("Die");
         if (hitTrigger != null) hitTrigger.enabled = false;
         if (followTrigger != null) followTrigger.enabled = false;
-        this.enabled = false;
+        DropCoins();
+        enabled = false;
         Destroy(gameObject, 0.7f);
     }
     #region State Machine Variables
