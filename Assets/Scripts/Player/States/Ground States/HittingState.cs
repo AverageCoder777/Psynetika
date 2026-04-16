@@ -7,6 +7,7 @@ public class HittingState : GroundedStates
     private float hittingSpeed = 0f;
     private float hitDistance = 0f;
     private bool hitComplete = false;
+    private bool jumpRequested = false;
     private LayerMask enemyMask = LayerMask.GetMask("Enemy");
     private int comboCount = 0;
     private float lastHitTime = 0f;
@@ -51,19 +52,18 @@ public class HittingState : GroundedStates
             animator.SetBool("Hitting " + comboCount, true);
         }
         lastHitTime = Time.time;
-#if UNITY_EDITOR
         if (player.DebugMessages)
             Debug.Log("Entered Hitting State");
-#endif
         player.LastState = this;
+        jumpRequested = false;
+    }
+    public override void HandleInput()
+    {
+        jumpRequested = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
     }
 
     public override void LogicUpdate()
     {
-        bool jumpRequested = false;
-        var jumpAction = player.PlayerInput.actions["Jump"];
-        if (jumpAction.WasPressedThisFrame())
-            jumpRequested = true;
         if (jumpRequested)
         {
             if (playerIsSatan)
@@ -75,10 +75,8 @@ public class HittingState : GroundedStates
                 animator.SetBool("Hitting " + comboCount, false);
             }
             hitComplete = true;
-#if UNITY_EDITOR
             if (player.DebugMessages)
                 Debug.Log("Hitting interrupted by jump input -> switching to JumpingState");
-#endif
             stateMachine.ChangeState(player.JumpingState);
             return;
         }
@@ -99,44 +97,36 @@ public class HittingState : GroundedStates
         {
             if (playerIsSatan && !shooted && hitElapsed >= (hittingSpeed / 2))
             {
-                Vector2 spawnPos = origin + direction * 0.56f;
+                Vector2 spawnPos = new(origin.x+0.65f, origin.y + 0.22f);
                 GameObject bulletObj = Object.Instantiate(
                     player.bulletPrefab,
                     spawnPos,
                     Quaternion.identity
                 );
-#if UNITY_EDITOR
                 Debug.DrawLine(spawnPos, spawnPos + Vector2.up * 0.1f, Color.blue, 0.1f);
-#endif
                 Bullet bullet = bulletObj.GetComponent<Bullet>();
                 bullet.damage = player.GetHittingDamage();
                 bullet.SetDirection(hitDir);
                 shooted = true;
-#if UNITY_EDITOR
                 if (player.DebugMessages)
                     Debug.Log("Shot a bullet in direction " + hitDir);
-#endif
             }
             if (!playerIsSatan && hitElapsed >= hittingSpeed)
             {
                 RaycastHit2D hit = Physics2D.Raycast(origin, direction, hitDistance, enemyMask);
                 if (hit.collider != null)
                 {
-#if UNITY_EDITOR
                     Debug.DrawLine(origin, hit.point, Color.green);
                     if (player.DebugMessages)
                         Debug.Log("Hit " + hit.collider.name);
-#endif
                     Enemy enemy = hit.collider.GetComponent<Enemy>();
                     if (enemy != null)
                     {
                         enemy.TakeDamage(player.GetHittingDamage());
-#if UNITY_EDITOR
                         Debug.Log(
                             "Player hitted enemy with "
                                 + player.GetHittingDamage()
                                 + " damage points"
-#endif
                         );
                     }
                 }
@@ -165,9 +155,7 @@ public class HittingState : GroundedStates
         {
             animator.SetBool("Hitting " + comboCount, false);
         }
-#if UNITY_EDITOR
         if (player.DebugMessages)
             Debug.Log("Exited Hitting State");
-#endif
     }
 }
