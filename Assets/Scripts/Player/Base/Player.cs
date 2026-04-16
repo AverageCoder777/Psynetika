@@ -61,6 +61,8 @@ public class Player : MonoBehaviour
     [Tooltip("Скорость удара задает время на один выстрел")]
     [SerializeField] private float hittingSpeedSatana = 2f;
     [SerializeField] private float hitDistanceSatana = 2f;
+    [Header("Spells")]
+    [SerializeField] private SpellController spellController;
     private State lastState;
 #if UNITY_EDITOR
     [SerializeField] private bool debugMessages = false;
@@ -96,6 +98,7 @@ public class Player : MonoBehaviour
     public float SwitchDelay => switchDelay;
     public State LastState { get => lastState; set => lastState = value; }
     public bool DebugMessages =>debugMessages;
+    public SpellController SpellController => spellController;
     private InputAction openUI;
     public bool CharacterIsSatan()
     {
@@ -151,6 +154,10 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
         openUI = playerInput.actions["Pause"];
+        if (spellController == null)
+        {
+            spellController = GetComponent<SpellController>();
+        }
         
         satan = transform.GetChild(0).gameObject;
         sobaka = transform.GetChild(1).gameObject;
@@ -174,6 +181,7 @@ public class Player : MonoBehaviour
         AirState = new AirState(this, playerSM);
         SwitchState = new SwitchState(this, playerSM);
         HittingState = new HittingState(this, playerSM);
+        SpellCastState = new SpellCastState(this, playerSM);
         WallState = new WallState(this, playerSM);
         playerSM.Initialize(IdleState);
 
@@ -233,6 +241,7 @@ public class Player : MonoBehaviour
     public AirState AirState { get; set; }
     public SwitchState SwitchState { get; set; }
     public HittingState HittingState { get; set; }
+    public SpellCastState SpellCastState { get; set; }
     public WallState WallState { get; set; }
 
     #endregion
