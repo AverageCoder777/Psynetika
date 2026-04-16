@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5655f7fbaced814a821a269b6e6f475, type: 3}
+  m_Name: Version1
+  m_EditorClassIdentifier: Assembly-CSharp::PsynetikaConfig
+  version: 0.0.1
+  Speed: 5
+  AccelerationRate: 15
+  FrictionRate: 20
+  Thrust: 7
+  DoubleJumpThrust: 4
+  UpGravityScale: 1.1
+  DownGravityScale: 2
+  WallSlideSpeed: 1
+  WallJumpForce: 10
+  WallDetectionDistance: 0.5
+  WallWaitTime: 0.1
+  CROUCH_HEIGHT_MULTIPLIER: 0.5
+  RollDistance: 4
+  RollDuration: 0.25
+  MaxHP: 100
+  SwitchDelay: 0.5
+  PlatformLayerName: Platform
+  DropThroughDuration: 0.5
+  HittingSpeedSobaka: 1
+  HitDistanceSobaka: 1
+  HittingDamageSobaka: 10
+  BulletPrefab: {fileID: 7568458503567619839, guid: 19f0135fb9cbb644ab800844ea9cfc57, type: 3}
+  HittingDamageSatana: 22
+  HittingSpeedSatana: 2
+  HitDistanceSatana: 2
+  DebugMessages: 0
+  enemyHealth: 100
+  enemySpeed: 2
+  enemyDamage: 10
+  enemyHitDuration: 2
