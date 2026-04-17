@@ -7,6 +7,7 @@ public class IdleState : GroundedStates
     private bool roll;
     private bool @switch;
     private bool hit;
+    private bool spell;
     public IdleState(Player player, StateMachine stateMachine)
         : base(player, stateMachine)
     {
@@ -18,7 +19,6 @@ public class IdleState : GroundedStates
         grounded = true;
         player.Rb.linearVelocity = new Vector2(0, player.Rb.linearVelocity.y);
         if (player.DebugMessages) Debug.Log("Entered Idle State");
-        player.LastState = this;
 
     }
     public override void HandleInput()
@@ -29,6 +29,7 @@ public class IdleState : GroundedStates
         roll = player.PlayerInput.actions["Roll"].WasPressedThisFrame();
         @switch = player.PlayerInput.actions["Switch"].WasPressedThisFrame();
         hit = player.PlayerInput.actions["Attack"].WasPressedThisFrame();
+        spell = player.PlayerInput.actions["Spell"].WasPressedThisFrame();
     }
     public override void LogicUpdate()
     {
@@ -54,6 +55,11 @@ public class IdleState : GroundedStates
         if (@switch)
         {
             stateMachine.ChangeState(player.SwitchState);
+        }
+        if (spell)
+        {
+            stateMachine.ChangeState(player.SpellCastState);
+            return;
         }
         if (hit)
         {

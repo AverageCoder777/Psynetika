@@ -239,6 +239,7 @@ GameObject:
   - component: {fileID: 3831574389510737699}
   - component: {fileID: 6593289613693773458}
   - component: {fileID: 6585136776189492186}
+  - component: {fileID: 5333222111009988776}
   - component: {fileID: 9076548990477648365}
   - component: {fileID: 6350465388566736426}
   m_Layer: 6
@@ -476,8 +477,23 @@ MonoBehaviour:
   hittingDamageSatana: 22
   hittingSpeedSatana: 1
   hitDistanceSatana: 2
+  spellController: {fileID: 5333222111009988776}
   debugMessages: 0
   _pauseMenu: {fileID: 0}
+--- !u!114 &5333222111009988776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4509962677251289053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a8f0617f662430c8f935b5e99f6bd62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellController
+  satanPrimarySpell: {fileID: 11400000, guid: 6391c52be62015f4dbf3397641d5f7ce, type: 2}
+  sobakaPrimarySpell: {fileID: 0}
 --- !u!50 &9076548990477648365
 Rigidbody2D:
   serializedVersion: 5

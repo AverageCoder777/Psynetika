@@ -2,20 +2,43 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed = 10f;  // Скорость полета
-    public float lifetime = 5f; 
-    public int damage = 10;  // Урон (передадим из Player)
-    private LayerMask enemyMask;  // Маска врагов
+    public float speed = 10f;
+    public float lifetime = 5f;
+    public int damage = 10;
+
+    protected LayerMask enemyMask;
+    private Rigidbody2D rb;
 
     private void Start()
     {
         enemyMask = LayerMask.GetMask("Enemy");
-        Destroy(gameObject, lifetime);  // Автоуничтожение
+        rb = GetComponent<Rigidbody2D>();
+        Destroy(gameObject, lifetime);
+    }
+
+    public virtual void ConfigureFromSpell(SpellData spellData)
+    {
+        if (spellData == null)
+        {
+            return;
+        }
+
+        if (spellData.spellSpeed > 0f)
+        {
+            speed = spellData.spellSpeed;
+        }
+
+        damage = Mathf.RoundToInt(spellData.spellDamage);
     }
 
     public void SetDirection(float dir)
     {
-        GetComponent<Rigidbody2D>().linearVelocity = new Vector2(dir * speed, 0f);
+        if (rb == null)
+        {
+            rb = GetComponent<Rigidbody2D>();
+        }
+
+        rb.linearVelocity = new Vector2(dir * speed, 0f);
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -25,10 +48,15 @@ public class Bullet : MonoBehaviour
             Enemy enemy = other.gameObject.GetComponent<Enemy>();
             if (enemy != null)
             {
-                enemy.TakeDamage(damage);
-                Debug.Log("Bullet hit enemy with " + damage + " damage");
+                HandleEnemyHit(enemy);
             }
         }
+        Debug.Log("Destroyed bullet");
         Destroy(gameObject);
+    }
+
+    protected virtual void HandleEnemyHit(Enemy enemy)
+    {
+        enemy.TakeDamage(damage);
     }
 }

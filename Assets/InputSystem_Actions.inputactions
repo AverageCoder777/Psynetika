@@ -113,6 +113,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Spell",
+                    "type": "Button",
+                    "id": "45fbd673-c487-4a7e-8d3d-fb13d9fdce4d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -289,6 +298,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7e4dc10d-d2eb-4e42-9350-282476153084",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Spell",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0f0ab8f4-6327-4854-9825-62f1ba9f40aa",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Spell",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

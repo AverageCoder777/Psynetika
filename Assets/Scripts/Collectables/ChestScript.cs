@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ChestScript : MonoBehaviour
+public class ChestScript : MonoBehaviour, IInteractable
 {
     private static WaitForSeconds _waitForSeconds0_02 = new WaitForSeconds(0.02f);
 
@@ -61,15 +61,19 @@ public class ChestScript : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (IsPlayerCollider2D(other))
+        {
             playerInRangeObj = other.transform.root.gameObject;
             animator.SetBool("CanOpen", true);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (playerInRangeObj != null && other.transform.root.gameObject == playerInRangeObj)
+        {
             playerInRangeObj = null;
             animator.SetBool("CanOpen", false);
+        }
     }
 
     private bool IsPlayerCollider2D(Collider2D c)
@@ -79,10 +83,9 @@ public class ChestScript : MonoBehaviour
         return c.transform.root.CompareTag(playerTag);
     }
 
-    public void Interact(GameObject interactor)
+    public void Interact()
     {
-        Debug.Log("ChestScript: Interact called by " + interactor.name);
-        if (interactor != null && interactor == playerInRangeObj)
+        if (playerInRangeObj != null)
         {
             ChestOpen();
         }
