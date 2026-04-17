@@ -16,15 +16,11 @@ MonoBehaviour:
   SpellDescription: FIre Fire Fire!!!
   SpellIcon: {fileID: 0}
   Owner: 1
-  spellCooldown: 1
+  spellCooldown: 5
   SpellPrefab: {fileID: 319351763887075280, guid: 0c59fd2758ca73b40a28bc5186c527cc, type: 3}
   spellRange: 5
   spellSpeed: 12
   spellDamage: 22
-  applyBurn: 1
-  burnDuration: 2.5
-  burnTickInterval: 0.5
-  burnDamagePerTick: 3
   castDuration: 0.35
   castMomentNormalized: 0.5
   spawnForwardOffset: 0.56
