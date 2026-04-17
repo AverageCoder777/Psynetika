@@ -13,6 +13,7 @@ public class HittingState : GroundedStates
     private float lastHitTime = 0f;
     private const float comboResetTime = 2f;
     private bool playerIsSatan;
+    private bool shooted = false;
 
     public HittingState(Player player, StateMachine playerStateMachine)
         : base(player, playerStateMachine) { }
@@ -24,6 +25,7 @@ public class HittingState : GroundedStates
         {
             comboCount = 0;
         }
+        shooted = false;
         playerIsSatan = player.CharacterIsSatan();
         hittingSpeed = player.GetHittingSpeed();
         hitDir = player.ActiveSR != null && player.ActiveSR.flipX ? -1f : 1f;
@@ -93,6 +95,22 @@ public class HittingState : GroundedStates
         Vector2 direction = Vector2.right * hitDir;
         if (!hitComplete)
         {
+            if (playerIsSatan && !shooted && hitElapsed >= (hittingSpeed / 2))
+            {
+                Vector2 spawnPos = new(origin.x+(direction.x*0.65f), origin.y + (direction.y*0.22f));
+                GameObject bulletObj = Object.Instantiate(
+                    player.bulletPrefab,
+                    spawnPos,
+                    Quaternion.identity
+                );
+                Debug.DrawLine(spawnPos, spawnPos + Vector2.up * 0.1f, Color.blue, 0.1f);
+                Bullet bullet = bulletObj.GetComponent<Bullet>();
+                bullet.damage = player.GetHittingDamage();
+                bullet.SetDirection(hitDir);
+                shooted = true;
+                if (player.DebugMessages)
+                    Debug.Log("Shot a bullet in direction " + hitDir);
+            }
             if (!playerIsSatan && hitElapsed >= hittingSpeed)
             {
                 RaycastHit2D hit = Physics2D.Raycast(origin, direction, hitDistance, enemyMask);
@@ -128,6 +146,7 @@ public class HittingState : GroundedStates
         base.Exit();
         hitElapsed = 0f;
         hitComplete = false;
+        shooted = false;
         if (playerIsSatan)
         {
             animator.SetBool("Shooting " + comboCount, false);
