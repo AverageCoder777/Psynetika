@@ -1,13 +1,22 @@
+using System;
 using UnityEngine;
 using TMPro;
 
 public class CoinsUI : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI coinsText;
-    [SerializeField] private CoinsScript coinsScript;
-    public int coins = 0;
-    void Update()
+    [SerializeField] private TMP_Text coinsText;
+    [SerializeField] private Inventory inventory;
+
+    private void Awake()
     {
-        coinsText.text = "Coins: " + coins;
+        coinsText.text = $"Coins {inventory.coins}";
+        inventory.InventoryChenged += ChangeCoins;
     }
+
+    public void ChangeCoins()
+    {
+        coinsText.text = $"Coins {inventory.coins}";
+    }
+    
+    
 }

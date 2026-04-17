@@ -5,21 +5,21 @@ using System.Collections.Generic;
 public class ShopList : ScriptableObject
 {
     [System.Serializable]
-    public struct ShopItemEntry
+    public struct ShopItem
     {
         public SpellData spell;
         public int amount;
     }
 
-    [SerializeField] private List<ShopItemEntry> shoppingItems = new List<ShopItemEntry>();
+    [SerializeField] private List<ShopItem> shoppingItems = new List<ShopItem>();
 
-    public IReadOnlyList<ShopItemEntry> ShoppingItems => shoppingItems;
+    public IReadOnlyList<ShopItem> ShoppingItems => shoppingItems;
 
     public Dictionary<SpellData, int> ToDictionary()
     {
         Dictionary<SpellData, int> result = new Dictionary<SpellData, int>();
 
-        foreach (ShopItemEntry entry in shoppingItems)
+        foreach (ShopItem entry in shoppingItems)
         {
             if (entry.spell == null)
             {
@@ -31,4 +31,5 @@ public class ShopList : ScriptableObject
 
         return result;
     }
+    
 }

@@ -1,3 +1,4 @@
+    using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -63,6 +64,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float hitDistanceSatana = 2f;
     [Header("Spells")]
     [SerializeField] private SpellController spellController;
+    [Header("Interaction")]
+    [SerializeField] private InteractionDetector interactionDetector;
     private State lastState;
 #if UNITY_EDITOR
     [SerializeField] private bool debugMessages = false;
@@ -100,6 +103,7 @@ public class Player : MonoBehaviour
     public bool DebugMessages =>debugMessages;
     public SpellController SpellController => spellController;
     private InputAction openUI;
+    private InputAction InteractAction;
     public bool CharacterIsSatan()
     {
         if (ActiveCharacter == Satan)
@@ -154,9 +158,16 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
         openUI = playerInput.actions["Pause"];
+        InteractAction = playerInput.actions["Interact"];
+        
         if (spellController == null)
         {
             spellController = GetComponent<SpellController>();
+        }
+
+        if (interactionDetector == null)
+        {
+            interactionDetector = GetComponentInChildren<InteractionDetector>();
         }
         
         satan = transform.GetChild(0).gameObject;
@@ -171,6 +182,23 @@ public class Player : MonoBehaviour
 
         UpdateHealthUI();
     }
+
+    private void OnEnable()
+    {
+        if (InteractAction != null)
+        {
+            InteractAction.performed += OnInteractPerformed;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (InteractAction != null)
+        {
+            InteractAction.performed -= OnInteractPerformed;
+        }
+    }
+
     void Start()
     {
         playerSM = new StateMachine();
@@ -196,6 +224,23 @@ public class Player : MonoBehaviour
         playerSM.CurrentPlayerState.PhysicsUpdate();
         activeAnimator.SetFloat("Velocity", rb.linearVelocity.y);
     }
+
+    private void OnInteractPerformed(InputAction.CallbackContext context)
+    {
+        TryInteract();
+    }
+
+    public void TryInteract()
+    {
+        if (interactionDetector == null)
+        {
+            return;
+        }
+
+        IInteractable interactable = interactionDetector.GetClosestInteractable(transform.position);
+        interactable?.Interact();
+    }
+
     #endregion
     #region Abilities functions
     

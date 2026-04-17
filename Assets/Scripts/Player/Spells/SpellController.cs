@@ -58,4 +58,20 @@ public class SpellController : MonoBehaviour
 
         return spell.Owner == SpellOwner.Sobaka;
     }
+
+    public void SetSpell(SpellData spell)
+    {
+        if (spell.Owner == SpellOwner.Satan)
+        {
+            satanPrimarySpell = spell;
+            return;
+        }
+        else if (spell.Owner == SpellOwner.Sobaka)
+            { 
+                sobakaPrimarySpell = spell;
+                return;
+            }
+        Debug.LogWarning("Spell Owner not a player");
+        
+    }
 }
