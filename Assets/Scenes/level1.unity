@@ -2858,7 +2858,7 @@ GameObject:
   - component: {fileID: 238797157}
   - component: {fileID: 238797159}
   m_Layer: 6
-  m_Name: Satana
+  m_Name: Satan
   m_TagString: Satana
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5492,7 +5492,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   satan: {fileID: 238797153}
   sobaka: {fileID: 2044833321}
-  speed: 5
+  sobakaSpeed: 8
+  satanSpeed: 6
   accelerationRate: 15
   frictionRate: 20
   thrust: 7
@@ -6194,7 +6195,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -108.63673, y: -10.410654, z: -10}
+  m_LocalPosition: {x: -109.86535, y: -10.414623, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -19058,7 +19059,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 114.19998, y: -48.199997}
+  m_AnchoredPosition: {x: 114.19998, y: -48.200012}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1818640678

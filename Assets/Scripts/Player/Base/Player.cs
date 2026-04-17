@@ -215,7 +215,7 @@ public class Player : MonoBehaviour
         SwitchState = new SwitchState(this, PlayerSM);
         HittingState = new HittingState(this, PlayerSM);
         WallState = new WallState(this, PlayerSM);
-        SpellCastState = new SpellCastState(this, playerSM);
+        SpellCastState = new SpellCastState(this, PlayerSM);
         SobakaState = new SobakaState(this, CharacterSM);
         SatanState = new SatanState(this, CharacterSM);
         PlayerSM.Initialize(IdleState);

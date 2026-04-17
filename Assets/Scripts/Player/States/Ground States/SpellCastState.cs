@@ -12,7 +12,7 @@ public class SpellCastState : GroundedStates
     private SpellData activeSpell;
     private string activeCastBool;
 
-    public SpellCastState(Player player, StateMachine stateMachine)
+    public SpellCastState(Player player, StateMovMachine stateMachine)
         : base(player, stateMachine) { }
 
     public override void Enter()
@@ -24,7 +24,7 @@ public class SpellCastState : GroundedStates
         activeSpell = null;
         activeCastBool = string.Empty;
 
-        isSatanCaster = player.CharacterIsSatan();
+        isSatanCaster = player.GetCurrentCharState() == player.SatanState;
         castDirection = player.ActiveSR != null && player.ActiveSR.flipX ? -1f : 1f;
 
         if (player.SpellController == null)
