@@ -97,7 +97,7 @@ public class HittingState : GroundedStates
         {
             if (playerIsSatan && !shooted && hitElapsed >= (hittingSpeed / 2))
             {
-                Vector2 spawnPos = new(origin.x+0.65f, origin.y + 0.22f);
+                Vector2 spawnPos = new(origin.x+(direction.x*0.65f), origin.y + (direction.y*0.22f));
                 GameObject bulletObj = Object.Instantiate(
                     player.bulletPrefab,
                     spawnPos,
