@@ -1,4 +1,4 @@
-public class StateMachine
+public class StateMovMachine
 {
     public State CurrentPlayerState { get; set; }
 
@@ -14,8 +14,5 @@ public class StateMachine
         CurrentPlayerState = newState;
         CurrentPlayerState.Enter();
     }
-    public void SmartChangeState(State newState)
-    {
-        ChangeState(newState);
-    }
+
 }

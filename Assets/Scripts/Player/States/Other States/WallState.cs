@@ -3,10 +3,11 @@ using UnityEngine;
 public class WallState : State
 {
     private bool jumpInput = false;
-    private float wallJumpThrustFactor = 1f;
-    private Vector2 wallSurfaceNormal = Vector2.zero; // Нормаль поверхности стены
+    private readonly float wallJumpThrustFactor = 1f;
+    private readonly float wallJumpSpeed = 5f;
+    private Vector2 wallSurfaceNormal = Vector2.zero;
 
-    public WallState(Player player, StateMachine stateMachine)
+    public WallState(Player player, StateMovMachine stateMachine)
         : base(player, stateMachine) { }
 
     public override void Enter()
@@ -32,7 +33,7 @@ public class WallState : State
 
         DetectWall();
 
-        if (player.Rb.linearVelocity.y == 0)
+        if (player.Rb.linearVelocity.y == 0 || wallSurfaceNormal == Vector2.zero)
         {
             stateMachine.ChangeState(player.IdleState);
         }
@@ -46,23 +47,18 @@ public class WallState : State
 
     public override void PhysicsUpdate()
     {
-        // Слайд по стене с уменьшенной скоростью падения
         float slideVelocity = -player.WallSlideSpeed;
         player.Rb.linearVelocity = new Vector2(0, slideVelocity);
     }
 
     private void WallJump()
     {
-        // Прыгаем используя нормаль стены для направления отталкивания
-        // Горизонтальная скорость - отталкивание от стены по её нормали
-        float horizontalVelocity = wallSurfaceNormal.x * player.Speed*wallJumpThrustFactor;
-        // Вертикальная скорость - прыжок вверх
+        float horizontalVelocity = wallSurfaceNormal.x * wallJumpSpeed*wallJumpThrustFactor;//5 - базовая скорость отталкивания
         float verticalVelocity = Mathf.Sqrt(player.WallJumpForce * 2f);
         
         player.Rb.linearVelocity = new Vector2(horizontalVelocity, verticalVelocity);
         
-        // Разворачиваем персонажа в сторону отталкивания, чтобы избежать повторного прилипания к стене
-        player.ActiveSR.flipX = player.ActiveSR.flipX ? false : true;
+        player.ActiveSR.flipX = !player.ActiveSR.flipX;
 
         if (player.DebugMessages)
         {
@@ -82,21 +78,15 @@ public class WallState : State
 
     private void DetectWall()
     {
-        // Определяем направление взгляда игрока
         Vector2 wallDetectionDirection = player.ActiveSR.flipX ? Vector2.left : Vector2.right;
-
-        // Смещаем начальную позицию raycast чтобы избежать собственного коллайдера игрока
         Vector2 raycastOrigin = (Vector2)player.transform.position + wallDetectionDirection * 0.25f;
-
-        // Проверяем столкновение только в направлении взгляда
+        
         RaycastHit2D hit = Physics2D.Raycast(
             raycastOrigin,
             wallDetectionDirection,
             player.WallDetectionDistance,
             LayerMask.GetMask("Walls")
         );
-
-        // Отрисовка raycast для отладки (зелёный - столкновение, красный - нет)
         Debug.DrawRay(raycastOrigin, wallDetectionDirection * player.WallDetectionDistance,
             hit.collider != null ? Color.green : Color.red);
         
@@ -104,6 +94,10 @@ public class WallState : State
         {
             // Сохраняем нормаль поверхности стены
             wallSurfaceNormal = hit.normal;
+        }
+        else
+        {
+            wallSurfaceNormal = Vector2.zero;
         }
     }
 }

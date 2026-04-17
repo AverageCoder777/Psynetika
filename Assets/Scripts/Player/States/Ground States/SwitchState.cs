@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SwitchState : GroundedStates
 {
-    public SwitchState(Player player, StateMachine stateMachine)
+    public SwitchState(Player player, StateMovMachine stateMachine)
         : base(player, stateMachine) { }
 
     private UIScript uiScript;
@@ -15,7 +15,7 @@ public class SwitchState : GroundedStates
             Debug.Log("Entered Switch State");
         if (uiScript == null)
         {
-            uiScript = GameObject.FindAnyObjectByType<UIScript>();
+            uiScript = Object.FindAnyObjectByType<UIScript>();
             if (uiScript == null && player.DebugMessages)
             {
                 Debug.LogError("UIScript не найден в сцене!");
@@ -30,16 +30,17 @@ public class SwitchState : GroundedStates
         player.ActiveAnimator.SetTrigger("isSwitching");
         yield return new WaitForSeconds(player.SwitchDelay);
 
-        if (player.ActiveCharacter == player.Satan && player.Sobaka != null)
+        if (player.GetCurrentCharState() == player.SatanState)
         {
             player.Satan.SetActive(false);
             player.ActiveCharacter = player.Sobaka;
             player.Sobaka.SetActive(true);
             if (player.DebugMessages)
                 Debug.Log("Switched to Sobaka");
+            player.CharacterSM.ChangeState(player.SobakaState);
             uiScript.UpdateText("Sobaka");
         }
-        else if (player.Satan != null)
+        else
         {
             player.Sobaka.SetActive(false);
             player.ActiveCharacter = player.Satan;
@@ -47,6 +48,7 @@ public class SwitchState : GroundedStates
             uiScript.UpdateText("Satan");
             if (player.DebugMessages)
                 Debug.Log("Switched to Satan");
+            player.CharacterSM.ChangeState(player.SatanState);
         }
         player.ActiveAnimator.SetBool("isSwitching", false);
         CacheActiveVisuals();

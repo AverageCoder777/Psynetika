@@ -1,6 +1,4 @@
 using UnityEngine;
-using System.Collections;
-
 public class RollingState : GroundedStates
 {
     private float rollElapsed = 0f;
@@ -9,7 +7,7 @@ public class RollingState : GroundedStates
     int playerLayer = LayerMask.NameToLayer("Player");
     int enemyLayer = LayerMask.NameToLayer("Enemy");
 
-    public RollingState(Player player, StateMachine stateMachine) : base(player, stateMachine) { }
+    public RollingState(Player player, StateMovMachine stateMachine) : base(player, stateMachine) { }
 
     public override void Enter()
     {

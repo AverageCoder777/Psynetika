@@ -3,7 +3,7 @@ using UnityEngine;
 public abstract class GroundedStates : State
 {
     protected bool grounded = true;
-    public GroundedStates(Player player, StateMachine stateMachine) : base(player, stateMachine)
+    public GroundedStates(Player player, StateMovMachine stateMachine) : base(player, stateMachine)
     {
     }
     public override void Enter()
@@ -32,7 +32,7 @@ public abstract class GroundedStates : State
     {
         base.PhysicsUpdate();
         // Целевое ускорение выходит из ввода, умноженного на скорость
-        float targetVelocityX = player.MovementInput.x * player.Speed;
+        float targetVelocityX = player.MovementInput.x * player.GetCharSpeed();
         float currentVelocityX = player.Rb.linearVelocity.x;
         
         // Выбираем знак (+/-) для ускорения

@@ -10,7 +10,7 @@ public class CrouchingState : GroundedStates
     private bool crouchHeld;
     private bool jumpInput;
 
-    public CrouchingState(Player player, StateMachine stateMachine) : base(player, stateMachine) { }
+    public CrouchingState(Player player, StateMovMachine stateMachine) : base(player, stateMachine) { }
 
     public override void Enter()
     {
@@ -54,7 +54,7 @@ public class CrouchingState : GroundedStates
     public override void PhysicsUpdate()
     {
         // Calculate target velocity with reduced speed for crouch
-        float targetVelocityX = player.MovementInput.x * player.Speed * 0.5f;
+        float targetVelocityX = player.MovementInput.x * player.GetCharSpeed() * 0.5f;
         float currentVelocityX = player.Rb.linearVelocity.x;
         
         // Choose acceleration rate based on whether we're moving or stopping

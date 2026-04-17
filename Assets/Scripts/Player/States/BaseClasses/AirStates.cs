@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class AirStates : State
 {
-    public AirStates(Player player, StateMachine stateMachine)
+    public AirStates(Player player, StateMovMachine stateMachine)
         : base(player, stateMachine)
     {
     }
@@ -22,7 +22,7 @@ public abstract class AirStates : State
 
         //Базовый детект стены для всех состояний в воздухе
         bool touchingWall = DetectWall();
-        if (touchingWall)
+        if (touchingWall && (player.GetCurrentCharState()!=player.SatanState))
         {
             wallContactTime += Time.deltaTime;
             if (wallContactTime >= player.WallWaitTime)
@@ -39,7 +39,7 @@ public abstract class AirStates : State
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-        float targetVelocityX = player.MovementInput.x * player.Speed* 0.75f;//0.75 - фактор скорости перемещения в воздухе, добавить переменную!!!
+        float targetVelocityX = player.MovementInput.x * player.GetCharSpeed()* 0.75f;//0.75 - фактор скорости перемещения в воздухе, добавить переменную!!!
         float currentVelocityX = player.Rb.linearVelocity.x;
         
         // Выбираем коэффициент ускорения/трения

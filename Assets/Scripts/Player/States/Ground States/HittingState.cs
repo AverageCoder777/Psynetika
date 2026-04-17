@@ -15,7 +15,7 @@ public class HittingState : GroundedStates
     private bool playerIsSatan;
     private bool shooted = false;
 
-    public HittingState(Player player, StateMachine playerStateMachine)
+    public HittingState(Player player, StateMovMachine playerStateMachine)
         : base(player, playerStateMachine) { }
 
     public override void Enter()
@@ -26,9 +26,8 @@ public class HittingState : GroundedStates
             comboCount = 0;
         }
         shooted = false;
-        playerIsSatan = player.CharacterIsSatan();
+        playerIsSatan = player.GetCurrentCharState() == player.SatanState;
         hittingSpeed = player.GetHittingSpeed();
-        hitDir = player.ActiveSR != null && player.ActiveSR.flipX ? -1f : 1f;
         hitDistance = player.GetHitDistance();
         comboCount++;
         if (comboCount > 2) comboCount = 1;
@@ -59,6 +58,7 @@ public class HittingState : GroundedStates
     }
     public override void HandleInput()
     {
+        base.HandleInput();
         jumpRequested = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
     }
 
@@ -89,6 +89,7 @@ public class HittingState : GroundedStates
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
+        hitDir = player.ActiveSR.flipX ? -1f : 1f;
         hitElapsed += Time.deltaTime;
         BoxCollider2D box = player.GetComponent<BoxCollider2D>();
         Vector2 origin = (box != null) ? box.bounds.center : (Vector2)player.transform.position;

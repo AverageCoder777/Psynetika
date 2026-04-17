@@ -1,4 +1,4 @@
-    using System;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,7 +13,8 @@ public class Player : MonoBehaviour
     private SpriteRenderer activeSR;
 
     [Header("Движение")]
-    [SerializeField] float speed = 5f; // базовая скорость игрока
+    [SerializeField] float sobakaSpeed = 8f; // базовая скорость собаки
+    [SerializeField] float satanSpeed = 6f; // базовая скорость сатаны
     [SerializeField] float accelerationRate = 15f; //ускорение, с которым игрок начинает движение
     [SerializeField] float frictionRate = 20f; // трение, которое замедляет персонажа, если игрок перестал идти
     private Vector2 movementInput = Vector2.zero;
@@ -31,7 +32,7 @@ public class Player : MonoBehaviour
     [SerializeField] float wallWaitTime = 0.2f; //Время, которое игрок должен провести на стене, чтобы можно было отпрыгнуть от неё
 
     [Header("Приседание")]
-    float CROUCH_HEIGHT_MULTIPLIER = 0.5f; //Модификатор, который умножает высоту коллайдера при приседании
+    [SerializeField] readonly float CROUCH_HEIGHT_MULTIPLIER = 0.7f; //Модификатор, который умножает высоту коллайдера при приседании
 
     [Header("Рывок/кувырок")]
     [SerializeField] float rollDistance = 4f; //расстояние рывка/кувырка
@@ -84,7 +85,17 @@ public class Player : MonoBehaviour
     public PlayerInput PlayerInput => playerInput;
     public string PlatformLayerName => platformLayerName;
     public float DropThroughDuration => dropThroughDuration;
-    public float Speed => speed;
+    public float GetCharSpeed()
+    {
+        if (GetCurrentCharState() == SatanState)
+        {
+            return satanSpeed;
+        }
+        else
+        {
+            return sobakaSpeed;
+        }
+    }
     public float AccelerationRate => accelerationRate;
     public float FrictionRate => frictionRate;
     public float Thrust => thrust;
@@ -104,20 +115,13 @@ public class Player : MonoBehaviour
     public SpellController SpellController => spellController;
     private InputAction openUI;
     private InputAction InteractAction;
-    public bool CharacterIsSatan()
+    public PlayerState GetCurrentCharState()
     {
-        if (ActiveCharacter == Satan)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }    
+        return CharacterSM.GetCurrentState();
     }
     public float GetHittingSpeed()
     {
-        if (ActiveCharacter == Satan)
+        if (GetCurrentCharState() == SatanState)
         {
             return hittingSpeedSatana;
         }
@@ -129,7 +133,7 @@ public class Player : MonoBehaviour
 
     public float GetHitDistance()
     {
-        if (ActiveCharacter == Satan)
+        if (GetCurrentCharState() == SatanState)
         {
             return hitDistanceSatana;
         }
@@ -140,7 +144,7 @@ public class Player : MonoBehaviour
     }
     public int GetHittingDamage()
     {
-        if (ActiveCharacter == Satan)
+        if (GetCurrentCharState() == SatanState)
         {
             return hittingDamageSatana;
         }
@@ -170,8 +174,8 @@ public class Player : MonoBehaviour
             interactionDetector = GetComponentInChildren<InteractionDetector>();
         }
         
-        satan = transform.GetChild(0).gameObject;
-        sobaka = transform.GetChild(1).gameObject;
+        satan = transform.Find("Satan").gameObject;
+        sobaka = transform.Find("Dog").gameObject;
 
         activeCharacter = satan;
         satan.SetActive(true);
@@ -201,27 +205,32 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        playerSM = new StateMachine();
-        IdleState = new IdleState(this, playerSM);
-        JumpingState = new JumpingState(this, playerSM);
-        CrouchingState = new CrouchingState(this, playerSM);
-        RollingState = new RollingState(this, playerSM);
-        AirState = new AirState(this, playerSM);
-        SwitchState = new SwitchState(this, playerSM);
-        HittingState = new HittingState(this, playerSM);
+        PlayerSM = new StateMovMachine();
+        CharacterSM = new StateCharMachine();
+        IdleState = new IdleState(this, PlayerSM);
+        JumpingState = new JumpingState(this, PlayerSM);
+        CrouchingState = new CrouchingState(this, PlayerSM);
+        RollingState = new RollingState(this, PlayerSM);
+        AirState = new AirState(this, PlayerSM);
+        SwitchState = new SwitchState(this, PlayerSM);
+        HittingState = new HittingState(this, PlayerSM);
+        WallState = new WallState(this, PlayerSM);
         SpellCastState = new SpellCastState(this, playerSM);
-        WallState = new WallState(this, playerSM);
-        playerSM.Initialize(IdleState);
-
+        SobakaState = new SobakaState(this, CharacterSM);
+        SatanState = new SatanState(this, CharacterSM);
+        PlayerSM.Initialize(IdleState);
+        CharacterSM.Initialize(SatanState);
     }
     void Update()
     {
-        playerSM.CurrentPlayerState.HandleInput();
-        playerSM.CurrentPlayerState.LogicUpdate();
+        PlayerSM.CurrentPlayerState.HandleInput();
+        PlayerSM.CurrentPlayerState.LogicUpdate();
+        CharacterSM.CurrentPlayerState.LogicUpdate();
     }
     void FixedUpdate()
     {
-        playerSM.CurrentPlayerState.PhysicsUpdate();
+        PlayerSM.CurrentPlayerState.PhysicsUpdate();
+        CharacterSM.CurrentPlayerState.PhysicsUpdate();
         activeAnimator.SetFloat("Velocity", rb.linearVelocity.y);
     }
 
@@ -278,7 +287,8 @@ public class Player : MonoBehaviour
     }
     #endregion
     #region State Machine Variables
-    public StateMachine playerSM { get; set; }
+    public StateMovMachine PlayerSM { get; set; }
+    public StateCharMachine CharacterSM{get;set;}
     public IdleState IdleState { get; set; }
     public JumpingState JumpingState { get; set; }
     public CrouchingState CrouchingState { get; set; }
@@ -288,6 +298,7 @@ public class Player : MonoBehaviour
     public HittingState HittingState { get; set; }
     public SpellCastState SpellCastState { get; set; }
     public WallState WallState { get; set; }
-
+    public SatanState SatanState {get;set;}
+    public SobakaState SobakaState {get;set;}
     #endregion
 }

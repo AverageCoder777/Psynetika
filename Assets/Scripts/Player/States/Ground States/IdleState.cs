@@ -9,6 +9,7 @@ public class IdleState : GroundedStates
     private bool hit;
     private bool spell;
     public IdleState(Player player, StateMachine stateMachine)
+    public IdleState(Player player, StateMovMachine stateMachine)
         : base(player, stateMachine)
     {
     }

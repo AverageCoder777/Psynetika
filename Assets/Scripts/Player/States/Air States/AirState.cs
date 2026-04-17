@@ -4,7 +4,7 @@ public class AirState : AirStates
 {
     private bool state_from_jump = false; // флаг для отслеживания, пройдет ли персонаж через player.Rb.linearVelocity.y == 0 в верхней точке параболы, чтобы случайно не врубать Idle в воздухе
 
-    public AirState(Player player, StateMachine stateMachine) : base(player, stateMachine) { }
+    public AirState(Player player, StateMovMachine stateMachine) : base(player, stateMachine) { }
 
     public override void Enter()
     {

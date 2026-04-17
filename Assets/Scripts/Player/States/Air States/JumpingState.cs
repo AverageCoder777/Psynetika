@@ -5,7 +5,7 @@ public class JumpingState : AirStates
     private bool canDoubleJump;
     private bool doubleJumpInput;
 
-    public JumpingState(Player player, StateMachine stateMachine)
+    public JumpingState(Player player, StateMovMachine stateMachine)
         : base(player, stateMachine)
     {
     }
