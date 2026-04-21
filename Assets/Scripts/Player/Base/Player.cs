@@ -215,6 +215,7 @@ public class Player : MonoBehaviour
         SwitchState = new SwitchState(this, PlayerSM);
         HittingState = new HittingState(this, PlayerSM);
         WallState = new WallState(this, PlayerSM);
+        LadderState = new LadderState(this, PlayerSM);
         SpellCastState = new SpellCastState(this, PlayerSM);
         SobakaState = new SobakaState(this, CharacterSM);
         SatanState = new SatanState(this, CharacterSM);
@@ -298,6 +299,7 @@ public class Player : MonoBehaviour
     public HittingState HittingState { get; set; }
     public SpellCastState SpellCastState { get; set; }
     public WallState WallState { get; set; }
+    public LadderState LadderState { get; set; }
     public SatanState SatanState {get;set;}
     public SobakaState SobakaState {get;set;}
     #endregion
