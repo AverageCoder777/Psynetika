@@ -241,6 +241,11 @@ public class Player : MonoBehaviour
 
     public void TryInteract()
     {
+        if (DialogueManager.HasInstance && DialogueManager.Instance.IsDialogueActive)
+        {
+            return;
+        }
+
         if (interactionDetector == null)
         {
             return;
