@@ -130,7 +130,7 @@ public class ChestScript : MonoBehaviour, IInteractable
             Vector3 spawnPos = (Vector3)spawnPos2D;
 
             // создаём префаб без вращения (спрайт будет ориентирован как в префабе)
-            GameObject coin = Instantiate(coinPrefab, spawnPos, Quaternion.identity, spawnParent);
+            GameObject coin = Instantiate(coinPrefab, spawnPos, Quaternion.identity);
             coin.SetActive(true);
             coin.transform.rotation = Quaternion.identity;
 
