@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1375937942872766483}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.753, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -93,9 +93,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8826830422063790865}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.6118464, y: -21, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 1}
+  m_LocalScale: {x: 5.515637, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8332107089551758780}
@@ -151,7 +151,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 3
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 912667925034322897, guid: 66aa9a1f4b734c740a3f8c2ef0dc5690, type: 3}
+  m_Sprite: {fileID: -5267083552237122847, guid: 6fc6a4d8515f8214689cc5e0ffcc25bd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -211,17 +211,17 @@ BoxCollider2D:
   m_UsedByEffector: 1
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0011088699, y: 0.034772553}
+  m_Offset: {x: 0.0011088699, y: 0.062624626}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.48, y: 0.07}
+    pivot: {x: 0.5084746, y: -0.10000001}
+    oldSize: {x: 0.59, y: 0.1}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.48130968, y: 0.029541297}
+  m_Size: {x: 0.48130968, y: 0.041050155}
   m_EdgeRadius: 0
 --- !u!61 &90693892853404645
 BoxCollider2D:
@@ -257,17 +257,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0013829321, y: 0.049252756}
+  m_Offset: {x: 0.0013829321, y: 0.0877773}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.48, y: 0.07}
+    pivot: {x: 0.5084746, y: -0.10000001}
+    oldSize: {x: 0.59, y: 0.1}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.48054257, y: 0.010021508}
+  m_Size: {x: 0.48054257, y: 0.021496974}
   m_EdgeRadius: 0
 --- !u!251 &8286926225397266787
 PlatformEffector2D:
