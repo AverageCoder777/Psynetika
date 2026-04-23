@@ -10,11 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -2253911629886400664, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_Name
-      value: "\u0440\u0430\u043C\u043A\u04302"
+      value: "\u0421\u0442\u0435\u043D\u044B"
+      objectReference: {fileID: 0}
+    - target: {fileID: -2253911629886400664, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -2253911629886400664, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_TagString
-      value: Floor
+      value: Wall
       objectReference: {fileID: 0}
     - target: {fileID: 3626916397498700004, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_SortingOrder
@@ -22,19 +26,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalScale.x
-      value: 7.6419215
+      value: 1.0820961
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalScale.y
-      value: 6
+      value: 25.56
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.603
+      value: 69.72
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -24.75552
+      value: -23.801
       objectReference: {fileID: 0}
     - target: {fileID: 7878350319992209165, guid: cd6a41e0f0605ec47acb0b8390bd46a2, type: 3}
       propertyPath: m_LocalPosition.z
