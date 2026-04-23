@@ -87,7 +87,6 @@ public class LadderState : State
             verticalMovement = -climbSpeed;
         }
 
-        // Apply climbing velocity
         player.Rb.linearVelocity = new Vector2(0f, verticalMovement);
     }
 

@@ -239,6 +239,13 @@ public class Player : MonoBehaviour
     {
         TryInteract();
     }
+    public void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ladder") && PlayerSM.CurrentPlayerState == LadderState)
+        {
+            PlayerSM.ChangeState(AirState);
+        }
+    }
 
     public void TryInteract()
     {

@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class MovingPlatform : MonoBehaviour
 {
@@ -11,13 +10,10 @@ public class MovingPlatform : MonoBehaviour
     private Vector2 dot1Position;
     private Vector2 dot2Position;
     private Vector2 currentTargetPosition;
-    private Vector2 lastPosition;
     private float waitCounter = 0f;
     private bool isWaiting = false;
     private bool movingToDot2 = true;
     private Rigidbody2D rb;
-
-    private List<Transform> passengerObjects = new();
     void Start()
     {
         if (Dot1 == null || Dot2 == null)
@@ -30,7 +26,6 @@ public class MovingPlatform : MonoBehaviour
         dot2Position = (Vector2)Dot2.position;
         currentTargetPosition = dot2Position;
         transform.position = dot1Position;
-        lastPosition = (Vector2)transform.position;
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -67,65 +62,15 @@ public class MovingPlatform : MonoBehaviour
         }
         else
         {
-            MovePlatformTo((Vector2)transform.position + direction * speed * Time.deltaTime);
+            MovePlatformTo((Vector2)transform.position + speed * Time.deltaTime * direction);
         }
-
-        ApplyMovementToPassengers();
     }
 
     private void MovePlatformTo(Vector2 newPosition)
     {
         rb.MovePosition(newPosition);
     }
-    private void ApplyMovementToPassengers()
-    {
-        Vector2 platformMovement = (Vector2)transform.position - lastPosition;
-        lastPosition = (Vector2)transform.position;
 
-        for (int i = passengerObjects.Count - 1; i >= 0; i--)
-        {
-            if (passengerObjects[i] == null)
-            {
-                passengerObjects.RemoveAt(i);
-                continue;
-            }
-
-            Rigidbody2D rb = passengerObjects[i].GetComponent<Rigidbody2D>();
-            if (rb != null)
-            {
-                rb.MovePosition(rb.position + platformMovement);
-            }
-            else
-            {
-                passengerObjects[i].position += (Vector3)platformMovement;
-            }
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Rigidbody2D rb = collision.GetComponent<Rigidbody2D>();
-        if (rb!= null && !passengerObjects.Contains(collision.transform))
-        {
-            passengerObjects.Add(collision.transform);
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        Rigidbody2D rb = collision.GetComponent<Rigidbody2D>();
-        if (rb!= null && !(rb.bodyType == RigidbodyType2D.Kinematic))
-        {
-            if (!passengerObjects.Contains(collision.transform))
-            {
-                passengerObjects.Add(collision.transform);
-            }
-        }
-    }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        passengerObjects.Remove(collision.transform);
-    }
     // Визуализация пути между точками
     void OnDrawGizmosSelected()
     {
