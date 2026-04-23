@@ -291,6 +291,39 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "Up Down Ladder",
+                    "id": "641286bf-700b-445b-ab7d-b846d58290f8",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "ea520758-472d-4300-abc4-9791925c7b4d",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "88e90d08-ec9e-416f-9feb-566d64a426fb",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "",
                     "id": "2ab22616-5d54-4a45-9224-a81163f70d78",
                     "path": "<Keyboard>/escape",

@@ -11,6 +11,8 @@ TagManager:
   - Enemy
   - Dog
   - Satan
+  - Satana
+  - Wall
   layers:
   - Default
   - TransparentFX
