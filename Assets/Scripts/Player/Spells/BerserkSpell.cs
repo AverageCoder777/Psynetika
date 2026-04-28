@@ -36,36 +36,57 @@ public class BerserkSpell : SpellBase
 
         float baseAttackSpeed = caster.AttackSpeedMultiplier;
         float baseDamage = caster.DamageMultiplier;
+        GameObject activeVfx = null;
 
-        while (elapsed < data.SpellTime)
+        if (data.berserkVfxPrefab != null)
         {
-            elapsed += Time.deltaTime;
-
-            if (stacks < data.maxStacks && elapsed >= nextDrainAt)
-            {
-                int drainAmount = Mathf.RoundToInt(caster.MaxHp * data.hpDrainPercent);
-                int drained = caster.TryDrainHP(drainAmount, criticalHp);
-
-                if (drained > 0)
-                {
-                    stacks++;
-                    caster.AttackSpeedMultiplier += data.boostPerStack;
-                    caster.DamageMultiplier += data.boostPerStack;
-                    Debug.Log($"[BerserkSpell] Stack +1 -> {stacks}/{data.maxStacks}. Drained {drained} HP.");
-                }
-                else
-                {
-                    Debug.Log("[BerserkSpell] HP drain skipped: reached critical HP threshold.");
-                }
-
-                nextDrainAt += data.hpDrainInterval;
-            }
-
-            yield return null;
+            activeVfx = Instantiate(data.berserkVfxPrefab, caster.transform);
+            activeVfx.transform.localPosition = Vector3.zero;
         }
 
-        caster.AttackSpeedMultiplier = baseAttackSpeed;
-        caster.DamageMultiplier = baseDamage;
-        Debug.Log("[BerserkSpell] Effect ended. Multipliers restored.");
+        try
+        {
+            while (elapsed < data.SpellTime)
+            {
+                elapsed += Time.deltaTime;
+
+                if (stacks < data.maxStacks && elapsed >= nextDrainAt)
+                {
+                    int drainAmount = Mathf.RoundToInt(caster.MaxHp * data.hpDrainPercent);
+                    int drained = caster.TryDrainHP(drainAmount, criticalHp);
+
+                    if (drained > 0)
+                    {
+                        stacks++;
+                        caster.AttackSpeedMultiplier += data.boostPerStack;
+                        caster.DamageMultiplier += data.boostPerStack;
+                        Debug.Log($"[BerserkSpell] Stack +1 -> {stacks}/{data.maxStacks}. Drained {drained} HP.");
+                    }
+                    else
+                    {
+                        Debug.Log("[BerserkSpell] HP drain skipped: reached critical HP threshold.");
+                    }
+
+                    nextDrainAt += data.hpDrainInterval;
+                }
+
+                yield return null;
+            }
+        }
+        finally
+        {
+            if (caster != null)
+            {
+                caster.AttackSpeedMultiplier = baseAttackSpeed;
+                caster.DamageMultiplier = baseDamage;
+            }
+
+            if (activeVfx != null)
+            {
+                Destroy(activeVfx);
+            }
+
+            Debug.Log("[BerserkSpell] Effect ended. Multipliers restored.");
+        }
     }
 }

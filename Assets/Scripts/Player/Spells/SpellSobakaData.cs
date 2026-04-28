@@ -10,4 +10,5 @@ public class SpellSobakaData : SpellData
     [Range(0f, 1f)] public float criticalHpThreshold = 0.1f;
     [Range(0f, 1f)] public float boostPerStack = 0.1f;
     public int maxStacks = 5;
+    public GameObject berserkVfxPrefab;
 }

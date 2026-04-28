@@ -29,3 +29,4 @@ MonoBehaviour:
   criticalHpThreshold: 0.1
   boostPerStack: 0.1
   maxStacks: 5
+  berserkVfxPrefab: {fileID: 1741568361362846, guid: 4db85d1e064bd874cbfb92849ed76f3e, type: 3}
