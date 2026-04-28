@@ -1,8 +1,10 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class Enemy : MonoBehaviour
 {
-
+    private static readonly int DamageHash = Animator.StringToHash("Damage");
+    private static readonly int DieHash = Animator.StringToHash("Die");
     [SerializeField] private int enemyHealth = 100;
     [SerializeField] private float enemySpeed = 2f;
     [SerializeField] private int enemyDamage = 10;
@@ -72,7 +74,7 @@ public class Enemy : MonoBehaviour
     {
         if (isDead) return;
         enemyHealth -= damage;
-        animator?.SetTrigger("Damage");
+        animator?.SetTrigger(DamageHash);
         if (enemyHealth <= 0)
         {
             Die();
@@ -90,10 +92,13 @@ public class Enemy : MonoBehaviour
     {
         if (isDead) return;
         isDead = true;
-        animator?.SetTrigger("Die");
+        animator?.SetTrigger(DieHash);
         if (hitTrigger != null) hitTrigger.enabled = false;
         if (followTrigger != null) followTrigger.enabled = false;
-        DropCoins();
+        if (coinPrefab != null && coinsToDrop > 0)
+        {
+            DropCoins();
+        }
         enabled = false;
         Destroy(gameObject, 0.7f);
     }

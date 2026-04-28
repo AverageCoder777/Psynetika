@@ -24,8 +24,8 @@ public class LadderState : State
         player.Rb.gravityScale = 0f;
         player.Rb.linearVelocity = Vector2.zero;
         
-        animator.SetBool("Climbing", true);
-        animator.SetBool("Grounded", false);
+        Animator.SetBool("Climbing", true);
+        Animator.SetBool("Grounded", false);
         
         enterTime = Time.time;
         
@@ -96,7 +96,7 @@ public class LadderState : State
         
         // Re-enable gravity
         player.Rb.gravityScale = player.DownGravityScale;
-        animator.SetBool("Climbing", false);
+        Animator.SetBool("Climbing", false);
         
         if (player.DebugMessages)
             Debug.Log("Exited Ladder State");

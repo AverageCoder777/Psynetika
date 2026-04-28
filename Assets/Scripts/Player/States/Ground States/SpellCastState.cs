@@ -44,13 +44,13 @@ public class SpellCastState : GroundedStates
 
         if (!string.IsNullOrWhiteSpace(activeSpell.castTrigger))
         {
-            animator.SetTrigger(activeSpell.castTrigger);
+            Animator.SetTrigger(activeSpell.castTrigger);
         }
 
         activeCastBool = activeSpell.castBool;
         if (!string.IsNullOrWhiteSpace(activeCastBool))
         {
-            animator.SetBool(activeCastBool, true);
+            Animator.SetBool(activeCastBool, true);
         }
     }
 
@@ -94,7 +94,7 @@ public class SpellCastState : GroundedStates
         base.Exit();
         if (!string.IsNullOrWhiteSpace(activeCastBool))
         {
-            animator.SetBool(activeCastBool, false);
+            Animator.SetBool(activeCastBool, false);
         }
     }
 

@@ -16,8 +16,7 @@ public class FireBullet : Bullet
             return;
         }
 
-        BurnEffect burnEffect = enemy.GetComponent<BurnEffect>();
-        if (burnEffect == null)
+        if (!enemy.TryGetComponent<BurnEffect>(out var burnEffect))
         {
             burnEffect = enemy.gameObject.AddComponent<BurnEffect>();
         }

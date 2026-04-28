@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class AirState : AirStates
 {
+    private static readonly int JumpingHash = Animator.StringToHash("Jumping");
+    private static readonly int FallingHash = Animator.StringToHash("Falling");
     private bool state_from_jump = false; // флаг для отслеживания, пройдет ли персонаж через player.Rb.linearVelocity.y == 0 в верхней точке параболы, чтобы случайно не врубать Idle в воздухе
 
     public AirState(Player player, StateMovMachine stateMachine) : base(player, stateMachine) { }
@@ -10,13 +12,13 @@ public class AirState : AirStates
     {
         if (player.Rb.linearVelocity.y < 0)
         {
-            animator.SetTrigger("Falling");
+            Animator.SetTrigger("Falling");
             state_from_jump = false;
             player.Rb.gravityScale = player.DownGravityScale;
         }
         else if (player.Rb.linearVelocity.y > 0)
         {
-            animator.SetTrigger("Jumping");
+            Animator.SetTrigger("Jumping");
             state_from_jump = true;
             player.Rb.gravityScale = player.UpGravityScale;
         }
@@ -70,8 +72,8 @@ public class AirState : AirStates
     public override void Exit()
     {
         player.Rb.gravityScale = 1f;
-        animator.ResetTrigger("Falling");
-        animator.ResetTrigger("Jumping");
+        Animator.ResetTrigger(FallingHash);
+        Animator.ResetTrigger(JumpingHash);
 #if UNITY_EDITOR
         if (player.DebugMessages) Debug.Log("Exited Air State");
 #endif

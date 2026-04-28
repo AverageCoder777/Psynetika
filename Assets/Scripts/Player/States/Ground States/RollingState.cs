@@ -1,11 +1,13 @@
 using UnityEngine;
 public class RollingState : GroundedStates
 {
+    private static readonly int GroundedHash = Animator.StringToHash("Grounded");
+    private static readonly int RollingHash = Animator.StringToHash("Rolling");
     private float rollElapsed = 0f;
     private float rollDir = 1f;
     private bool rollEnd = false;
-    int playerLayer = LayerMask.NameToLayer("Player");
-    int enemyLayer = LayerMask.NameToLayer("Enemy");
+    readonly int playerLayer = LayerMask.NameToLayer("Player");
+    readonly int enemyLayer = LayerMask.NameToLayer("Enemy");
 
     public RollingState(Player player, StateMovMachine stateMachine) : base(player, stateMachine) { }
 
@@ -14,8 +16,8 @@ public class RollingState : GroundedStates
         base.Enter();
         rollElapsed = 0f;
         rollDir = player.ActiveSR != null && player.ActiveSR.flipX ? -1f : 1f;
-        animator.SetTrigger("Rolling");
-        animator.SetBool("Grounded", true);
+        Animator.SetTrigger(RollingHash);
+        Animator.SetBool(GroundedHash, true);
         Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
         if (player.DebugMessages) Debug.Log("Entered Rolling State");
         player.LastState = this;
@@ -28,7 +30,7 @@ public class RollingState : GroundedStates
                 stateMachine.ChangeState(player.IdleState);
             else if (player.Rb.linearVelocity.y < 0f)
             {
-                animator.SetBool("Grounded", false);
+                Animator.SetBool(GroundedHash, false);
                 stateMachine.ChangeState(player.AirState);
             }
         }
@@ -53,7 +55,7 @@ public class RollingState : GroundedStates
     public override void Exit()
     {
         base.Exit();
-        animator.ResetTrigger("Rolling");
+        Animator.ResetTrigger(RollingHash);
         rollEnd = false;
         if (player.DebugMessages) Debug.Log("Exited Rolling State");
     }

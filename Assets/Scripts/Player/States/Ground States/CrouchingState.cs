@@ -2,11 +2,12 @@ using UnityEngine;
 using System.Collections;
 public class CrouchingState : GroundedStates
 {
+    private static readonly int CrouchingHash = Animator.StringToHash("Crouching");
     BoxCollider2D capsule;
     Vector2 originalCapsuleSize;
     Vector2 originalCapsuleOffset;
     private LayerMask obstacleMask = LayerMask.GetMask("Walls"); // Слой препятствий
-    private float headCheckDistanceBuffer = 0.05f;
+    private readonly float headCheckDistanceBuffer = 0.05f;
     private bool crouchHeld;
     private bool jumpInput;
 
@@ -23,7 +24,7 @@ public class CrouchingState : GroundedStates
         float delta = originalCapsuleSize.y - newSize.y;
         capsule.size = newSize;
         capsule.offset = new Vector2(originalCapsuleOffset.x, originalCapsuleOffset.y - delta / 2f);
-        animator.SetBool("Crouching", true);
+        Animator.SetBool(CrouchingHash, true);
 #if UNITY_EDITOR
         if (player.DebugMessages) Debug.Log("Entered crouching state");
 #endif
@@ -53,20 +54,14 @@ public class CrouchingState : GroundedStates
     }
     public override void PhysicsUpdate()
     {
-        // Calculate target velocity with reduced speed for crouch
-        float targetVelocityX = player.MovementInput.x * player.GetCharSpeed() * 0.5f;
-        float currentVelocityX = player.Rb.linearVelocity.x;
-        
-        // Choose acceleration rate based on whether we're moving or stopping
+        float targetVelocityX = player.MovementInput.x * player.GetCharSpeed()*0.5f;//0.5 - фактор скорости в приседе, добавить переменную!!!
+        float currentVelocityX = player.Rb.linearVelocity.x;   
         float accelerationToUse = player.MovementInput.x != 0 ? player.AccelerationRate : player.FrictionRate;
-        
-        // Smoothly interpolate towards target velocity
         float newVelocityX = Mathf.Lerp(currentVelocityX, targetVelocityX, accelerationToUse * Time.fixedDeltaTime);
         
-        // Apply new velocity
         player.Rb.linearVelocity = new Vector2(newVelocityX, player.Rb.linearVelocity.y);
+        Debug.Log("Linear Velocity: " + player.Rb.linearVelocity);
         
-        // Sprite flipping
         if (player.MovementInput.x > 0.01f)
             player.ActiveSR.flipX = false;
         else if (player.MovementInput.x < -0.01f)
@@ -75,7 +70,7 @@ public class CrouchingState : GroundedStates
     public override void Exit()
     {
         base.Exit();
-        animator.SetBool("Crouching", false);
+        Animator.SetBool(CrouchingHash, false);
 #if UNITY_EDITOR
         if (player.DebugMessages) Debug.Log("Exited Crouching State");
 #endif
@@ -111,7 +106,7 @@ public class CrouchingState : GroundedStates
     {
         capsule.size = originalCapsuleSize;
         capsule.offset = originalCapsuleOffset;
-        animator.SetBool("Crouching", false);
+        Animator.SetBool(CrouchingHash, false);
         if (player.DebugMessages) Debug.Log("Stood up successfully");
         return;
     }

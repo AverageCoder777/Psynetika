@@ -3,7 +3,7 @@ public abstract class State
 {
     protected Player player;
     protected StateMovMachine stateMachine;
-    protected Animator animator => player.ActiveAnimator;
+    protected Animator Animator => player.ActiveAnimator;
     public State(Player player, StateMovMachine stateMachine)
     {
         this.player = player;

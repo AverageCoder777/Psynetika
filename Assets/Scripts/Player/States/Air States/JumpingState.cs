@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class JumpingState : AirStates
 {
+    private static readonly int DoubleJumpingHash = Animator.StringToHash("DoubleJumping");
+    private static readonly int JumpingHash = Animator.StringToHash("Jumping");
     private bool canDoubleJump;
     private bool doubleJumpInput;
 
@@ -14,7 +16,7 @@ public class JumpingState : AirStates
     {
         Jump(player.Thrust);
         canDoubleJump = true;
-        animator.SetTrigger("Jumping");
+        Animator.SetTrigger(JumpingHash);
         player.Rb.gravityScale = player.UpGravityScale;
         wallContactTime = 0f;
 #if UNITY_EDITOR
@@ -49,7 +51,7 @@ public class JumpingState : AirStates
         if (doubleJumpInput && canDoubleJump)
         {
             Jump(player.DoubleJumpThrust);
-            animator.SetTrigger("DoubleJumping");
+            Animator.SetTrigger(DoubleJumpingHash);
             canDoubleJump = false;
         }
         player.Rb.gravityScale = 1f;
@@ -63,8 +65,8 @@ public class JumpingState : AirStates
     public override void Exit()
     {
         base.Exit();
-        animator.ResetTrigger("Jumping");
-        animator.ResetTrigger("DoubleJumping");
+        Animator.ResetTrigger(JumpingHash);
+        Animator.ResetTrigger(DoubleJumpingHash);
 #if UNITY_EDITOR
         if (player.DebugMessages)
         {

@@ -1,11 +1,10 @@
 using UnityEngine;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 
+[RequireComponent(typeof(Enemy))]
 public class BurnEffect : MonoBehaviour
 {
     private Enemy enemy;
-    //private Coroutine burnRoutine;
 
     private void Awake()
     {
@@ -23,12 +22,6 @@ public class BurnEffect : MonoBehaviour
         float safeTick = Mathf.Max(0.05f, tickInterval);
         int safeDamage = Mathf.Max(1, tickDamage);
 
-       /* if (burnRoutine != null)
-        {
-            StopCoroutine(burnRoutine);
-        }
-*/
-        //burnRoutine = StartCoroutine(BurnCoroutine(safeDuration, safeTick, safeDamage));
         Burn(safeDuration, safeTick, safeDamage).Forget();
     }
 
@@ -37,7 +30,6 @@ public class BurnEffect : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < duration)
         {
-            //yield return new WaitForSeconds(tickInterval);
             await UniTask.Delay((int)duration);
             elapsed += tickInterval;
 

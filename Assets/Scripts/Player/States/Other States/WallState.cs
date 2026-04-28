@@ -12,7 +12,7 @@ public class WallState : State
 
     public override void Enter()
     {
-        animator.SetBool("WallSliding", true);
+        Animator.SetBool("WallSliding", true);
         player.Rb.gravityScale = 1f;
         if (player.DebugMessages)
         {
@@ -68,7 +68,7 @@ public class WallState : State
 
     public override void Exit()
     {
-        animator.SetBool("WallSliding", false);
+        Animator.SetBool("WallSliding", false);
         if (player.DebugMessages)
         {
             Debug.Log("Exited Wall State");

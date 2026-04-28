@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class IdleState : GroundedStates
 {
+    private static readonly int MovingHash = Animator.StringToHash("Moving");
     private bool jump;
     private bool crouch;
     private bool roll;
@@ -15,7 +16,7 @@ public class IdleState : GroundedStates
     public override void Enter()
     {
         base.Enter();
-        animator.SetBool("Moving", false);
+        Animator.SetBool(MovingHash, false);
         grounded = true;
         player.Rb.linearVelocity = new Vector2(0, player.Rb.linearVelocity.y);
         if (player.DebugMessages) Debug.Log("Entered Idle State");
@@ -43,7 +44,7 @@ public class IdleState : GroundedStates
             grounded = false;
             stateMachine.ChangeState(player.JumpingState);
         }
-        if (player.Rb.linearVelocity.y < 0)
+        if (player.Rb.linearVelocity.y < 0 && !DetectPlatform())
         {
             grounded = false;
             stateMachine.ChangeState(player.AirState);
@@ -74,5 +75,30 @@ public class IdleState : GroundedStates
     {
         base.Exit();
         if (player.DebugMessages) Debug.Log("Exited Idle State");
+    }
+
+    protected bool DetectPlatform()
+    {
+        // Проверяем столкновение вниз (направление гравитации)
+        Vector2 platformDetectionDirection = Vector2.down;
+        
+        // Смещаем raycast origin вниз от центра игрока, чтобы избежать его собственного коллайдера
+        Vector2 raycastOrigin = (Vector2)player.transform.position - Vector2.up * 0.5f;
+        
+        float detectionDistance = 1f;
+        
+        // Проверяем столкновение только вниз
+        RaycastHit2D hit = Physics2D.Raycast(
+            raycastOrigin,
+            platformDetectionDirection,
+            detectionDistance,
+            LayerMask.GetMask("Platform")
+        );
+
+        // Отрисовка raycast для отладки (синий - столкновение, желтый - нет)
+        Debug.DrawRay(raycastOrigin, platformDetectionDirection * detectionDistance, 
+            hit.collider != null ? Color.blue : Color.yellow);
+
+        return hit.collider != null;
     }
 }

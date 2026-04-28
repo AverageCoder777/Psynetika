@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class Bullet : MonoBehaviour
 {
     public float speed = 10f;
@@ -45,8 +46,7 @@ public class Bullet : MonoBehaviour
     {
         if ((enemyMask.value & (1 << other.gameObject.layer)) > 0)
         {
-            Enemy enemy = other.gameObject.GetComponent<Enemy>();
-            if (enemy != null)
+            if (other.gameObject.TryGetComponent<Enemy>(out var enemy))
             {
                 HandleEnemyHit(enemy);
             }

@@ -16,9 +16,20 @@ public abstract class AirStates : State
         base.HandleInput();
         player.MovementInput = player.PlayerInput.actions["Move"].ReadValue<Vector2>();
     }
+
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+
+        // Проверяем касание платформы при движении вниз
+        if (player.Rb.linearVelocity.y <= 0 && DetectPlatform())
+        {
+            stateMachine.ChangeState(player.IdleState);
+            return;
+        }
+        else{
+            Debug.Log("Detect Platform не задетектился");
+        }
 
         //Базовый детект стены для всех состояний в воздухе
         bool touchingWall = DetectWall();
@@ -46,18 +57,12 @@ public abstract class AirStates : State
         float newVelocityX = currentVelocityX;
         if (player.MovementInput.x != 0)
         {
-            // Есть входи в движение - используем ускорение
             newVelocityX = Mathf.Lerp(currentVelocityX, targetVelocityX, player.AccelerationRate * Time.fixedDeltaTime);
         }
         else if (Mathf.Abs(currentVelocityX) > 0.1f)
         {
-            // Нет ввода от игрока, но есть инерция (от wall jump или прыжка) - медленнее снижаем скорость
             newVelocityX = currentVelocityX;
-        }
-        
-        // Плавно интерполируем текущую скорость к целевой для эффекта инерции
-        
-        // Применяем новое ускорение, но оставляем горизонтальное неизменным
+            }
         player.Rb.linearVelocity = new Vector2(newVelocityX, player.Rb.linearVelocity.y);
         
         // Крутим спрайт в зависимости от направления
@@ -97,6 +102,31 @@ public abstract class AirStates : State
         // Отрисовка raycast для отладки (зеленый - столкновение, красный - нет)
         Debug.DrawRay(raycastOrigin, wallDetectionDirection * player.WallDetectionDistance, 
             hit.collider != null ? Color.green : Color.red);
+
+        return hit.collider != null;
+    }
+
+    protected bool DetectPlatform()
+    {
+        // Проверяем столкновение вниз (направление гравитации)
+        Vector2 platformDetectionDirection = Vector2.down;
+        
+        // Смещаем raycast origin вниз от центра игрока, чтобы избежать его собственного коллайдера
+        Vector2 raycastOrigin = (Vector2)player.transform.position - Vector2.up * 0.5f;
+        
+        float detectionDistance = 1f;
+        
+        // Проверяем столкновение только вниз
+        RaycastHit2D hit = Physics2D.Raycast(
+            raycastOrigin,
+            platformDetectionDirection,
+            detectionDistance,
+            LayerMask.GetMask("Platform")
+        );
+
+        // Отрисовка raycast для отладки (синий - столкновение, желтый - нет)
+        Debug.DrawRay(raycastOrigin, platformDetectionDirection * detectionDistance, 
+            hit.collider != null ? Color.blue : Color.yellow);
 
         return hit.collider != null;
     }

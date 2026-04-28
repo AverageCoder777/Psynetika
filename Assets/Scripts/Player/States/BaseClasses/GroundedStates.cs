@@ -2,6 +2,8 @@ using UnityEngine;
 
 public abstract class GroundedStates : State
 {
+    private static readonly int GroundedHash = Animator.StringToHash("Grounded");
+    private static readonly int MovingHash = Animator.StringToHash("Moving");
     protected bool grounded = true;
     public GroundedStates(Player player, StateMovMachine stateMachine) : base(player, stateMachine)
     {
@@ -9,18 +11,18 @@ public abstract class GroundedStates : State
     public override void Enter()
     {
         player.MovementInput = Vector2.zero;
-        animator.SetBool("Grounded", true);
+        Animator.SetBool(GroundedHash, true);
     }
     public override void LogicUpdate()
     {
         base.LogicUpdate();
         if (player.MovementInput.x != 0)
         {
-            animator.SetBool("Moving", true);
+            Animator.SetBool(MovingHash, true);
         }
         else
         {
-            animator.SetBool("Moving", false);
+            Animator.SetBool(MovingHash, false);
         }
     }
     public override void HandleInput()
@@ -31,17 +33,11 @@ public abstract class GroundedStates : State
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-        // Целевое ускорение выходит из ввода, умноженного на скорость
         float targetVelocityX = player.MovementInput.x * player.GetCharSpeed();
         float currentVelocityX = player.Rb.linearVelocity.x;
-        
-        // Выбираем знак (+/-) для ускорения
         float accelerationToUse = player.MovementInput.x != 0 ? player.AccelerationRate : player.FrictionRate;
-        
-        // Плавно интерполируем текущую скорость к целевой для эффекта инерции
         float newVelocityX = Mathf.Lerp(currentVelocityX, targetVelocityX, accelerationToUse * Time.fixedDeltaTime);
         
-        // Применяем новое ускорение, но оставляем горизонтальное неизменным
         player.Rb.linearVelocity = new Vector2(newVelocityX, player.Rb.linearVelocity.y);
         
         // Крутим спрайт в зависимости от направления
@@ -53,7 +49,7 @@ public abstract class GroundedStates : State
     public override void Exit()
     {
         base.Exit();
-        animator.SetBool("Moving", false);
-        animator.SetBool("Grounded", false);
+        Animator.SetBool(MovingHash, false);
+        Animator.SetBool(GroundedHash, false);
     }
 }

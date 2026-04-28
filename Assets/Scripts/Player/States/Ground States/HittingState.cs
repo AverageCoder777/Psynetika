@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class HittingState : GroundedStates
 {
+    private static readonly int HittingHash = Animator.StringToHash("Hitting");
+    private static readonly int ShootingHash = Animator.StringToHash("Shooting");
     private float hitElapsed = 0f;
     private float hitDir = 1f;
     private float hittingSpeed = 0f;
@@ -35,20 +37,20 @@ public class HittingState : GroundedStates
         {
             if (playerIsSatan)
             {
-                animator.SetTrigger("Shooting");
+                Animator.SetTrigger(ShootingHash);
             }
             else
             {
-                animator.SetTrigger("Hitting");
+                Animator.SetTrigger(HittingHash);
             }
         }
         if (playerIsSatan)
         {
-            animator.SetBool("Shooting " + comboCount, true);
+            Animator.SetBool("Shooting " + comboCount, true);
         }
         else
         {
-            animator.SetBool("Hitting " + comboCount, true);
+            Animator.SetBool("Hitting " + comboCount, true);
         }
         lastHitTime = Time.time;
         if (player.DebugMessages)
@@ -68,11 +70,11 @@ public class HittingState : GroundedStates
         {
             if (playerIsSatan)
             {
-                animator.SetBool("Shooting " + comboCount, false);
+                Animator.SetBool("Shooting " + comboCount, false);
             }
             else
             {
-                animator.SetBool("Hitting " + comboCount, false);
+                Animator.SetBool("Hitting " + comboCount, false);
             }
             hitComplete = true;
             if (player.DebugMessages)
@@ -150,11 +152,11 @@ public class HittingState : GroundedStates
         shooted = false;
         if (playerIsSatan)
         {
-            animator.SetBool("Shooting " + comboCount, false);
+            Animator.SetBool("Shooting " + comboCount, false);
         }
         else
         {
-            animator.SetBool("Hitting " + comboCount, false);
+            Animator.SetBool("Hitting " + comboCount, false);
         }
         if (player.DebugMessages)
             Debug.Log("Exited Hitting State");
