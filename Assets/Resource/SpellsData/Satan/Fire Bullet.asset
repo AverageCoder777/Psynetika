@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f60f2fcc841e3a4586011b934950eb9, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d22f5f537005bc48b2c89a2738e18cc, type: 3}
   m_Name: Fire Bullet
-  m_EditorClassIdentifier: Assembly-CSharp::SpellData
+  m_EditorClassIdentifier: Assembly-CSharp::SpellSatanData
   SpellName: Fire Bullet
   SpellDescription: FIre Fire Fire!!!
   SpellIcon: {fileID: 0}

@@ -73,6 +73,9 @@ public class Player : MonoBehaviour
 #endif
     Rigidbody2D rb;
     private PlayerInput playerInput;
+    private float speedMultiplier = 1f;
+    private float attackSpeedMultiplier = 1f;
+    private float damageMultiplier = 1f;
     #endregion
     #region Publlic Properties
     public Rigidbody2D Rb { get { return rb; } }
@@ -87,14 +90,8 @@ public class Player : MonoBehaviour
     public float DropThroughDuration => dropThroughDuration;
     public float GetCharSpeed()
     {
-        if (GetCurrentCharState() == SatanState)
-        {
-            return satanSpeed;
-        }
-        else
-        {
-            return sobakaSpeed;
-        }
+        float base_ = GetCurrentCharState() == SatanState ? satanSpeed : sobakaSpeed;
+        return base_ * speedMultiplier;
     }
     public float AccelerationRate => accelerationRate;
     public float FrictionRate => frictionRate;
@@ -113,6 +110,10 @@ public class Player : MonoBehaviour
     public State LastState { get => lastState; set => lastState = value; }
     public bool DebugMessages =>debugMessages;
     public SpellController SpellController => spellController;
+    public int MaxHp => maxHp;
+    public float SpeedMultiplier { get => speedMultiplier; set => speedMultiplier = value; }
+    public float AttackSpeedMultiplier { get => attackSpeedMultiplier; set => attackSpeedMultiplier = value; }
+    public float DamageMultiplier { get => damageMultiplier; set => damageMultiplier = value; }
     private InputAction openUI;
     private InputAction InteractAction;
     public PlayerState GetCurrentCharState()
@@ -121,14 +122,18 @@ public class Player : MonoBehaviour
     }
     public float GetHittingSpeed()
     {
+        float baseHittingSpeed;
         if (GetCurrentCharState() == SatanState)
         {
-            return hittingSpeedSatana;
+            baseHittingSpeed = hittingSpeedSatana;
         }
         else
         {
-            return hittingSpeedSobaka;
+            baseHittingSpeed = hittingSpeedSobaka;
         }
+
+        float safeAttackSpeedMultiplier = Mathf.Max(0.05f, attackSpeedMultiplier);
+        return baseHittingSpeed / safeAttackSpeedMultiplier;
     }
 
     public float GetHitDistance()
@@ -144,14 +149,17 @@ public class Player : MonoBehaviour
     }
     public int GetHittingDamage()
     {
-        if (GetCurrentCharState() == SatanState)
-        {
-            return hittingDamageSatana;
-        }
-        else
-        {
-            return hittingDamageSobaka;
-        }
+        float base_ = GetCurrentCharState() == SatanState ? hittingDamageSatana : hittingDamageSobaka;
+        return Mathf.RoundToInt(base_ * damageMultiplier);
+    }
+
+    public int TryDrainHP(int amount, int minHp)
+    {
+        if (hp <= minHp) return 0;
+        int actual = Mathf.Min(amount, hp - minHp);
+        hp -= actual;
+        UpdateHealthUI();
+        return actual;
     }
 
     #endregion
@@ -303,6 +311,7 @@ public class Player : MonoBehaviour
     public SwitchState SwitchState { get; set; }
     public HittingState HittingState { get; set; }
     public SpellCastState SpellCastState { get; set; }
+    public SpellSlot PendingSpellSlot { get; set; }
     public WallState WallState { get; set; }
     public LadderState LadderState { get; set; }
     public SatanState SatanState {get;set;}

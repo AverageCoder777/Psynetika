@@ -8,6 +8,7 @@ public class IdleState : GroundedStates
     private bool @switch;
     private bool hit;
     private bool spell;
+    private bool spellUltimate;
     public IdleState(Player player, StateMovMachine stateMachine)
         : base(player, stateMachine)
     {
@@ -30,6 +31,7 @@ public class IdleState : GroundedStates
         @switch = player.PlayerInput.actions["Switch"].WasPressedThisFrame();
         hit = player.PlayerInput.actions["Attack"].WasPressedThisFrame();
         spell = player.PlayerInput.actions["Spell"].WasPressedThisFrame();
+        spellUltimate = player.PlayerInput.actions["SpellUltimate"].WasPressedThisFrame();
     }
     public override void LogicUpdate()
     {
@@ -58,6 +60,13 @@ public class IdleState : GroundedStates
         }
         if (spell)
         {
+            player.PendingSpellSlot = SpellSlot.Regular;
+            stateMachine.ChangeState(player.SpellCastState);
+            return;
+        }
+        if (spellUltimate)
+        {
+            player.PendingSpellSlot = SpellSlot.Ultimate;
             stateMachine.ChangeState(player.SpellCastState);
             return;
         }

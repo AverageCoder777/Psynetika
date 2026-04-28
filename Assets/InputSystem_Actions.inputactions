@@ -122,6 +122,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SpellUltimate",
+                    "type": "Button",
+                    "id": "d4e5f6a7-b8c9-4012-d1e2-f34567890123",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -337,11 +346,33 @@
                 {
                     "name": "",
                     "id": "7e4dc10d-d2eb-4e42-9350-282476153084",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Spell",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e5f6a7b8-c9d0-4123-e2f3-456789012345",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "SpellUltimate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f6a7b8c9-d0e1-4234-f3a4-567890123456",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "SpellUltimate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

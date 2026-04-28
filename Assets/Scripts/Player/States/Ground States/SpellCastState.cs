@@ -9,6 +9,7 @@ public class SpellCastState : GroundedStates
     private bool casted = false;
     private bool isSatanCaster = false;
     private bool jumpRequested = false;
+    private SpellSlot activeSlot;
     private SpellData activeSpell;
     private string activeCastBool;
 
@@ -26,6 +27,7 @@ public class SpellCastState : GroundedStates
 
         isSatanCaster = player.GetCurrentCharState() == player.SatanState;
         castDirection = player.ActiveSR != null && player.ActiveSR.flipX ? -1f : 1f;
+        activeSlot = player.PendingSpellSlot;
 
         if (player.SpellController == null)
         {
@@ -33,7 +35,7 @@ public class SpellCastState : GroundedStates
             return;
         }
 
-        if (!player.SpellController.TryGetReadySpell(isSatanCaster, out activeSpell))
+        if (!player.SpellController.TryGetReadySpell(isSatanCaster, activeSlot, out activeSpell))
         {
             stateMachine.ChangeState(player.IdleState);
             return;
@@ -41,17 +43,6 @@ public class SpellCastState : GroundedStates
 
         castDuration = Mathf.Max(0.05f, activeSpell.castDuration);
         castMoment = castDuration * Mathf.Clamp01(activeSpell.castMomentNormalized);
-
-        if (!string.IsNullOrWhiteSpace(activeSpell.castTrigger))
-        {
-            animator.SetTrigger(activeSpell.castTrigger);
-        }
-
-        activeCastBool = activeSpell.castBool;
-        if (!string.IsNullOrWhiteSpace(activeCastBool))
-        {
-            animator.SetBool(activeCastBool, true);
-        }
     }
 
     public override void HandleInput()
@@ -101,16 +92,13 @@ public class SpellCastState : GroundedStates
     private void CastSpell()
     {
         if (activeSpell == null || activeSpell.SpellPrefab == null)
-        {
             return;
-        }
 
         BoxCollider2D box = player.GetComponent<BoxCollider2D>();
         Vector2 origin = box != null ? box.bounds.center : (Vector2)player.transform.position;
-        Vector2 direction = Vector2.right * castDirection;
-        Vector2 spawnPos = origin + direction * 1f;
+        Vector2 spawnPos = origin + Vector2.right * castDirection;
 
-        GameObject spellObj = Object.Instantiate(activeSpell.SpellPrefab, spawnPos, Quaternion.identity);
+        GameObject spellObj = (GameObject)Object.Instantiate(activeSpell.SpellPrefab, spawnPos, Quaternion.identity);
 
         SpellBase spellBase = spellObj.GetComponent<SpellBase>();
         if (spellBase != null)
@@ -118,16 +106,7 @@ public class SpellCastState : GroundedStates
             spellBase.Initialize(player, activeSpell, castDirection);
             spellBase.Cast(spawnPos);
         }
-        else
-        {
-            Bullet bullet = spellObj.GetComponent<Bullet>();
-            if (bullet != null)
-            {
-                bullet.ConfigureFromSpell(activeSpell);
-                bullet.SetDirection(castDirection);
-            }
-        }
 
-        player.SpellController.StartCooldown(isSatanCaster, activeSpell);
+        player.SpellController.StartCooldown(isSatanCaster, activeSlot, activeSpell);
     }
 }
