@@ -17,28 +17,16 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject, lifetime);
     }
 
-    public virtual void ConfigureFromSpell(SpellData spellData)
+    public virtual void ConfigureFromSpell(SpellSatanData spellData)
     {
-        if (spellData == null)
-        {
-            return;
-        }
-
-        if (spellData.spellSpeed > 0f)
-        {
-            speed = spellData.spellSpeed;
-        }
-
+        if (spellData == null) return;
+        if (spellData.spellSpeed > 0f) speed = spellData.spellSpeed;
         damage = Mathf.RoundToInt(spellData.spellDamage);
     }
 
     public void SetDirection(float dir)
     {
-        if (rb == null)
-        {
-            rb = GetComponent<Rigidbody2D>();
-        }
-
+        if (rb == null) rb = GetComponent<Rigidbody2D>();
         rb.linearVelocity = new Vector2(dir * speed, 0f);
     }
 
@@ -50,8 +38,12 @@ public class Bullet : MonoBehaviour
             {
                 HandleEnemyHit(enemy);
             }
+            else
+            {
+                DamageDummy dummy = other.gameObject.GetComponent<DamageDummy>();
+                if (dummy != null) dummy.TakeDamage(damage);
+            }
         }
-        Debug.Log("Destroyed bullet");
         Destroy(gameObject);
     }
 

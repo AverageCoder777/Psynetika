@@ -132,6 +132,19 @@ public class HittingState : GroundedStates
                                 + " damage points"
                         );
                     }
+                    else
+                    {
+                        DamageDummy dummy = hit.collider.GetComponent<DamageDummy>();
+                        if (dummy != null)
+                        {
+                            dummy.TakeDamage(player.GetHittingDamage());
+                            Debug.Log(
+                                "Player hitted dummy with "
+                                    + player.GetHittingDamage()
+                                    + " damage points"
+                            );
+                        }
+                    }
                 }
                 else
                 {
