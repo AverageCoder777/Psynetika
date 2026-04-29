@@ -169,9 +169,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 126095851
-  m_SortingLayer: 1
-  m_SortingOrder: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 40
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7206798460900017826, guid: c30d299289fc38446b271b7646e5b03d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -402,6 +402,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 45fbd673-c487-4a7e-8d3d-fb13d9fdce4d
     m_ActionName: 'Player/Spell[/Keyboard/q,/Mouse/rightButton]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d4e5f6a7-b8c9-4012-d1e2-f34567890123
+    m_ActionName: 'Player/SpellUltimate[/Keyboard/q]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -464,8 +468,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a8f0617f662430c8f935b5e99f6bd62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellController
-  satanPrimarySpell: {fileID: 0}
-  sobakaPrimarySpell: {fileID: 0}
+  satanRegular: {fileID: 0}
+  satanUltimate: {fileID: 0}
+  sobakaRegular: {fileID: 0}
+  sobakaUltimate: {fileID: 0}
 --- !u!50 &104384304269117495
 Rigidbody2D:
   serializedVersion: 5
@@ -632,9 +638,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 126095851
-  m_SortingLayer: 1
-  m_SortingOrder: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 41
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4122982564389327532, guid: 55bdd6cb088843746a00c2c51e211593, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

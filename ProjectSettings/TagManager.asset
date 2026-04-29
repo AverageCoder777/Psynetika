@@ -27,7 +27,7 @@ TagManager:
   - Coins
   - Enemy
   - Floor
-  - 
+  - Up Walls
   - 
   - 
   - 
@@ -53,6 +53,9 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 126095851
+    locked: 0
+  - name: Front
+    uniqueID: 3547027733
     locked: 0
   m_RenderingLayers:
   - Default
