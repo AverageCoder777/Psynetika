@@ -15,7 +15,7 @@ MonoBehaviour:
   Id: 0
   SpellName: "\u0411\u0435\u0440\u0441\u0435\u0440\u043A"
   SpellDescription: 
-  SpellIcon: {fileID: 0}
+  SpellIcon: {fileID: -2084964735090168002, guid: d8a09c2c06fdf7d40b735da826acb19c, type: 3}
   Owner: 2
   Slot: 0
   Type: 1

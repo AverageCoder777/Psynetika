@@ -56,6 +56,8 @@ public class SpellController : MonoBehaviour
         }
     }
 
+    public SpellData GetSpellData(bool isSatan, SpellSlot slot) => GetSlotData(isSatan, slot);
+
     private SpellData GetSlotData(bool isSatan, SpellSlot slot)
     {
         if (isSatan) return slot == SpellSlot.Regular ? satanRegular : satanUltimate;

@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d22f5f537005bc48b2c89a2738e18cc, type: 3}
   m_Name: Fire Bullet
   m_EditorClassIdentifier: Assembly-CSharp::SpellSatanData
+  Id: 0
   SpellName: Fire Bullet
   SpellDescription: FIre Fire Fire!!!
-  SpellIcon: {fileID: 0}
+  SpellIcon: {fileID: 7856930727806306150, guid: 30ae3fc2d332773469cdde1e70ea00a1, type: 3}
   Owner: 1
+  Slot: 0
+  Type: 0
   spellCooldown: 5
+  castDuration: 0.35
+  castMomentNormalized: 0.5
   SpellPrefab: {fileID: 319351763887075280, guid: 0c59fd2758ca73b40a28bc5186c527cc, type: 3}
   spellRange: 5
   spellSpeed: 12
   spellDamage: 22
-  castDuration: 0.35
-  castMomentNormalized: 0.5
-  spawnForwardOffset: 0.56
-  castTrigger: Shooting
-  castBool: Shooting 1
