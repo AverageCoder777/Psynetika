@@ -59,7 +59,7 @@ public class CrouchingState : GroundedStates
         float accelerationToUse = player.MovementInput.x != 0 ? player.AccelerationRate : player.FrictionRate;
         float newVelocityX = Mathf.Lerp(currentVelocityX, targetVelocityX, accelerationToUse * Time.fixedDeltaTime);
         
-        player.Rb.linearVelocity = new Vector2(newVelocityX, player.Rb.linearVelocity.y);
+        player.Rb.linearVelocity = new Vector2(newVelocityX, 0);
         Debug.Log("Linear Velocity: " + player.Rb.linearVelocity);
         
         if (player.MovementInput.x > 0.01f)

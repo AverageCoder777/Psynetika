@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class LadderState : State
 {
+    private static readonly int GroundedHash = Animator.StringToHash("Grounded");
+    private static readonly int ClimbingHash = Animator.StringToHash("Climbing");
     private readonly float climbSpeed = 5f;
     private Ladder currentLadder;
     private float enterTime = 0f;
@@ -19,13 +21,12 @@ public class LadderState : State
     public override void Enter()
     {
         base.Enter();
-        
-        // Disable gravity while climbing
+    
         player.Rb.gravityScale = 0f;
         player.Rb.linearVelocity = Vector2.zero;
         
-        Animator.SetBool("Climbing", true);
-        Animator.SetBool("Grounded", false);
+        Animator.SetBool(ClimbingHash, true);
+        Animator.SetBool(GroundedHash, false);
         
         enterTime = Time.time;
         
@@ -38,23 +39,18 @@ public class LadderState : State
     public override void HandleInput()
     {
         base.HandleInput();
-        
-        // Читаем вертикальный ввод для карабкания
         player.MovementInput = player.PlayerInput.actions["Move"].ReadValue<Vector2>();
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        
-        // Выход если нажата кнопка Interact (и прошла задержка)
         if (Time.time - enterTime > exitDelay && player.PlayerInput.actions["Interact"].WasPressedThisFrame())
         {
             stateMachine.ChangeState(player.AirState);
             return;
         }
         
-        // Выход если игрок пытается идти в стороны
         if (player.MovementInput.x != 0)
         {
             stateMachine.ChangeState(player.AirState);
@@ -65,8 +61,6 @@ public class LadderState : State
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-
-        // Центрируем позицию игрока по лестнице (если она существует)
         if (currentLadder != null)
         {
             Vector3 playerPos = player.transform.position;
@@ -74,10 +68,8 @@ public class LadderState : State
             player.transform.position = playerPos;
         }
 
-        // Handle vertical movement
         float verticalMovement = 0f;
         
-        // Check for vertical input
         if (player.MovementInput.y > 0)
         {
             verticalMovement = climbSpeed;
@@ -86,17 +78,16 @@ public class LadderState : State
         {
             verticalMovement = -climbSpeed;
         }
-
         player.Rb.linearVelocity = new Vector2(0f, verticalMovement);
     }
 
     public override void Exit()
     {
         base.Exit();
-        
-        // Re-enable gravity
+
         player.Rb.gravityScale = player.DownGravityScale;
-        Animator.SetBool("Climbing", false);
+        Animator.SetBool(ClimbingHash, false);
+        Animator.SetBool(GroundedHash, true);
         
         if (player.DebugMessages)
             Debug.Log("Exited Ladder State");

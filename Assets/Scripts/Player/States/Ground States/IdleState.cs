@@ -46,11 +46,11 @@ public class IdleState : GroundedStates
             grounded = false;
             stateMachine.ChangeState(player.JumpingState);
         }
-        if (player.Rb.linearVelocity.y < 0 && !DetectPlatform())
+        /*if (player.Rb.linearVelocity.y < 0 && !DetectPlatform()&& !DetectFloor())
         {
             grounded = false;
             stateMachine.ChangeState(player.AirState);
-        }
+        }*/
         if (roll)
         {
             stateMachine.ChangeState(player.RollingState);
