@@ -6,8 +6,8 @@ public class CrouchingState : GroundedStates
     BoxCollider2D capsule;
     Vector2 originalCapsuleSize;
     Vector2 originalCapsuleOffset;
-    private LayerMask obstacleMask = LayerMask.GetMask("Walls"); // Слой препятствий
-    private readonly float headCheckDistanceBuffer = 0.05f;
+    private LayerMask obstacleMask = LayerMask.GetMask("Up Walls"); // Слой препятствий
+    private readonly float headCheckDistanceBuffer = 0.1f;
     private bool crouchHeld;
     private bool jumpInput;
 
@@ -77,28 +77,69 @@ public class CrouchingState : GroundedStates
     }
     private bool CanStandUp()
     {
-        Vector2 crouchCenter = (Vector2)player.transform.position + capsule.offset;
-        float crouchTop = crouchCenter.y + (capsule.size.y / 2f) - headCheckDistanceBuffer;
-
-        // Дистанция проверки = delta высоты + buffer
-        float deltaHeight = originalCapsuleSize.y - capsule.size.y;
-        float headroomNeeded = deltaHeight + headCheckDistanceBuffer;
+        Vector2 capsuleCenter = (Vector2)player.transform.position + capsule.offset;
+        
+        // Верхняя точка текущей (сжатой) капсулы
+        float crouchCapsuleTop = capsuleCenter.y + (capsule.size.y / 1.5f);
+        
+        // Верхняя точка оригинальной капсулы
+        float originalCapsuleTop = capsuleCenter.y + (originalCapsuleSize.y / 1.5f);
+        
+        // Дистанция проверки = разница в высоте + buffer
+        float headroomNeeded = originalCapsuleTop - crouchCapsuleTop + headCheckDistanceBuffer;
 
         // 3 рэйкаста вверх: слева, центр, справа
         float halfWidth = capsule.size.x / 2f;
-        Vector2 originCenter = new(player.transform.position.x, crouchTop);
+        Vector2 originCenter = new(capsuleCenter.x, crouchCapsuleTop);
         RaycastHit2D hitLeft = Physics2D.Raycast(originCenter + Vector2.left * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
+#if UNITY_EDITOR
+        if (player.DebugMessages)
+        {
+            Color color = (hitLeft.collider != null && !hitLeft.collider.isTrigger) ? Color.red : Color.green;
+            Debug.DrawRay(originCenter + Vector2.left * halfWidth, Vector2.up * headroomNeeded, color, 0.1f);
+        }
+#endif
         RaycastHit2D hitCenter = Physics2D.Raycast(originCenter, Vector2.up, headroomNeeded, obstacleMask);
+#if UNITY_EDITOR
+        if (player.DebugMessages)
+        {
+            Color color = (hitCenter.collider != null && !hitCenter.collider.isTrigger) ? Color.red : Color.green;
+            Debug.DrawRay(originCenter, Vector2.up * headroomNeeded, color, 0.1f);
+        }
+#endif
         RaycastHit2D hitRight = Physics2D.Raycast(originCenter + Vector2.right * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
+#if UNITY_EDITOR
+        if (player.DebugMessages)
+        {
+            Color color = (hitRight.collider != null && !hitRight.collider.isTrigger) ? Color.red : Color.green;
+            Debug.DrawRay(originCenter + Vector2.right * halfWidth, Vector2.up * headroomNeeded, color, 0.1f);
+        }
+#endif
+
+        #if UNITY_EDITOR
+        if (player.DebugMessages)
+        {
+            Debug.Log($"CanStandUp: origin={originCenter}, halfWidth={halfWidth}, headroom={headroomNeeded:F2}");
+            Debug.Log($"  Left: {(hitLeft.collider != null ? $"hit {hitLeft.distance:F2} ({hitLeft.collider.name})" : "clear")}");
+            Debug.Log($"  Center: {(hitCenter.collider != null ? $"hit {hitCenter.distance:F2} ({hitCenter.collider.name})" : "clear")}");
+            Debug.Log($"  Right: {(hitRight.collider != null ? $"hit {hitRight.distance:F2} ({hitRight.collider.name})" : "clear")}");
+        }
+        #endif
 
         if ((hitLeft.collider != null&&!hitLeft.collider.isTrigger) ||
             (hitCenter.collider != null&&!hitCenter.collider.isTrigger) ||
             (hitRight.collider != null&&!hitRight.collider.isTrigger))
         {
+            #if UNITY_EDITOR
+            if (player.DebugMessages) Debug.Log("CanStandUp: false (blocked)");
+            #endif
             return false;
         }
         else
         {
+            #if UNITY_EDITOR
+            if (player.DebugMessages) Debug.Log("CanStandUp: true (clear)");
+            #endif
             return true;
         }
     }
