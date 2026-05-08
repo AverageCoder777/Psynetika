@@ -47,6 +47,7 @@ public class HittingState : GroundedStates
         if (playerIsSatan)
         {
             Animator.SetBool("Shooting " + comboCount, true);
+            Animator.SetTrigger("Shooting");
         }
         else
         {
@@ -68,6 +69,7 @@ public class HittingState : GroundedStates
         {
             if (playerIsSatan)
             {
+                
                 Animator.SetBool("Shooting " + comboCount, false);
             }
             else
@@ -88,7 +90,7 @@ public class HittingState : GroundedStates
 
     public override void PhysicsUpdate()
     {
-        base.PhysicsUpdate();
+        //base.PhysicsUpdate();
         hitDir = player.ActiveSR.flipX ? -1f : 1f;
         hitElapsed += Time.deltaTime;
         BoxCollider2D box = player.GetComponent<BoxCollider2D>();
