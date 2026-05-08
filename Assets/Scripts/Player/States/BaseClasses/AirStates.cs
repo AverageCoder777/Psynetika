@@ -41,7 +41,6 @@ public abstract class AirStates : State
         {
             wallContactTime = 0f;
         }
-        Debug.Log("Player velocity y: " + player.Rb.linearVelocity.y);
     }
     public override void PhysicsUpdate()
     {

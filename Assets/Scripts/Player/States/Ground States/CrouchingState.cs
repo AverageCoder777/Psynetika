@@ -19,27 +19,23 @@ public class CrouchingState : GroundedStates
         capsule = player.GetComponent<BoxCollider2D>();
         originalCapsuleSize = capsule.size;
         originalCapsuleOffset = capsule.offset;
-        if (player.DebugMessages) Debug.Log("Entered Crouching State");
         Vector2 newSize = new(originalCapsuleSize.x, originalCapsuleSize.y * player.CrouchHeightMultiplier);
         float delta = originalCapsuleSize.y - newSize.y;
         capsule.size = newSize;
         capsule.offset = new Vector2(originalCapsuleOffset.x, originalCapsuleOffset.y - delta / 2f);
         Animator.SetBool(CrouchingHash, true);
-#if UNITY_EDITOR
-        if (player.DebugMessages) Debug.Log("Entered crouching state");
-#endif
         player.LastState = this;
     }
     public override void HandleInput()
     {
-        base.HandleInput();
+        player.MovementInput = player.PlayerInput.actions["Move"].ReadValue<Vector2>();
         crouchHeld = player.PlayerInput.actions["Crouch"].IsPressed();
         jumpInput = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
     }
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        if (!crouchHeld&&CanStandUp())
+        if (!crouchHeld && CanStandUp())
         {
             StopCrouch();
             stateMachine.ChangeState(player.IdleState);
@@ -54,92 +50,47 @@ public class CrouchingState : GroundedStates
     }
     public override void PhysicsUpdate()
     {
-        float targetVelocityX = player.MovementInput.x * player.GetCharSpeed()*0.5f;//0.5 - фактор скорости в приседе, добавить переменную!!!
-        float currentVelocityX = player.Rb.linearVelocity.x;   
-        float accelerationToUse = player.MovementInput.x != 0 ? player.AccelerationRate : player.FrictionRate;
-        float newVelocityX = Mathf.Lerp(currentVelocityX, targetVelocityX, accelerationToUse * Time.fixedDeltaTime);
-        
-        player.Rb.linearVelocity = new Vector2(newVelocityX, 0);
-        Debug.Log("Linear Velocity: " + player.Rb.linearVelocity);
-        
-        if (player.MovementInput.x > 0.01f)
+        player.Rb.linearVelocity = new Vector2(player.MovementInput.x, player.MovementInput.y);
+
+        if (player.MovementInput.x > 0.001f)
             player.ActiveSR.flipX = false;
-        else if (player.MovementInput.x < -0.01f)
+        else if (player.MovementInput.x < -0.001f)
             player.ActiveSR.flipX = true;
     }
     public override void Exit()
     {
         base.Exit();
         Animator.SetBool(CrouchingHash, false);
-#if UNITY_EDITOR
-        if (player.DebugMessages) Debug.Log("Exited Crouching State");
-#endif
     }
     private bool CanStandUp()
     {
         Vector2 capsuleCenter = (Vector2)player.transform.position + capsule.offset;
-        
+
         // Верхняя точка текущей (сжатой) капсулы
         float crouchCapsuleTop = capsuleCenter.y + (capsule.size.y / 1.5f);
-        
+
         // Верхняя точка оригинальной капсулы
         float originalCapsuleTop = capsuleCenter.y + (originalCapsuleSize.y / 1.5f);
-        
+
         // Дистанция проверки = разница в высоте + buffer
         float headroomNeeded = originalCapsuleTop - crouchCapsuleTop + headCheckDistanceBuffer;
 
         // 3 рэйкаста вверх: слева, центр, справа
         float halfWidth = capsule.size.x / 2f;
         Vector2 originCenter = new(capsuleCenter.x, crouchCapsuleTop);
+        
         RaycastHit2D hitLeft = Physics2D.Raycast(originCenter + Vector2.left * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
-#if UNITY_EDITOR
-        if (player.DebugMessages)
-        {
-            Color color = (hitLeft.collider != null && !hitLeft.collider.isTrigger) ? Color.red : Color.green;
-            Debug.DrawRay(originCenter + Vector2.left * halfWidth, Vector2.up * headroomNeeded, color, 0.1f);
-        }
-#endif
         RaycastHit2D hitCenter = Physics2D.Raycast(originCenter, Vector2.up, headroomNeeded, obstacleMask);
-#if UNITY_EDITOR
-        if (player.DebugMessages)
-        {
-            Color color = (hitCenter.collider != null && !hitCenter.collider.isTrigger) ? Color.red : Color.green;
-            Debug.DrawRay(originCenter, Vector2.up * headroomNeeded, color, 0.1f);
-        }
-#endif
         RaycastHit2D hitRight = Physics2D.Raycast(originCenter + Vector2.right * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
-#if UNITY_EDITOR
-        if (player.DebugMessages)
-        {
-            Color color = (hitRight.collider != null && !hitRight.collider.isTrigger) ? Color.red : Color.green;
-            Debug.DrawRay(originCenter + Vector2.right * halfWidth, Vector2.up * headroomNeeded, color, 0.1f);
-        }
-#endif
 
-        #if UNITY_EDITOR
-        if (player.DebugMessages)
+        if ((hitLeft.collider != null && !hitLeft.collider.isTrigger) ||
+            (hitCenter.collider != null && !hitCenter.collider.isTrigger) ||
+            (hitRight.collider != null && !hitRight.collider.isTrigger))
         {
-            Debug.Log($"CanStandUp: origin={originCenter}, halfWidth={halfWidth}, headroom={headroomNeeded:F2}");
-            Debug.Log($"  Left: {(hitLeft.collider != null ? $"hit {hitLeft.distance:F2} ({hitLeft.collider.name})" : "clear")}");
-            Debug.Log($"  Center: {(hitCenter.collider != null ? $"hit {hitCenter.distance:F2} ({hitCenter.collider.name})" : "clear")}");
-            Debug.Log($"  Right: {(hitRight.collider != null ? $"hit {hitRight.distance:F2} ({hitRight.collider.name})" : "clear")}");
-        }
-        #endif
-
-        if ((hitLeft.collider != null&&!hitLeft.collider.isTrigger) ||
-            (hitCenter.collider != null&&!hitCenter.collider.isTrigger) ||
-            (hitRight.collider != null&&!hitRight.collider.isTrigger))
-        {
-            #if UNITY_EDITOR
-            if (player.DebugMessages) Debug.Log("CanStandUp: false (blocked)");
-            #endif
             return false;
         }
         else
         {
-            #if UNITY_EDITOR
-            if (player.DebugMessages) Debug.Log("CanStandUp: true (clear)");
-            #endif
             return true;
         }
     }

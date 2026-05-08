@@ -10,7 +10,6 @@ public abstract class GroundedStates : State
     }
     public override void Enter()
     {
-        player.MovementInput = Vector2.zero;
         Animator.SetBool(GroundedHash, true);
     }
     public override void LogicUpdate()

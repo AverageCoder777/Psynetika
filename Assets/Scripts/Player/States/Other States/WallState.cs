@@ -33,7 +33,7 @@ public class WallState : State
 
         DetectWall();
 
-        if (player.Rb.linearVelocity.y == 0 || wallSurfaceNormal == Vector2.zero)
+        if (Mathf.Abs(player.Rb.linearVelocity.y) < 0.001 || wallSurfaceNormal == Vector2.zero)
         {
             stateMachine.ChangeState(player.IdleState);
         }

@@ -46,32 +46,27 @@ public class IdleState : GroundedStates
             grounded = false;
             stateMachine.ChangeState(player.JumpingState);
         }
-        /*if (player.Rb.linearVelocity.y < 0 && !DetectPlatform()&& !DetectFloor())
-        {
-            grounded = false;
-            stateMachine.ChangeState(player.AirState);
-        }*/
-        if (roll)
+        else if (roll)
         {
             stateMachine.ChangeState(player.RollingState);
         }
-        if (@switch)
+        else if (@switch)
         {
             stateMachine.ChangeState(player.SwitchState);
         }
-        if (spell)
+        else if (spell)
         {
             player.PendingSpellSlot = SpellSlot.Regular;
             stateMachine.ChangeState(player.SpellCastState);
             return;
         }
-        if (spellUltimate)
+        else if (spellUltimate)
         {
             player.PendingSpellSlot = SpellSlot.Ultimate;
             stateMachine.ChangeState(player.SpellCastState);
             return;
         }
-        if (hit)
+        else if (hit)
         {
             stateMachine.ChangeState(player.HittingState);
         }
