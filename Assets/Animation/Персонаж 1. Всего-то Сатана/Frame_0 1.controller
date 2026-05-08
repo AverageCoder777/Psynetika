@@ -11,10 +11,13 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: Moving
     m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: Shooting 2
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 3643814270921801874}
   m_Solo: 0
-  m_Mute: 0
+  m_Mute: 1
   m_IsExit: 0
   serializedVersion: 3
   m_TransitionDuration: 0.25
@@ -32,8 +35,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u0410\u043D\u0438\u043C \u043F\u0440\u044B\u0436\u043A\u0430 \u043F\u043E\u043B\u0435\u0442
-    \u0432\u043D\u0438\u0437_Clip"
+  m_Name: Falling
   m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
@@ -111,7 +113,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u0410\u0442\u0430\u043A\u0430 2_Clip"
+  m_Name: Attack2
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -191,8 +193,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u0410\u043D\u0438\u043C \u043F\u0440\u044B\u0436\u043A\u0430 \u043F\u0435\u0440\u0435\u0445\u043E\u0434
-    \u0432\u043E \u0432\u0442\u043E\u0440\u043E\u0439 \u043F\u0440\u044B\u0436\u043E\u043A_Clip"
+  m_Name: DoubleJump
   m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
@@ -344,8 +345,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u043F\u0435\u0440\u0435\u0445\u043E\u0434 \u0441\u0442\u0430\u0442\u0438\u043A-\u043F\u0440\u0438\u0441\u0435\u0434
-    1_Clip"
+  m_Name: Idle-Crouch
   m_Speed: 1.4
   m_CycleOffset: 0
   m_Transitions:
@@ -435,10 +435,10 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -5856123687882505382}
-    m_Position: {x: 200, y: -160, z: 0}
+    m_Position: {x: -170, y: -420, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 2101736757521684302}
-    m_Position: {x: 200, y: -310, z: 0}
+    m_Position: {x: 180, y: -190, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2693995951796124575}
     m_Position: {x: 200, y: -420, z: 0}
@@ -450,22 +450,22 @@ AnimatorStateMachine:
     m_Position: {x: 200, y: -520, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6455260323967043145}
-    m_Position: {x: 910, y: -160, z: 0}
+    m_Position: {x: -270, y: -220, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5922712763540019509}
-    m_Position: {x: 200, y: -30, z: 0}
+    m_Position: {x: -640, y: -140, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7593716348287459136}
-    m_Position: {x: 200, y: 70, z: 0}
+    m_Position: {x: -650, y: 110, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3643814270921801874}
-    m_Position: {x: 900, y: 60, z: 0}
+    m_Position: {x: -70, y: 270, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 248226766707806863}
     m_Position: {x: 480, y: -420, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4586542493449088807}
-    m_Position: {x: 490, y: 70, z: 0}
+    m_Position: {x: -310, y: 260, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2419143270195074258}
     m_Position: {x: 1160, y: -70, z: 0}
@@ -493,7 +493,7 @@ AnimatorStateMachine:
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 1440, y: -70, z: 0}
-  m_EntryPosition: {x: -50, y: -150, z: 0}
+  m_EntryPosition: {x: -150, y: -540, z: 0}
   m_ExitPosition: {x: 1180, y: -260, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: -5856123687882505382}
@@ -529,7 +529,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u0410\u0442\u0430\u043A\u0430 1_Clip"
+  m_Name: Attack1
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -556,8 +556,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u0441\u0430\u0442\u0430\u043D\u0430 \u0441\u0438\u0434\u0438\u0442 \u0438
-    \u0445\u043E\u0434\u0438\u0442_Clip"
+  m_Name: CrouchWalk
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -792,8 +791,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u0410\u043D\u0438\u043C \u043F\u0440\u044B\u0436\u043A\u0430 \u043F\u043E\u043B\u0435\u0442
-    \u0432\u0432\u0435\u0440\u0445_Clip"
+  m_Name: Jump
   m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
@@ -821,7 +819,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u0441\u0430\u0442\u0430\u043D\u0443 \u0431\u044C\u044E\u0442_Clip"
+  m_Name: Hitting
   m_Speed: 1.6
   m_CycleOffset: 0
   m_Transitions:
@@ -1104,8 +1102,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u043F\u0435\u0440\u0435\u0445\u043E\u0434 \u043F\u043E\u043B\u0435\u0442
-    \u0432\u0432\u0435\u0440\u0445 - \u043F\u043E\u043B\u0435\u0442 \u0432\u043D\u0438\u0437_Clip"
+  m_Name: JumpFall
   m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
@@ -1132,8 +1129,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u0410\u0442\u0430\u043A\u0430 1 \u0432\u044B\u0445\u043E\u0434 \u0432
-    \u0430\u0439\u0434\u043B_Clip"
+  m_Name: Attack 1 to idle
   m_Speed: 0.7
   m_CycleOffset: 0
   m_Transitions:
@@ -1237,8 +1233,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u0410\u043D\u0438\u043C \u043F\u0440\u044B\u0436\u043A\u0430 \u043F\u0435\u0440\u0435\u0445\u043E\u0434
-    \u0441\u0442\u0430\u0442\u0438\u043A-\u043F\u0440\u044B\u0436\u043E\u043A_Clip"
+  m_Name: StartJump
   m_Speed: 1.3
   m_CycleOffset: 0
   m_Transitions:
@@ -1318,7 +1313,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u0425\u043E\u0434\u044C\u0431\u0430_Clip"
+  m_Name: Walk
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1483,7 +1478,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u0410\u043D\u0438\u043C \u0440\u044B\u0432\u043A\u0430_Clip"
+  m_Name: Dash
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1589,7 +1584,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u0410\u043D\u0438\u043C \u043F\u0440\u0438\u0441\u0435\u0434\u0430_Clip"
+  m_Name: Crouch
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1668,8 +1663,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\u0410\u0442\u0430\u043A\u0430 2 \u0432\u044B\u0445\u043E\u0434 \u0432
-    \u0430\u0439\u0434\u043B_Clip"
+  m_Name: Attack2 to Idle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
