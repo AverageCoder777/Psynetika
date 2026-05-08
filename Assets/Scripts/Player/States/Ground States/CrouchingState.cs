@@ -107,7 +107,6 @@ public class CrouchingState : GroundedStates
     IEnumerator DropThroughPlatform()
     {
         dropCompleted = false;
-        
         // Находим все коллайдеры платформ под игроком
         int platformLayer = LayerMask.NameToLayer("Platform");
         
@@ -117,7 +116,6 @@ public class CrouchingState : GroundedStates
             isDropping = false;
             yield break;
         }
-        
         Collider2D playerCollider = player.GetComponent<Collider2D>();
         
         // Ищем коллайдеры платформ, которые соприкасаются с игроком
@@ -128,12 +126,9 @@ public class CrouchingState : GroundedStates
             1 << platformLayer
         );
         
-        Debug.Log($"Найдено платформ коллайдеров: {platformColliders.Length}");
-        
         // Отключаем коллизии между игроком и найденными платформами
         foreach (var platformCollider in platformColliders)
         {
-            Debug.Log($"Игнорируем коллизию между игроком и платформой: {platformCollider.gameObject.name}");
             Physics2D.IgnoreCollision(playerCollider, platformCollider, true);
         }
         
@@ -142,12 +137,10 @@ public class CrouchingState : GroundedStates
         // Восстанавливаем коллизии
         foreach (var platformCollider in platformColliders)
         {
-            Debug.Log($"Восстанавливаем коллизию между игроком и платформой: {platformCollider.gameObject.name}");
             Physics2D.IgnoreCollision(playerCollider, platformCollider, false);
         }
         
         dropCompleted = true;
         isDropping = false;
-        Debug.Log("Прыжок через платформу совершен, dropCompleted = " + dropCompleted);
     }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class WallState : State
 {
+    private static readonly int WallSlidingHash = Animator.StringToHash("WallSliding");
     private bool jumpInput = false;
     private readonly float wallJumpThrustFactor = 1f;
     private readonly float wallJumpSpeed = 5f;
@@ -12,12 +13,8 @@ public class WallState : State
 
     public override void Enter()
     {
-        Animator.SetBool("WallSliding", true);
+        Animator.SetBool(WallSlidingHash, true);
         player.Rb.gravityScale = 1f;
-        if (player.DebugMessages)
-        {
-            Debug.Log("Entered Wall State");
-        }
         player.LastState = this;
     }
 
@@ -53,26 +50,17 @@ public class WallState : State
 
     private void WallJump()
     {
-        float horizontalVelocity = wallSurfaceNormal.x * wallJumpSpeed*wallJumpThrustFactor;//5 - базовая скорость отталкивания
+        float horizontalVelocity = wallSurfaceNormal.x * wallJumpSpeed * wallJumpThrustFactor;//5 - базовая скорость отталкивания
         float verticalVelocity = Mathf.Sqrt(player.WallJumpForce * 2f);
-        
-        player.Rb.linearVelocity = new Vector2(horizontalVelocity, verticalVelocity);
-        
-        player.ActiveSR.flipX = !player.ActiveSR.flipX;
 
-        if (player.DebugMessages)
-        {
-            Debug.Log("Wall Jump executed. Normal: " + wallSurfaceNormal + ", horizontalVelocity: " + horizontalVelocity + ", total velocity: " + player.Rb.linearVelocity);
-        }
+        player.Rb.linearVelocity = new Vector2(horizontalVelocity, verticalVelocity);
+
+        player.ActiveSR.flipX = !player.ActiveSR.flipX;
     }
 
     public override void Exit()
     {
-        Animator.SetBool("WallSliding", false);
-        if (player.DebugMessages)
-        {
-            Debug.Log("Exited Wall State");
-        }
+        Animator.SetBool(WallSlidingHash, false);
         base.Exit();
     }
 
@@ -80,16 +68,20 @@ public class WallState : State
     {
         Vector2 wallDetectionDirection = player.ActiveSR.flipX ? Vector2.left : Vector2.right;
         Vector2 raycastOrigin = (Vector2)player.transform.position + wallDetectionDirection * 0.25f;
-        
+
         RaycastHit2D hit = Physics2D.Raycast(
             raycastOrigin,
             wallDetectionDirection,
             player.WallDetectionDistance,
             LayerMask.GetMask("Walls")
         );
-        Debug.DrawRay(raycastOrigin, wallDetectionDirection * player.WallDetectionDistance,
-            hit.collider != null ? Color.green : Color.red);
-        
+#if UNITY_EDITOR
+        if (player.DebugMessages)
+        {
+            Debug.DrawRay(raycastOrigin, wallDetectionDirection * player.WallDetectionDistance,
+                hit.collider != null ? Color.green : Color.red);
+        }
+#endif
         if (hit.collider != null)
         {
             // Сохраняем нормаль поверхности стены

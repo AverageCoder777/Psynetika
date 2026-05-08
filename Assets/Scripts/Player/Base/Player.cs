@@ -40,10 +40,13 @@ public class Player : MonoBehaviour
 
     [Header("Здоровье и его UI")]
     [SerializeField] UIScript ui;
-    [SerializeField] UnityEngine.UI.Image healthBar;
-    [SerializeField] int maxHp = 100;
-    [SerializeField] int hp = 100;
-
+    [SerializeField] UnityEngine.UI.Image healthBarSatan;
+    [SerializeField] UnityEngine.UI.Image healthBarDog;
+    public UnityEngine.UI.Image currentHPBar;
+    [SerializeField] int maxHpSobaka = 100;
+    [SerializeField] int maxHpSatan = 100;
+    [SerializeField] int hpSobaka = 100;
+    [SerializeField] int hpSatan = 100;
     [Header("Время смены персонажа")]
     [SerializeField] public float switchDelay = 0.5f;
 
@@ -81,7 +84,7 @@ public class Player : MonoBehaviour
     public Rigidbody2D Rb { get { return rb; } }
     public Animator ActiveAnimator { get => activeAnimator; set => activeAnimator = value; }
     public SpriteRenderer ActiveSR { get => activeSR; set => activeSR = value; }
-    public GameObject ActiveCharacter {get => activeCharacter; set => activeCharacter = value; }
+    public GameObject ActiveCharacter { get => activeCharacter; set => activeCharacter = value; }
     public GameObject Satan { get => satan; set => satan = value; }
     public GameObject Sobaka { get => sobaka; set => sobaka = value; }
     public Vector2 MovementInput { get => movementInput; set => movementInput = value; }
@@ -92,6 +95,16 @@ public class Player : MonoBehaviour
     {
         float base_ = GetCurrentCharState() == SatanState ? satanSpeed : sobakaSpeed;
         return base_ * speedMultiplier;
+    }
+    public UnityEngine.UI.Image GetCurrentHPBar(){
+        if (GetCurrentCharState() == SatanState)
+        {
+            return healthBarSatan;
+        }
+        else
+        {
+            return healthBarDog;
+        }
     }
     public float AccelerationRate => accelerationRate;
     public float FrictionRate => frictionRate;
@@ -108,9 +121,9 @@ public class Player : MonoBehaviour
     public float CrouchHeightMultiplier => CROUCH_HEIGHT_MULTIPLIER;
     public float SwitchDelay => switchDelay;
     public State LastState { get => lastState; set => lastState = value; }
-    public bool DebugMessages =>debugMessages;
+    public bool DebugMessages => debugMessages;
     public SpellController SpellController => spellController;
-    public int MaxHp => maxHp;
+    public int MaxHp => GetCurrentCharState() == SatanState ? maxHpSatan : maxHpSobaka;
     public float SpeedMultiplier { get => speedMultiplier; set => speedMultiplier = value; }
     public float AttackSpeedMultiplier { get => attackSpeedMultiplier; set => attackSpeedMultiplier = value; }
     public float DamageMultiplier { get => damageMultiplier; set => damageMultiplier = value; }
@@ -119,6 +132,17 @@ public class Player : MonoBehaviour
     public PlayerState GetCurrentCharState()
     {
         return CharacterSM.GetCurrentState();
+    }
+    public void SetCurrentHPBar()
+    {
+        if (GetCurrentCharState() == SatanState)
+        {
+            currentHPBar = healthBarSatan;
+        }
+        else
+        {
+            currentHPBar = healthBarDog;
+        }
     }
     public float GetHittingSpeed()
     {
@@ -155,11 +179,19 @@ public class Player : MonoBehaviour
 
     public int TryDrainHP(int amount, int minHp)
     {
+        int hp = GetCurrentCharState() == SatanState ? hpSatan : hpSobaka;
         if (hp <= minHp) return 0;
         int actual = Mathf.Min(amount, hp - minHp);
-        hp -= actual;
         UpdateHealthUI();
         return actual;
+    }
+    public int GetCharHP()
+    {
+        return GetCurrentCharState() == SatanState ? hpSatan : hpSobaka;
+    }
+    public int GetMaxHp()
+    {
+        return GetCurrentCharState() == SatanState ? maxHpSatan : maxHpSobaka;
     }
 
     #endregion
@@ -171,7 +203,7 @@ public class Player : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         openUI = playerInput.actions["Pause"];
         InteractAction = playerInput.actions["Interact"];
-        
+
         if (spellController == null)
         {
             spellController = GetComponent<SpellController>();
@@ -181,16 +213,34 @@ public class Player : MonoBehaviour
         {
             interactionDetector = GetComponentInChildren<InteractionDetector>();
         }
-        
+
         satan = transform.Find("Satan").gameObject;
         sobaka = transform.Find("Dog").gameObject;
 
         activeCharacter = satan;
         satan.SetActive(true);
         sobaka.SetActive(false);
-        
+
         activeAnimator = activeCharacter.GetComponent<Animator>();
         activeSR = activeCharacter.GetComponent<SpriteRenderer>();
+
+        // Initialize state machines early to prevent null references
+        PlayerSM = new StateMovMachine();
+        CharacterSM = new StateCharMachine();
+        IdleState = new IdleState(this, PlayerSM);
+        JumpingState = new JumpingState(this, PlayerSM);
+        CrouchingState = new CrouchingState(this, PlayerSM);
+        RollingState = new RollingState(this, PlayerSM);
+        AirState = new AirState(this, PlayerSM);
+        SwitchState = new SwitchState(this, PlayerSM);
+        HittingState = new HittingState(this, PlayerSM);
+        WallState = new WallState(this, PlayerSM);
+        LadderState = new LadderState(this, PlayerSM);
+        SpellCastState = new SpellCastState(this, PlayerSM);
+        SobakaState = new SobakaState(this, CharacterSM);
+        SatanState = new SatanState(this, CharacterSM);
+        PlayerSM.Initialize(IdleState);
+        CharacterSM.Initialize(SatanState);
 
         UpdateHealthUI();
     }
@@ -209,26 +259,6 @@ public class Player : MonoBehaviour
         {
             InteractAction.performed -= OnInteractPerformed;
         }
-    }
-
-    void Start()
-    {
-        PlayerSM = new StateMovMachine();
-        CharacterSM = new StateCharMachine();
-        IdleState = new IdleState(this, PlayerSM);
-        JumpingState = new JumpingState(this, PlayerSM);
-        CrouchingState = new CrouchingState(this, PlayerSM);
-        RollingState = new RollingState(this, PlayerSM);
-        AirState = new AirState(this, PlayerSM);
-        SwitchState = new SwitchState(this, PlayerSM);
-        HittingState = new HittingState(this, PlayerSM);
-        WallState = new WallState(this, PlayerSM);
-        LadderState = new LadderState(this, PlayerSM);
-        SpellCastState = new SpellCastState(this, PlayerSM);
-        SobakaState = new SobakaState(this, CharacterSM);
-        SatanState = new SatanState(this, CharacterSM);
-        PlayerSM.Initialize(IdleState);
-        CharacterSM.Initialize(SatanState);
     }
     void Update()
     {
@@ -273,32 +303,55 @@ public class Player : MonoBehaviour
 
     #endregion
     #region Abilities functions
-    
+
     public void TakeDamage(int damage)
     {
-        hp -= damage;
-        if (hp < 0) hp = 0;
-        if (debugMessages) Debug.Log("Player took " + damage + " damage. Current HP: " + hp);
+        if (GetCurrentCharState() == SatanState)
+        {
+            hpSatan -= damage;
+            if (hpSatan < 0) hpSatan = 0;
+        }
+        else
+        {
+            hpSobaka -= damage;
+            if (hpSobaka < 0) hpSobaka = 0;
+        }
+        if (debugMessages) Debug.Log("Player took " + damage + " damage. Current HP: " + GetCharHP());
         activeAnimator.SetTrigger("Hurt");
         UpdateHealthUI();
-        if (hp <= 0) Die();
+        if (GetCharHP() <= 0) Die();
     }
 
     public void Heal(int amount)
     {
-        hp += amount;
-        if (hp > maxHp) hp = maxHp;
+        if (GetCurrentCharState() == SatanState)
+        {
+            hpSatan += amount;
+            if (hpSatan > maxHpSatan) hpSatan = maxHpSatan;
+        }
+        else
+        {
+            hpSobaka += amount;
+            if (hpSobaka > maxHpSobaka) hpSobaka = maxHpSobaka;
+        }
         UpdateHealthUI();
     }
 
-    void UpdateHealthUI()
+    public void UpdateHealthUI()
     {
-        if (healthBar != null) healthBar.fillAmount = (float)hp / maxHp;
+        GetCurrentHPBar().fillAmount = (float)GetCharHP() / GetMaxHp();
     }
 
     public void ResetHealth()
     {
-        hp = maxHp;
+        if (GetCurrentCharState() == SatanState)
+        {
+            hpSatan = maxHpSatan;
+        }
+        else
+        {
+            hpSobaka = maxHpSobaka;
+        }
         UpdateHealthUI();
     }
 
@@ -309,7 +362,7 @@ public class Player : MonoBehaviour
     #endregion
     #region State Machine Variables
     public StateMovMachine PlayerSM { get; set; }
-    public StateCharMachine CharacterSM{get;set;}
+    public StateCharMachine CharacterSM { get; set; }
     public IdleState IdleState { get; set; }
     public JumpingState JumpingState { get; set; }
     public CrouchingState CrouchingState { get; set; }
@@ -321,7 +374,7 @@ public class Player : MonoBehaviour
     public SpellSlot PendingSpellSlot { get; set; }
     public WallState WallState { get; set; }
     public LadderState LadderState { get; set; }
-    public SatanState SatanState {get;set;}
-    public SobakaState SobakaState {get;set;}
+    public SatanState SatanState { get; set; }
+    public SobakaState SobakaState { get; set; }
     #endregion
 }

@@ -98,7 +98,7 @@ public class SpellCastState : GroundedStates
         Vector2 origin = box != null ? box.bounds.center : (Vector2)player.transform.position;
         Vector2 spawnPos = origin + Vector2.right * castDirection;
 
-        GameObject spellObj = (GameObject)Object.Instantiate(activeSpell.SpellPrefab, spawnPos, Quaternion.identity);
+        GameObject spellObj = Object.Instantiate(activeSpell.SpellPrefab, spawnPos, Quaternion.identity);
 
         SpellBase spellBase = spellObj.GetComponent<SpellBase>();
         if (spellBase != null)

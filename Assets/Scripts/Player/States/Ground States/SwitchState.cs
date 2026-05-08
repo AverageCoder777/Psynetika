@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class SwitchState : GroundedStates
 {
+    private static readonly int IsSwitchingHash = Animator.StringToHash("isSwitching");
+
     public SwitchState(Player player, StateMovMachine stateMachine)
         : base(player, stateMachine) { }
 
@@ -11,8 +13,6 @@ public class SwitchState : GroundedStates
     public override void Enter()
     {
         base.Enter();
-        if (player.DebugMessages)
-            Debug.Log("Entered Switch State");
         if (uiScript == null)
         {
             uiScript = Object.FindAnyObjectByType<UIScript>();
@@ -25,9 +25,10 @@ public class SwitchState : GroundedStates
         player.LastState = this;
     }
 
+
     private IEnumerator SwitchCharacter()
     {
-        player.ActiveAnimator.SetTrigger("isSwitching");
+        player.ActiveAnimator.SetTrigger(IsSwitchingHash);
         yield return new WaitForSeconds(player.SwitchDelay);
 
         if (player.GetCurrentCharState() == player.SatanState)
@@ -50,11 +51,9 @@ public class SwitchState : GroundedStates
                 Debug.Log("Switched to Satan");
             player.CharacterSM.ChangeState(player.SatanState);
         }
-        player.ActiveAnimator.SetBool("isSwitching", false);
+        player.ActiveAnimator.SetBool(IsSwitchingHash, false);
         CacheActiveVisuals();
-
-        if (player.DebugMessages)
-            Debug.Log("Switched character");
+        player.UpdateHealthUI();
         stateMachine.ChangeState(player.IdleState);
     }
 
