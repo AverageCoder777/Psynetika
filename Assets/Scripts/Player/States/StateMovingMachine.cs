@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class StateMovMachine
 {
     public State CurrentPlayerState { get; set; }
@@ -11,6 +13,9 @@ public class StateMovMachine
     public void ChangeState(State newState)
     {
         CurrentPlayerState.Exit();
+        #if UNITY_EDITOR
+        Debug.Log("Exited " + CurrentPlayerState + " and entered " + newState);
+        #endif
         CurrentPlayerState = newState;
         CurrentPlayerState.Enter();
     }

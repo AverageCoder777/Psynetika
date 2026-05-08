@@ -19,7 +19,6 @@ public class RollingState : GroundedStates
         Animator.SetTrigger(RollingHash);
         Animator.SetBool(GroundedHash, true);
         Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
-        if (player.DebugMessages) Debug.Log("Entered Rolling State");
         player.LastState = this;
     }
     public override void LogicUpdate()
@@ -57,6 +56,5 @@ public class RollingState : GroundedStates
         base.Exit();
         Animator.ResetTrigger(RollingHash);
         rollEnd = false;
-        if (player.DebugMessages) Debug.Log("Exited Rolling State");
     }
 }
