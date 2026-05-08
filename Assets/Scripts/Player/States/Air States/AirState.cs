@@ -71,7 +71,7 @@ public class AirState : AirStates
 
     public override void Exit()
     {
-        player.Rb.gravityScale = 1f;
+        player.Rb.gravityScale = player.Rb.linearVelocity.y >= 0f ? player.UpGravityScale : player.DownGravityScale;
         Animator.ResetTrigger(FallingHash);
         Animator.ResetTrigger(JumpingHash);
 #if UNITY_EDITOR

@@ -54,7 +54,7 @@ public class JumpingState : AirStates
             Animator.SetTrigger(DoubleJumpingHash);
             canDoubleJump = false;
         }
-        player.Rb.gravityScale = 1f;
+        player.Rb.gravityScale = player.Rb.linearVelocity.y >= 0 ? player.UpGravityScale : player.DownGravityScale;
 
         if (player.Rb.linearVelocity.y < -0.001f)
         {

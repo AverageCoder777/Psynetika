@@ -26,7 +26,7 @@ public class RollingState : GroundedStates
     {
         if (rollEnd)
         {
-            if (player.Rb.linearVelocity.y == 0f)
+            if (Mathf.Abs(player.Rb.linearVelocity.y) < 0.001f)
                 stateMachine.ChangeState(player.IdleState);
             else if (player.Rb.linearVelocity.y < 0f)
             {
