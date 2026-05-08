@@ -53,8 +53,6 @@ public class HittingState : GroundedStates
             Animator.SetBool("Hitting " + comboCount, true);
         }
         lastHitTime = Time.time;
-        if (player.DebugMessages)
-            Debug.Log("Entered Hitting State");
         player.LastState = this;
         jumpRequested = false;
     }
@@ -171,7 +169,5 @@ public class HittingState : GroundedStates
         {
             Animator.SetBool("Hitting " + comboCount, false);
         }
-        if (player.DebugMessages)
-            Debug.Log("Exited Hitting State");
     }
 }

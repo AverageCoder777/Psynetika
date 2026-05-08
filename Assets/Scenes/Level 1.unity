@@ -589,10 +589,13 @@ PrefabInstance:
       addedObject: {fileID: 443596845}
     - targetCorrespondingSourceObject: {fileID: 2777973371020978581, guid: c9cd0274ded7bb146b578c93615e7c88, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 668821315}
+      addedObject: {fileID: 668821320}
     - targetCorrespondingSourceObject: {fileID: 2777973371020978581, guid: c9cd0274ded7bb146b578c93615e7c88, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 668821314}
+      addedObject: {fileID: 668821319}
+    - targetCorrespondingSourceObject: {fileID: 2777973371020978581, guid: c9cd0274ded7bb146b578c93615e7c88, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 668821318}
     - targetCorrespondingSourceObject: {fileID: 7792104602400796014, guid: c9cd0274ded7bb146b578c93615e7c88, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3833346}
@@ -896,8 +899,27 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2777973371020978581, guid: c9cd0274ded7bb146b578c93615e7c88, type: 3}
   m_PrefabInstance: {fileID: 134425383}
   m_PrefabAsset: {fileID: 0}
---- !u!60 &668821314
-PolygonCollider2D:
+--- !u!251 &668821318
+PlatformEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 668821312}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RotationalOffset: 0
+  m_UseOneWay: 1
+  m_UseOneWayGrouping: 0
+  m_SurfaceArc: 165
+  m_UseSideFriction: 0
+  m_UseSideBounce: 0
+  m_SideArc: 1
+--- !u!61 &668821319
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -927,10 +949,10 @@ PolygonCollider2D:
     serializedVersion: 2
     m_Bits: 4294967295
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -8.361222, y: 2.79279}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 5.8515153, y: -2.6407769}
@@ -940,33 +962,16 @@ PolygonCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -8.724999, y: 2.86}
-      - {x: -8.724999, y: 2.72}
-      - {x: -8.005, y: 2.72}
-      - {x: -8.005, y: 2.8799999}
-      - {x: -8.085, y: 2.8799999}
-      - {x: -8.705, y: 2.87}
-    - - {x: -9.008047, y: 3.459305}
-      - {x: -9.635, y: 3.46}
-      - {x: -9.655, y: 3.4399998}
-      - {x: -9.657091, y: 3.3271534}
-      - {x: -9.635, y: 3.31}
-      - {x: -8.954389, y: 3.3093877}
-      - {x: -8.936224, y: 3.3269393}
-      - {x: -8.934999, y: 3.3760147}
-      - {x: -8.934999, y: 3.4399998}
-      - {x: -8.955, y: 3.46}
-  m_UseDelaunayMesh: 1
---- !u!60 &668821315
-PolygonCollider2D:
+  m_Size: {x: 0.7124424, y: 0.13498878}
+  m_EdgeRadius: 0
+--- !u!61 &668821320
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 668821312}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -990,10 +995,10 @@ PolygonCollider2D:
     serializedVersion: 2
     m_Bits: 4294967295
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -9.3013115, y: 3.381968}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 5.8515153, y: -2.6407769}
@@ -1003,28 +1008,8 @@ PolygonCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -8.723701, y: 2.8492763}
-      - {x: -8.724999, y: 2.72}
-      - {x: -8.005, y: 2.72}
-      - {x: -8.000327, y: 2.870654}
-      - {x: -8.090607, y: 2.8697197}
-      - {x: -8.705, y: 2.87}
-    - - {x: -9.085225, y: 3.4606366}
-      - {x: -9.418164, y: 3.4600523}
-      - {x: -9.635, y: 3.46}
-      - {x: -9.656091, y: 3.4602678}
-      - {x: -9.655, y: 3.408406}
-      - {x: -9.618243, y: 3.409015}
-      - {x: -9.574058, y: 3.4092329}
-      - {x: -9.28195, y: 3.4106736}
-      - {x: -8.970122, y: 3.4067976}
-      - {x: -8.947654, y: 3.4042609}
-      - {x: -8.933164, y: 3.405898}
-      - {x: -8.934091, y: 3.459776}
-      - {x: -8.955, y: 3.46}
-  m_UseDelaunayMesh: 1
+  m_Size: {x: 0.7073746, y: 0.12791896}
+  m_EdgeRadius: 0
 --- !u!1001 &676709933
 PrefabInstance:
   m_ObjectHideFlags: 0

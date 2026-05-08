@@ -20,8 +20,6 @@ public class IdleState : GroundedStates
         Animator.SetBool(MovingHash, false);
         grounded = true;
         player.Rb.linearVelocity = new Vector2(0, player.Rb.linearVelocity.y);
-        if (player.DebugMessages) Debug.Log("Entered Idle State");
-
     }
     public override void HandleInput()
     {
@@ -78,7 +76,6 @@ public class IdleState : GroundedStates
     public override void Exit()
     {
         base.Exit();
-        if (player.DebugMessages) Debug.Log("Exited Idle State");
     }
 
     protected bool DetectPlatform()
