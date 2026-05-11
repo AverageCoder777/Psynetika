@@ -43,12 +43,18 @@ public class SpellCastState : GroundedStates
 
         castDuration = Mathf.Max(0.05f, activeSpell.castDuration);
         castMoment = castDuration * Mathf.Clamp01(activeSpell.castMomentNormalized);
+        player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
     }
 
     public override void HandleInput()
     {
         base.HandleInput();
         jumpRequested = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
+    }
+
+    public override void PhysicsUpdate()
+    {
+        player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
     }
 
     public override void LogicUpdate()

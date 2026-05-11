@@ -56,6 +56,7 @@ public class HittingState : GroundedStates
         lastHitTime = Time.time;
         player.LastState = this;
         jumpRequested = false;
+        player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
     }
     public override void HandleInput()
     {
@@ -91,6 +92,7 @@ public class HittingState : GroundedStates
     public override void PhysicsUpdate()
     {
         //base.PhysicsUpdate();
+        player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
         hitDir = player.ActiveSR.flipX ? -1f : 1f;
         hitElapsed += Time.deltaTime;
         BoxCollider2D box = player.GetComponent<BoxCollider2D>();
