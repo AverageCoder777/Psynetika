@@ -32,21 +32,23 @@ public class CrouchingState : GroundedStates
     }
     public override void HandleInput()
     {
-        player.MovementInput = player.PlayerInput.actions["Move"].ReadValue<Vector2>();
+        base.HandleInput();
         crouchHeld = player.PlayerInput.actions["Crouch"].IsPressed();
         jumpInput = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
     }
+
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        Debug.Log("Player nazhimaet hod :" + movementInput.x);
         if (!crouchHeld && CanStandUp())
         {
             stateMachine.ChangeState(player.IdleState);
         }
-        if (crouchHeld && jumpInput && !isDropping) // Проверяем флаг
+        if (crouchHeld && jumpInput && !isDropping)
         {
             grounded = false;
-            isDropping = true; // Устанавливаем флаг
+            isDropping = true;
             player.StartCoroutine(DropThroughPlatform());
         }
         if (dropCompleted)
@@ -56,12 +58,17 @@ public class CrouchingState : GroundedStates
     }
     public override void PhysicsUpdate()
     {
-        float xmovement = player.MovementInput.x*player.GetCharSpeed()*0.5f;
-        player.Rb.linearVelocity = new Vector2(xmovement, player.Rb.linearVelocity.y);
+        float targetX = movementInput.x * player.GetCharSpeed() * 0.5f;
+        float currentX = player.Rb.linearVelocity.x;
 
-        if (player.MovementInput.x > 0.001f)
+        float accel = Mathf.Abs(movementInput.x) > 0.001f ? player.AccelerationRate : player.FrictionRate;
+        float newX = Mathf.Lerp(currentX, targetX, accel * Time.fixedDeltaTime);
+
+        player.Rb.linearVelocity = new Vector2(newX, player.Rb.linearVelocity.y);
+
+        if (movementInput.x > 0.001f)
             player.ActiveSR.flipX = false;
-        else if (player.MovementInput.x < -0.001f)
+        else if (movementInput.x < -0.001f)
             player.ActiveSR.flipX = true;
     }
     public override void Exit()
@@ -76,16 +83,12 @@ public class CrouchingState : GroundedStates
     {
         Vector2 capsuleCenter = (Vector2)player.transform.position + capsule.offset;
 
-        // Верхняя точка текущей (сжатой) капсул
         float crouchCapsuleTop = capsuleCenter.y + (capsule.size.y / 1.5f);
 
-        // Верхняя точка оригинальной капсулы
         float originalCapsuleTop = capsuleCenter.y + (originalCapsuleSize.y / 1.5f);
 
-        // Дистанция проверки = разница в высоте + buffer
         float headroomNeeded = originalCapsuleTop - crouchCapsuleTop + headCheckDistanceBuffer;
 
-        // 3 рэйкаста вверх: слева, центр, справа
         float halfWidth = capsule.size.x / 2f;
         Vector2 originCenter = new(capsuleCenter.x, crouchCapsuleTop);
 
@@ -107,8 +110,6 @@ public class CrouchingState : GroundedStates
     IEnumerator DropThroughPlatform()
     {
         dropCompleted = false;
-        
-        // Находим все коллайдеры платформ под игроком
         int platformLayer = LayerMask.NameToLayer("Platform");
         
         if (platformLayer == -1) 
@@ -117,37 +118,28 @@ public class CrouchingState : GroundedStates
             isDropping = false;
             yield break;
         }
-        
         Collider2D playerCollider = player.GetComponent<Collider2D>();
         
-        // Ищем коллайдеры платформ, которые соприкасаются с игроком
         Collider2D[] platformColliders = Physics2D.OverlapBoxAll(
             playerCollider.bounds.center,
             playerCollider.bounds.size,
             0,
             1 << platformLayer
         );
-        
-        Debug.Log($"Найдено платформ коллайдеров: {platformColliders.Length}");
-        
-        // Отключаем коллизии между игроком и найденными платформами
+
         foreach (var platformCollider in platformColliders)
         {
-            Debug.Log($"Игнорируем коллизию между игроком и платформой: {platformCollider.gameObject.name}");
             Physics2D.IgnoreCollision(playerCollider, platformCollider, true);
         }
         
         yield return new WaitForSeconds(player.DropThroughDuration);
-        
-        // Восстанавливаем коллизии
+
         foreach (var platformCollider in platformColliders)
         {
-            Debug.Log($"Восстанавливаем коллизию между игроком и платформой: {platformCollider.gameObject.name}");
             Physics2D.IgnoreCollision(playerCollider, platformCollider, false);
         }
         
         dropCompleted = true;
         isDropping = false;
-        Debug.Log("Прыжок через платформу совершен, dropCompleted = " + dropCompleted);
     }
 }

@@ -30,9 +30,6 @@ public class LadderState : State
         
         enterTime = Time.time;
         
-        if (player.DebugMessages)
-            Debug.Log("Entered Ladder State");
-        
         player.LastState = this;
     }
 
@@ -88,8 +85,5 @@ public class LadderState : State
         player.Rb.gravityScale = player.DownGravityScale;
         Animator.SetBool(ClimbingHash, false);
         Animator.SetBool(GroundedHash, true);
-        
-        if (player.DebugMessages)
-            Debug.Log("Exited Ladder State");
     }
 }

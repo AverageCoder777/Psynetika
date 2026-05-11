@@ -60,6 +60,7 @@ public class BerserkSpell : SpellBase
                         stacks++;
                         caster.AttackSpeedMultiplier += data.boostPerStack;
                         caster.DamageMultiplier += data.boostPerStack;
+                        caster.TakeDamage(drained);
                         Debug.Log($"[BerserkSpell] Stack +1 -> {stacks}/{data.maxStacks}. Drained {drained} HP.");
                     }
                     else

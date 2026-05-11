@@ -19,12 +19,6 @@ public class JumpingState : AirStates
         Animator.SetTrigger(JumpingHash);
         player.Rb.gravityScale = player.UpGravityScale;
         wallContactTime = 0f;
-#if UNITY_EDITOR
-        if (player.DebugMessages)
-        {
-            Debug.Log("Entered Jumping State");
-        }
-#endif
         player.LastState = this;
     }
 
@@ -67,11 +61,5 @@ public class JumpingState : AirStates
         base.Exit();
         Animator.ResetTrigger(JumpingHash);
         Animator.ResetTrigger(DoubleJumpingHash);
-#if UNITY_EDITOR
-        if (player.DebugMessages)
-        {
-            Debug.Log("Exited Jumping State");
-        }
-#endif
     }
 }

@@ -87,8 +87,13 @@ public abstract class AirStates : State
             player.WallDetectionDistance,
             LayerMask.GetMask("Walls")
         );
-        Debug.DrawRay(raycastOrigin, wallDetectionDirection * player.WallDetectionDistance,
-            hit.collider != null ? Color.green : Color.red);
+        #if UNITY_EDITOR
+        if (player.DebugMessages)
+        {
+            Debug.DrawRay(raycastOrigin, wallDetectionDirection * player.WallDetectionDistance,
+                hit.collider != null ? Color.green : Color.red);
+        }
+        #endif
 
         return hit.collider != null;
     }
@@ -104,8 +109,13 @@ public abstract class AirStates : State
             detectionDistance,
             LayerMask.GetMask("Floor")
         );
-        Debug.DrawRay(raycastOrigin, floorDetectionDirection * detectionDistance,
-            hit.collider != null ? Color.blue : Color.yellow);
+        #if UNITY_EDITOR
+        if (player.DebugMessages)
+        {
+            Debug.DrawRay(raycastOrigin, floorDetectionDirection * detectionDistance,
+                hit.collider != null ? Color.blue : Color.yellow);
+        }
+        #endif
 
         return hit.collider != null;
     }
@@ -122,8 +132,13 @@ public abstract class AirStates : State
             LayerMask.GetMask("Platform")
         );
 
-        Debug.DrawRay(raycastOrigin, platformDetectionDirection * detectionDistance,
-            hit.collider != null ? Color.blue : Color.yellow);
+        #if UNITY_EDITOR
+        if (player.DebugMessages)
+        {
+            Debug.DrawRay(raycastOrigin, platformDetectionDirection * detectionDistance,
+                hit.collider != null ? Color.blue : Color.yellow);
+        }
+        #endif
 
         return hit.collider != null;
     }

@@ -82,12 +82,12 @@ public class IdleState : GroundedStates
     {
         // Проверяем столкновение вниз (направление гравитации)
         Vector2 platformDetectionDirection = Vector2.down;
-        
+
         // Смещаем raycast origin вниз от центра игрока, чтобы избежать его собственного коллайдера
         Vector2 raycastOrigin = (Vector2)player.transform.position - Vector2.up * 0.5f;
-        
+
         float detectionDistance = 1f;
-        
+
         // Проверяем столкновение только вниз
         RaycastHit2D hit = Physics2D.Raycast(
             raycastOrigin,
@@ -97,8 +97,13 @@ public class IdleState : GroundedStates
         );
 
         // Отрисовка raycast для отладки (синий - столкновение, желтый - нет)
-        Debug.DrawRay(raycastOrigin, platformDetectionDirection * detectionDistance, 
-            hit.collider != null ? Color.blue : Color.yellow);
+#if UNITY_EDITOR
+        if (player.DebugMessages)
+        {
+            Debug.DrawRay(raycastOrigin, platformDetectionDirection * detectionDistance,
+                hit.collider != null ? Color.blue : Color.yellow);
+        }
+#endif
 
         return hit.collider != null;
     }
