@@ -1,7 +1,10 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+[RequireComponent(typeof(Rigidbody2D))]
 
+[RequireComponent(typeof(PlayerInput))]
+[RequireComponent(typeof(SpellController))]
 public class Player : MonoBehaviour
 {
     #region Fields
@@ -42,7 +45,8 @@ public class Player : MonoBehaviour
     [SerializeField] UIScript ui;
     [SerializeField] UnityEngine.UI.Image healthBarSatan;
     [SerializeField] UnityEngine.UI.Image healthBarDog;
-    public UnityEngine.UI.Image currentHPBar;
+    [SerializeField] GameObject HPOverlaySatan;
+    [SerializeField] GameObject HPOverlayDog;
     [SerializeField] int maxHpSobaka = 100;
     [SerializeField] int maxHpSatan = 100;
     [SerializeField] int hpSobaka = 100;
@@ -96,16 +100,6 @@ public class Player : MonoBehaviour
         float base_ = GetCurrentCharState() == SatanState ? satanSpeed : sobakaSpeed;
         return base_ * speedMultiplier;
     }
-    public UnityEngine.UI.Image GetCurrentHPBar(){
-        if (GetCurrentCharState() == SatanState)
-        {
-            return healthBarSatan;
-        }
-        else
-        {
-            return healthBarDog;
-        }
-    }
     public float AccelerationRate => accelerationRate;
     public float FrictionRate => frictionRate;
     public float Thrust => thrust;
@@ -123,7 +117,7 @@ public class Player : MonoBehaviour
     public State LastState { get => lastState; set => lastState = value; }
     public bool DebugMessages => debugMessages;
     public SpellController SpellController => spellController;
-    public int MaxHp => GetCurrentCharState() == SatanState ? maxHpSatan : maxHpSobaka;
+    public int MaxHp => GetMaxHp();
     public float SpeedMultiplier { get => speedMultiplier; set => speedMultiplier = value; }
     public float AttackSpeedMultiplier { get => attackSpeedMultiplier; set => attackSpeedMultiplier = value; }
     public float DamageMultiplier { get => damageMultiplier; set => damageMultiplier = value; }
@@ -133,17 +127,7 @@ public class Player : MonoBehaviour
     {
         return CharacterSM.GetCurrentState();
     }
-    public void SetCurrentHPBar()
-    {
-        if (GetCurrentCharState() == SatanState)
-        {
-            currentHPBar = healthBarSatan;
-        }
-        else
-        {
-            currentHPBar = healthBarDog;
-        }
-    }
+
     public float GetHittingSpeed()
     {
         float baseHittingSpeed;
@@ -175,15 +159,6 @@ public class Player : MonoBehaviour
     {
         float base_ = GetCurrentCharState() == SatanState ? hittingDamageSatana : hittingDamageSobaka;
         return Mathf.RoundToInt(base_ * damageMultiplier);
-    }
-
-    public int TryDrainHP(int amount, int minHp)
-    {
-        int hp = GetCurrentCharState() == SatanState ? hpSatan : hpSobaka;
-        if (hp <= minHp) return 0;
-        int actual = Mathf.Min(amount, hp - minHp);
-        UpdateHealthUI();
-        return actual;
     }
     public int GetCharHP()
     {
@@ -303,7 +278,14 @@ public class Player : MonoBehaviour
 
     #endregion
     #region Abilities functions
-
+    public int TryDrainHP(int amount, int minHp)
+    {
+        int hp = GetCurrentCharState() == SatanState ? hpSatan : hpSobaka;
+        if (hp <= minHp) return 0;
+        int actual = Mathf.Min(amount, hp - minHp);
+        UpdateHealthUI();
+        return actual;
+    }
     public void TakeDamage(int damage)
     {
         if (GetCurrentCharState() == SatanState)
@@ -316,7 +298,7 @@ public class Player : MonoBehaviour
             hpSobaka -= damage;
             if (hpSobaka < 0) hpSobaka = 0;
         }
-        if (debugMessages) Debug.Log("Player took " + damage + " damage. Current HP: " + GetCharHP());
+        if (debugMessages) Debug.Log("Player took " + damage + " damage. Current HP: " + GetCharHP() + ", max HP: " + GetMaxHp());
         activeAnimator.SetTrigger("Hurt");
         UpdateHealthUI();
         if (GetCharHP() <= 0) Die();
@@ -339,9 +321,22 @@ public class Player : MonoBehaviour
 
     public void UpdateHealthUI()
     {
-        GetCurrentHPBar().fillAmount = (float)GetCharHP() / GetMaxHp();
-    }
+        bool isSatan = GetCurrentCharState() == SatanState;
 
+        if (healthBarSatan != null && isSatan)
+        {
+            HPOverlaySatan.SetActive(true);
+            HPOverlayDog.SetActive(false);
+            healthBarSatan.fillAmount = (float)hpSatan / maxHpSatan;
+        }
+
+        else if (healthBarDog != null)
+        {
+            HPOverlayDog.SetActive(true);
+            HPOverlaySatan.SetActive(false);
+            healthBarDog.fillAmount = (float)hpSobaka / maxHpSobaka;
+        }
+    }
     public void ResetHealth()
     {
         if (GetCurrentCharState() == SatanState)
