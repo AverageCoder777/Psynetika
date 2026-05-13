@@ -4,7 +4,6 @@ public class AirState : AirStates
 {
     private static readonly int JumpingHash = Animator.StringToHash("Jumping");
     private static readonly int FallingHash = Animator.StringToHash("Falling");
-    private bool state_from_jump = false; // флаг для отслеживания, пройдет ли персонаж через player.Rb.linearVelocity.y == 0 в верхней точке параболы, чтобы случайно не врубать Idle в воздухе
 
     public AirState(Player player, StateMovMachine stateMachine) : base(player, stateMachine) { }
 
@@ -13,13 +12,11 @@ public class AirState : AirStates
         if (player.Rb.linearVelocity.y < 0)
         {
             Animator.SetTrigger(FallingHash);
-            state_from_jump = false;
             player.Rb.gravityScale = player.DownGravityScale;
         }
         else if (player.Rb.linearVelocity.y > 0)
         {
             Animator.SetTrigger(JumpingHash);
-            state_from_jump = true;
             player.Rb.gravityScale = player.UpGravityScale;
         }
     }
@@ -55,11 +52,7 @@ public class AirState : AirStates
     {
         base.LogicUpdate();
 
-        if (DetectFloor() && state_from_jump)
-        {
-            state_from_jump = false;
-        }
-        if (DetectFloor() && !state_from_jump)
+        if (DetectFloor() != "None")
         {
             player.LastState = this;
             stateMachine.ChangeState(player.IdleState);
