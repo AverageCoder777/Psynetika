@@ -83,9 +83,11 @@ public class Player : MonoBehaviour
     private float speedMultiplier = 1f;
     private float attackSpeedMultiplier = 1f;
     private float damageMultiplier = 1f;
+    private bool isVisibleToEnemies = true;
     #endregion
     #region Publlic Properties
     public Rigidbody2D Rb { get { return rb; } }
+    public bool IsVisibleToEnemies => isVisibleToEnemies;
     public Animator ActiveAnimator { get => activeAnimator; set => activeAnimator = value; }
     public SpriteRenderer ActiveSR { get => activeSR; set => activeSR = value; }
     public GameObject ActiveCharacter { get => activeCharacter; set => activeCharacter = value; }
@@ -121,7 +123,8 @@ public class Player : MonoBehaviour
     public float SpeedMultiplier { get => speedMultiplier; set => speedMultiplier = value; }
     public float AttackSpeedMultiplier { get => attackSpeedMultiplier; set => attackSpeedMultiplier = value; }
     public float DamageMultiplier { get => damageMultiplier; set => damageMultiplier = value; }
-    private InputAction openUI;
+    public bool SatanActive;
+    public bool SobakaActive;
     private InputAction InteractAction;
     public PlayerState GetCurrentCharState()
     {
@@ -176,7 +179,6 @@ public class Player : MonoBehaviour
 
         rb = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
-        openUI = playerInput.actions["Pause"];
         InteractAction = playerInput.actions["Interact"];
 
         if (spellController == null)
@@ -195,6 +197,8 @@ public class Player : MonoBehaviour
         activeCharacter = satan;
         satan.SetActive(true);
         sobaka.SetActive(false);
+        SobakaActive = true;
+        SatanActive = true;
 
         activeAnimator = activeCharacter.GetComponent<Animator>();
         activeSR = activeCharacter.GetComponent<SpriteRenderer>();
@@ -212,6 +216,7 @@ public class Player : MonoBehaviour
         WallState = new WallState(this, PlayerSM);
         LadderState = new LadderState(this, PlayerSM);
         SpellCastState = new SpellCastState(this, PlayerSM);
+        DieState = new DieState(this, PlayerSM);
         SobakaState = new SobakaState(this, CharacterSM);
         SatanState = new SatanState(this, CharacterSM);
         PlayerSM.Initialize(IdleState);
@@ -352,7 +357,14 @@ public class Player : MonoBehaviour
 
     public void Die()
     {
-        ui.GameOver();
+        DisableEnemyVisibility();
+        PlayerSM.ChangeState(DieState);
+        //ui.GameOver();
+    }
+
+    public void DisableEnemyVisibility()
+    {
+        isVisibleToEnemies = false;
     }
     #endregion
     #region State Machine Variables
@@ -369,6 +381,7 @@ public class Player : MonoBehaviour
     public SpellSlot PendingSpellSlot { get; set; }
     public WallState WallState { get; set; }
     public LadderState LadderState { get; set; }
+    public DieState DieState { get; set; }
     public SatanState SatanState { get; set; }
     public SobakaState SobakaState { get; set; }
     #endregion

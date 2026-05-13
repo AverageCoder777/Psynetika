@@ -15,6 +15,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject coinPrefab;
     private Animator animator;
     private bool isDead = false;
+    private Player player;
     public Animator Animator => animator;
     public int EnemyHealth => enemyHealth;
     public float EnemySpeed => enemySpeed;
@@ -25,6 +26,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        player = GameObject.FindWithTag("Player")?.GetComponent<Player>();
         enemySM = new EnemyStateMachine();
         idleState = new EnemyIdleState(this, enemySM);
         followState = new FollowState(this, enemySM);
@@ -33,6 +35,11 @@ public class Enemy : MonoBehaviour
     }
     void Update()
     {
+        if (player != null && !player.IsVisibleToEnemies)
+        {
+            PlayerInFollowRange = false;
+            PlayerInHitRange = false;
+        }
         enemySM.CurrentEnemyState.HandleInput();
         enemySM.CurrentEnemyState.LogicUpdate();
     }
@@ -42,7 +49,7 @@ public class Enemy : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.CompareTag("Player")) return;
+        if (!other.CompareTag("Player") || (player != null && !player.IsVisibleToEnemies)) return;
         if (followTrigger.IsTouching(other))
         {
             PlayerInFollowRange = true;

@@ -1,18 +1,18 @@
-using System.Collections;
 using UnityEngine;
+using System.Collections;
 
-public class SwitchState : GroundedStates
+public class DieState : State
 {
+    public DieState(Player player, StateMovMachine stateMachine) : base(player, stateMachine)
+    {
+    }
+    private static readonly int DieHash = Animator.StringToHash("Die");
     private static readonly int IsSwitchingHash = Animator.StringToHash("isSwitching");
-
-    public SwitchState(Player player, StateMovMachine stateMachine)
-        : base(player, stateMachine) { }
-
     private UIScript uiScript;
-
+    private float deathTimer = 0f;
+    private const float resurrectionDelay = 5.5f;
     public override void Enter()
     {
-        base.Enter();
         if (uiScript == null)
         {
             uiScript = Object.FindAnyObjectByType<UIScript>();
@@ -21,18 +21,46 @@ public class SwitchState : GroundedStates
                 Debug.LogError("UIScript не найден в сцене!");
             }
         }
-        player.StartCoroutine(SwitchCharacter());
-        player.LastState = this;
+        Animator.SetTrigger(DieHash);
+        deathTimer = 0f;
     }
-
-
+    public override void HandleInput()
+    {
+    }
+    public override void LogicUpdate()
+    {
+        deathTimer += Time.deltaTime;
+        if (deathTimer >= resurrectionDelay)
+        {
+            if (player.GetCurrentCharState() == player.SobakaState && player.Sobaka != null)
+            {
+                player.SobakaActive = false;
+                player.StartCoroutine(SwitchCharacter());
+                stateMachine.ChangeState(player.IdleState);
+            }
+            else if (player.GetCurrentCharState() == player.SatanState && player.Satan != null)
+            {
+                player.SatanActive = false;
+                player.StartCoroutine(SwitchCharacter());
+                stateMachine.ChangeState(player.IdleState);
+            }
+        }
+    }
+    public override void PhysicsUpdate()
+    {
+        player.Rb.linearVelocity = Vector2.zero;
+    }
+    public override void Exit()
+    {
+        deathTimer = 0f;
+    }
     private IEnumerator SwitchCharacter()
     {
         if (player.Sobaka == null || player.Satan == null) yield break;
         player.ActiveAnimator.SetTrigger(IsSwitchingHash);
         yield return new WaitForSeconds(player.SwitchDelay);
 
-        if (player.GetCurrentCharState() == player.SatanState && player.SobakaActive == true)
+        if (player.GetCurrentCharState() == player.SatanState)
         {
             player.Satan.SetActive(false);
             player.ActiveCharacter = player.Sobaka;
@@ -42,7 +70,7 @@ public class SwitchState : GroundedStates
             player.CharacterSM.ChangeState(player.SobakaState);
             uiScript.UpdateText("Sobaka");
         }
-        else if (player.SatanActive == true)
+        else
         {
             player.Sobaka.SetActive(false);
             player.ActiveCharacter = player.Satan;
@@ -57,7 +85,6 @@ public class SwitchState : GroundedStates
         player.UpdateHealthUI();
         stateMachine.ChangeState(player.IdleState);
     }
-
     void CacheActiveVisuals()
     {
         player.ActiveAnimator = player.ActiveCharacter.GetComponent<Animator>();
