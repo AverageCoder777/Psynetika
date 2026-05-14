@@ -2,10 +2,11 @@ using UnityEngine;
 
 public class EnemyHitState : EnemyStates
 {
+    private static readonly int HitHash = Animator.StringToHash("Hit");
     private float hitElapsed = 0f;
-    private float hitDuration => enemy.EnemyHitDuration;
+    private float HitDuration => enemy.EnemyHitDuration;
     private float hitSpeed => enemy.EnemySpeed;
-    private int hitDamage => enemy.EnemyDamage;
+    private int HitDamage => enemy.EnemyDamage;
     private bool hitCompleted = false;
     private bool damageDone = false;
     private Player playerScript;
@@ -19,8 +20,7 @@ public class EnemyHitState : EnemyStates
         {
             playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
         }
-        enemy.Animator.SetTrigger("Hit");
-        Debug.Log("Enemy Entered Hit State");
+        enemy.Animator.SetTrigger(HitHash);
         hitElapsed = 0f;
         hitCompleted = false;
         damageDone = false;
@@ -28,25 +28,31 @@ public class EnemyHitState : EnemyStates
 
     public override void LogicUpdate()
     {
-        if (!hitCompleted&&enemy.PlayerInHitRange)
+        if (enemy.PlayerInHitRange)
         {
-            enemy.Animator.SetBool("Hit", true);
-            hitElapsed += Time.deltaTime;
-            if (hitElapsed >= hitDuration && !damageDone)
+            if (!hitCompleted)
             {
-                playerScript.TakeDamage(hitDamage);
-                damageDone = true;
+                enemy.Animator.SetBool(HitHash, true);
+                hitElapsed += Time.deltaTime;
+                if (hitElapsed >= HitDuration && !damageDone)
+                {
+                    playerScript.TakeDamage(HitDamage);
+                    damageDone = true;
+                }
+                if (hitElapsed >= HitDuration)
+                {
+                    enemy.Animator.SetBool(HitHash, false);
+                    hitCompleted = true;
+                }
             }
-            if (hitElapsed >= hitDuration)
+            if (hitCompleted)
             {
-                enemy.Animator.SetBool("Hit", false);
-                hitCompleted = true;
-                stateMachine.ChangeState(enemy.idleState);
+                stateMachine.ChangeState(enemy.followState);
             }
         }
-        else if (!enemy.PlayerInHitRange)
+        else
         {
-            enemy.Animator.SetBool("Hit", false);
+            enemy.Animator.SetBool(HitHash, false);
             stateMachine.ChangeState(enemy.idleState);
         }
     }
@@ -57,8 +63,7 @@ public class EnemyHitState : EnemyStates
 
     public override void Exit()
     {
-        enemy.Animator.SetBool("Hit", false);
-        Debug.Log("Enemy Exited Hit State");
+        enemy.Animator.SetBool(HitHash, false);
         hitElapsed = 0f;
         hitCompleted = false;
         damageDone = false;

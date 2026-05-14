@@ -28,11 +28,15 @@ public class SwitchState : GroundedStates
 
     private IEnumerator SwitchCharacter()
     {
-        if (player.Sobaka == null || player.Satan == null) yield break;
+        if (player.SobakaActive == false || player.SatanActive == false)
+        {
+            stateMachine.ChangeState(player.IdleState);
+            yield break;
+        }
         player.ActiveAnimator.SetTrigger(IsSwitchingHash);
         yield return new WaitForSeconds(player.SwitchDelay);
 
-        if (player.GetCurrentCharState() == player.SatanState && player.SobakaActive == true)
+        if (player.GetCurrentCharState() == player.SatanState)
         {
             player.Satan.SetActive(false);
             player.ActiveCharacter = player.Sobaka;
@@ -42,7 +46,7 @@ public class SwitchState : GroundedStates
             player.CharacterSM.ChangeState(player.SobakaState);
             uiScript.UpdateText("Sobaka");
         }
-        else if (player.SatanActive == true)
+        else
         {
             player.Sobaka.SetActive(false);
             player.ActiveCharacter = player.Satan;

@@ -7,7 +7,7 @@ public class DamageDummy : MonoBehaviour, IAbilityTarget
     [SerializeField, Min(0.25f)] private float averageWindowSeconds = 5f;
     [SerializeField] private bool logDamageStats = true;
 
-    private readonly Queue<DamageSample> windowSamples = new Queue<DamageSample>();
+    private readonly Queue<DamageSample> windowSamples = new();
     private float windowDamage = 0f;
 
     public void TakeDamage(int damage)

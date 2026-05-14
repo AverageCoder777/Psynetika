@@ -367,9 +367,7 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
 
     public void Die()
     {
-        DisableEnemyVisibility();
         PlayerSM.ChangeState(DieState);
-        //ui.GameOver();
     }
 
     public void DisableEnemyVisibility()
@@ -379,6 +377,10 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
 
     int IAbilityStatOwner.CurrentHp => GetCharHP();
     int IAbilityDamageSource.GetBaseHitDamage() => GetHittingDamage();
+    public void EnableEnemyVisibility()
+    {
+        isVisibleToEnemies = true;
+    }
     #endregion
     #region State Machine Variables
     public StateMovMachine PlayerSM { get; set; }

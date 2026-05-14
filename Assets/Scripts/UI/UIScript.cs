@@ -5,47 +5,51 @@ using TMPro;
 public class UIScript : MonoBehaviour
 {
     [SerializeField] CanvasGroup pauseMenu;
-    [SerializeField] GameObject GameOverMenu;
-    [SerializeField] Player player;
+    [SerializeField] CanvasGroup GameOverMenu;
     [SerializeField] TextMeshProUGUI characterText;
     //[SerializeField] TeleportManager teleportManager;
+    public void Start()
+    {
+        pauseMenu.alpha = 0f;
+        pauseMenu.interactable = false;
+        GameOverMenu.alpha = 0f;
+        GameOverMenu.interactable = false;
+    }
     
     public void StartGame()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("Level1");
+        SceneManager.LoadScene("Level 1");
     }
 
-    public void Menu()
+    public void MainMenuButton()
     {
         SceneManager.LoadScene("Main menu");
     }
 
-    public void Continue()
+    public void ContinueButton()
     {
         Time.timeScale = 1f;
-        //pauseMenu.SetActive(false);
         pauseMenu.alpha = 0f;
         pauseMenu.interactable = false;
     }
-    public void Restart()
+    public void RestartButton()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("Level1");
+        SceneManager.LoadScene("Level 1");
     }
-
     public void Open()
     {
         Time.timeScale = 0f; 
         pauseMenu.alpha = 1f;
         pauseMenu.interactable = true;
-        //pauseMenu.SetActive(true);
     }
 
     public void GameOver()
     {
-        Debug.Log("пРОИГРЫШ");
-        GameOverMenu.SetActive(true);
+        Debug.Log("ПРАИПАЛ КАТОЧКУ!");
+        GameOverMenu.alpha = 1f;
+        GameOverMenu.interactable = true;
         Time.timeScale = 0f; 
     }
 
@@ -60,7 +64,7 @@ public class UIScript : MonoBehaviour
     }*/
 
 
-    public void Exit()
+    public void ExitButton()
     {
         Debug.Log("Выход из игры");
         Application.Quit();

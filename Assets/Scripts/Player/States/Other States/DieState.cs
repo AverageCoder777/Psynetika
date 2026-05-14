@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class DieState : State
 {
@@ -22,6 +23,7 @@ public class DieState : State
             }
         }
         Animator.SetTrigger(DieHash);
+        player.DisableEnemyVisibility();
         deathTimer = 0f;
     }
     public override void HandleInput()
@@ -32,15 +34,21 @@ public class DieState : State
         deathTimer += Time.deltaTime;
         if (deathTimer >= resurrectionDelay)
         {
-            if (player.GetCurrentCharState() == player.SobakaState && player.Sobaka != null)
+            if (player.GetCurrentCharState() == player.SobakaState)
             {
                 player.SobakaActive = false;
-                player.StartCoroutine(SwitchCharacter());
-                stateMachine.ChangeState(player.IdleState);
             }
-            else if (player.GetCurrentCharState() == player.SatanState && player.Satan != null)
+            else if (player.GetCurrentCharState() == player.SatanState)
             {
                 player.SatanActive = false;
+            }
+            if (!player.SobakaActive && !player.SatanActive)
+            {
+                uiScript.GameOver();
+                return;
+            }
+            else
+            {
                 player.StartCoroutine(SwitchCharacter());
                 stateMachine.ChangeState(player.IdleState);
             }
@@ -53,10 +61,10 @@ public class DieState : State
     public override void Exit()
     {
         deathTimer = 0f;
+        player.EnableEnemyVisibility();
     }
     private IEnumerator SwitchCharacter()
     {
-        if (player.Sobaka == null || player.Satan == null) yield break;
         player.ActiveAnimator.SetTrigger(IsSwitchingHash);
         yield return new WaitForSeconds(player.SwitchDelay);
 

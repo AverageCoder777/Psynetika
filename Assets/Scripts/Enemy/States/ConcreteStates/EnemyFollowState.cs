@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class FollowState : EnemyStates
 {
+    private static readonly int WalkingHash = Animator.StringToHash("Walking");
     private Transform playerT;
     private Vector3 initialScale;
 
@@ -14,7 +15,7 @@ public class FollowState : EnemyStates
         base.Enter();
         playerT = GameObject.FindWithTag("Player").transform;
         initialScale = enemy.transform.localScale;
-        enemy.Animator.SetBool("Walking", true);
+        enemy.Animator.SetBool(WalkingHash, true);
     }
 
     public override void LogicUpdate()
@@ -22,13 +23,13 @@ public class FollowState : EnemyStates
         base.LogicUpdate();
         if (!enemy.PlayerInFollowRange)
         {
-            enemy.Animator.SetBool("Walking", false);
+            enemy.Animator.SetBool(WalkingHash, false);
             stateMachine.ChangeState(enemy.idleState);
             return;
         }
         if (enemy.PlayerInHitRange)
         {
-            enemy.Animator.SetBool("Walking", false);
+            enemy.Animator.SetBool(WalkingHash, false);
             stateMachine.ChangeState(enemy.hitState);
             return;
         }
@@ -40,7 +41,7 @@ public class FollowState : EnemyStates
 
         Vector2 currentPos = enemy.transform.position;
         float targetX = playerT.position.x;
-        Vector2 targetPos = new Vector2(targetX, currentPos.y);
+        Vector2 targetPos = new(targetX, currentPos.y);
         float step = enemy.EnemySpeed * Time.fixedDeltaTime;
         Vector2 newPos = Vector2.MoveTowards(currentPos, targetPos, step);
         enemy.transform.position = newPos;
@@ -57,6 +58,6 @@ public class FollowState : EnemyStates
     public override void Exit()
     {
         base.Exit();
-        enemy.Animator.SetBool("Walking", false);
+        enemy.Animator.SetBool(WalkingHash, false);
     }
 }
