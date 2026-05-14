@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2958b82aba12f6e43a53ec7ccc45095a, type: 3}
+  m_Name: FireBullet
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectileSpellData
+  Id: 200
+  SpellName: Fire Bullet
+  SpellDescription: 
+  SpellIcon: {fileID: 7856930727806306150, guid: 30ae3fc2d332773469cdde1e70ea00a1, type: 3}
+  Owner: 1
+  Slot: 0
+  spellCooldown: 1
+  castDuration: 0.35
+  castMomentNormalized: 0.5
+  animClip: {fileID: 0}
+  projectilePrefab: {fileID: 319351763887075280, guid: 0c59fd2758ca73b40a28bc5186c527cc, type: 3}
+  speed: 10
+  damage: 10
+  lifetime: 5
+  spawnOffset: {x: 0.65, y: 0.22}
+  applyBurn: 0
+  burnDuration: 2
+  burnTickInterval: 0.5
+  burnDamagePerTick: 2

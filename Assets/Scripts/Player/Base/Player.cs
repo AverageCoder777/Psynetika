@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IAbilityCaster
 {
     #region Fields
     [Header("Персонажи")]
@@ -161,6 +161,14 @@ public class Player : MonoBehaviour
         UpdateHealthUI();
         return actual;
     }
+
+    // IAbilityCaster
+    Transform IAbilityCaster.Transform => transform;
+    Vector2 IAbilityCaster.Center =>
+        TryGetComponent(out BoxCollider2D box) ? (Vector2)box.bounds.center : (Vector2)transform.position;
+    float IAbilityCaster.FacingDirection => (activeSR != null && activeSR.flipX) ? -1f : 1f;
+    Team IAbilityCaster.Team => global::Team.Player;
+    MonoBehaviour IAbilityCaster.CoroutineHost => this;
 
     #endregion
     #region Unity MonoBehaviour Callbacks

@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 331cdfcadb86fa8428850325c254d61b, type: 3}
+  m_Name: FireBulletAbility
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityDefinition
+  id: satan.fire_bullet
+  slot: 2
+  cooldown: 1
+  costs: []
+  tags:
+  - fire
+  - projectile
+  animClip: {fileID: 0}
+  castDuration: 0.35
+  castMomentNormalized: 0.5
+  root:
+  - rid: 201
+  - rid: 283070704357736448
+  - rid: 283070704357736449
+  references:
+    version: 2
+    RefIds:
+    - rid: 201
+      type: {class: SpawnProjectileNode, ns: , asm: Assembly-CSharp}
+      data:
+        projectile: {fileID: 11400000, guid: 6d7032a96f3b4b28bf867b8db4f9ea13, type: 2}
+    - rid: 283070704357736448
+      type: {class: ApplyBurnNode, ns: , asm: Assembly-CSharp}
+      data:
+        duration: 2
+        tickInterval: 0.5
+        tickDamage: 2
+    - rid: 283070704357736449
+      type: {class: DamageNode, ns: , asm: Assembly-CSharp}
+      data:
+        amount: 10
+        type: 0

@@ -17,13 +17,6 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject, lifetime);
     }
 
-    public virtual void ConfigureFromSpell(SpellSatanData spellData)
-    {
-        if (spellData == null) return;
-        if (spellData.spellSpeed > 0f) speed = spellData.spellSpeed;
-        damage = Mathf.RoundToInt(spellData.spellDamage);
-    }
-
     public void SetDirection(float dir)
     {
         if (rb == null) rb = GetComponent<Rigidbody2D>();

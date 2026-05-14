@@ -30,7 +30,8 @@ public class BurnEffect : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < duration)
         {
-            await UniTask.Delay((int)duration);
+            int delayMs = Mathf.Max(1, Mathf.RoundToInt(tickInterval * 1000f));
+            await UniTask.Delay(delayMs);
             elapsed += tickInterval;
 
             if (enemy == null)

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IAbilityTarget
 {
     private static readonly int DamageHash = Animator.StringToHash("Damage");
     private static readonly int DieHash = Animator.StringToHash("Die");
@@ -80,6 +80,12 @@ public class Enemy : MonoBehaviour
             Die();
         }
     }
+
+    // IAbilityTarget
+    Transform IAbilityTarget.Transform => transform;
+    bool IAbilityTarget.IsAlive => !isDead;
+    Team IAbilityTarget.Team => global::Team.Enemy;
+    void IAbilityTarget.ReceiveDamage(DamageEvent ev) => TakeDamage(Mathf.RoundToInt(ev.Amount));
     void DropCoins()
     {
         for (int i = 0; i < coinsToDrop; i++)
