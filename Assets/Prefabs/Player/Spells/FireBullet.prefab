@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5523823108925535539}
   - component: {fileID: 5190062169072244549}
   - component: {fileID: 4024091154803437663}
-  - component: {fileID: -7734201254868623578}
+  - component: {fileID: 4324665446049970472}
   m_Layer: 0
   m_Name: FireBullet
   m_TagString: Untagged
@@ -171,7 +171,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-7734201254868623578
+--- !u!114 &4324665446049970472
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -180,10 +180,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 319351763887075280}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1d63c709f004a25b6f4f6da6fdb0d2b, type: 3}
+  m_Script: {fileID: 11500000, guid: 8d5eb74bed5dc4349864dca33c31a125, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FireBullet
-  spellOwner: 0
+  m_EditorClassIdentifier: Assembly-CSharp::Firebullet
   speed: 10
   lifetime: 5
   damage: 10

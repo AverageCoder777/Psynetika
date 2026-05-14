@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 
+public class Player : MonoBehaviour, IAbilityCaster
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(SpellController))]
 public class Player : MonoBehaviour
@@ -171,6 +172,14 @@ public class Player : MonoBehaviour
     {
         return GetCurrentCharState() == SatanState ? maxHpSatan : maxHpSobaka;
     }
+
+    // IAbilityCaster
+    Transform IAbilityCaster.Transform => transform;
+    Vector2 IAbilityCaster.Center =>
+        TryGetComponent(out BoxCollider2D box) ? (Vector2)box.bounds.center : (Vector2)transform.position;
+    float IAbilityCaster.FacingDirection => (activeSR != null && activeSR.flipX) ? -1f : 1f;
+    Team IAbilityCaster.Team => global::Team.Player;
+    MonoBehaviour IAbilityCaster.CoroutineHost => this;
 
     #endregion
     #region Unity MonoBehaviour Callbacks

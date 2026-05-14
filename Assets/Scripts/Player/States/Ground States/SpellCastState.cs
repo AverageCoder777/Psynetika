@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class SpellCastState : GroundedStates
 {
+    private const string SpellPlaceholderClipName = "SpellPlaceholder";
+    private static readonly int SpellTriggerHash = Animator.StringToHash("Spell");
+
     private float elapsed = 0f;
     private float castMoment = 0f;
     private float castDuration = 0f;
@@ -11,7 +14,6 @@ public class SpellCastState : GroundedStates
     private bool jumpRequested = false;
     private SpellSlot activeSlot;
     private SpellData activeSpell;
-    private string activeCastBool;
 
     public SpellCastState(Player player, StateMovMachine stateMachine)
         : base(player, stateMachine) { }
@@ -23,7 +25,6 @@ public class SpellCastState : GroundedStates
         casted = false;
         jumpRequested = false;
         activeSpell = null;
-        activeCastBool = string.Empty;
 
         isSatanCaster = player.GetCurrentCharState() == player.SatanState;
         castDirection = player.ActiveSR != null && player.ActiveSR.flipX ? -1f : 1f;
@@ -43,12 +44,20 @@ public class SpellCastState : GroundedStates
 
         castDuration = Mathf.Max(0.05f, activeSpell.castDuration);
         castMoment = castDuration * Mathf.Clamp01(activeSpell.castMomentNormalized);
+        player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
+
+        PlayCastAnimation();
     }
 
     public override void HandleInput()
     {
         base.HandleInput();
         jumpRequested = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
+    }
+
+    public override void PhysicsUpdate()
+    {
+        player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
     }
 
     public override void LogicUpdate()
@@ -83,29 +92,46 @@ public class SpellCastState : GroundedStates
     public override void Exit()
     {
         base.Exit();
-        if (!string.IsNullOrWhiteSpace(activeCastBool))
+    }
+
+    private void PlayCastAnimation()
+    {
+        if (activeSpell.animClip == null) return;
+
+        Animator animator = player.ActiveAnimator;
+        if (animator == null) return;
+
+        if (animator.runtimeAnimatorController is AnimatorOverrideController over)
         {
-            Animator.SetBool(activeCastBool, false);
+            over[SpellPlaceholderClipName] = activeSpell.animClip;
+            animator.SetTrigger(SpellTriggerHash);
+        }
+        else
+        {
+            Debug.LogWarning(
+                "[SpellCastState] У персонажа не настроен AnimatorOverrideController — анимация спелла не сыграет.");
         }
     }
 
     private void CastSpell()
     {
-        if (activeSpell == null || activeSpell.SpellPrefab == null)
-            return;
+        if (activeSpell == null) return;
 
         BoxCollider2D box = player.GetComponent<BoxCollider2D>();
         Vector2 origin = box != null ? box.bounds.center : (Vector2)player.transform.position;
-        Vector2 spawnPos = origin + Vector2.right * castDirection;
 
+        SpellCastContext ctx = new SpellCastContext
         GameObject spellObj = Object.Instantiate(activeSpell.SpellPrefab, spawnPos, Quaternion.identity);
 
         SpellBase spellBase = spellObj.GetComponent<SpellBase>();
         if (spellBase != null)
         {
-            spellBase.Initialize(player, activeSpell, castDirection);
-            spellBase.Cast(spawnPos);
-        }
+            Caster = player,
+            CasterCenter = origin,
+            Direction = castDirection,
+            Data = activeSpell
+        };
+        activeSpell.Cast(ctx);
 
         player.SpellController.StartCooldown(isSatanCaster, activeSlot, activeSpell);
     }

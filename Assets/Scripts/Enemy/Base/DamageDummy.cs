@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class DamageDummy : MonoBehaviour
+public class DamageDummy : MonoBehaviour, IAbilityTarget
 {
     [SerializeField, Min(0.25f)] private float averageWindowSeconds = 5f;
     [SerializeField] private bool logDamageStats = true;
@@ -50,4 +50,10 @@ public class DamageDummy : MonoBehaviour
         public float Time { get; }
         public int Damage { get; }
     }
+
+    // IAbilityTarget
+    Transform IAbilityTarget.Transform => transform;
+    bool IAbilityTarget.IsAlive => true;
+    Team IAbilityTarget.Team => global::Team.Neutral;
+    void IAbilityTarget.ReceiveDamage(DamageEvent ev) => TakeDamage(Mathf.RoundToInt(ev.Amount));
 }
