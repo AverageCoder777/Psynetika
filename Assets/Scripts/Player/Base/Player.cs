@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
-
 public class Player : MonoBehaviour, IAbilityCaster
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(SpellController))]
