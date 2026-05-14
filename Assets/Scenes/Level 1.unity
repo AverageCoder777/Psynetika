@@ -1422,7 +1422,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2368744020143133147, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2788388582096944350, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: player
@@ -1447,6 +1447,30 @@ PrefabInstance:
     - target: {fileID: 2789589414696421836, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3319103936669457304, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3319103936669457304, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3319103936669457304, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3319103936669457304, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3319103936669457304, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -120
+      objectReference: {fileID: 0}
+    - target: {fileID: 3319103936669457304, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -40
       objectReference: {fileID: 0}
     - target: {fileID: 3520699734456678204, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1507,6 +1531,18 @@ PrefabInstance:
     - target: {fileID: 5616443461791227971, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: m_VertexColorAlwaysGammaSpace
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5788938959340647558, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5788938959340647558, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
+      propertyPath: m_VerticalAlignment
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 5788938959340647558, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6045692219507399087, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: m_Sprite
@@ -1705,6 +1741,7 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 6730539550911646488, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
     - {fileID: 7868697028188491911, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
+    - {fileID: 2368744020143133147, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 4941266193295258863, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       insertIndex: 1
@@ -2456,7 +2493,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIScript
   pauseMenu: {fileID: 1654810211}
   GameOverMenu: {fileID: 0}
-  characterText: {fileID: 1627486326}
 --- !u!1001 &1510604358
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2659,17 +2695,6 @@ PolygonCollider2D:
       - {x: -14.29569, y: 0.31}
       - {x: -14.2956915, y: 0.3}
   m_UseDelaunayMesh: 1
---- !u!114 &1627486326 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4574171223273722353, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
-  m_PrefabInstance: {fileID: 676709933}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1654810210
 GameObject:
   m_ObjectHideFlags: 0
@@ -3696,4 +3721,3 @@ SceneRoots:
   - {fileID: 1743209225}
   - {fileID: 1944187272}
   - {fileID: 779910523}
-  - {fileID: 1951687594}

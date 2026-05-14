@@ -6,7 +6,6 @@ public class UIScript : MonoBehaviour
 {
     [SerializeField] CanvasGroup pauseMenu;
     [SerializeField] CanvasGroup GameOverMenu;
-    [SerializeField] TextMeshProUGUI characterText;
     //[SerializeField] TeleportManager teleportManager;
     public void Start()
     {
@@ -68,8 +67,5 @@ public class UIScript : MonoBehaviour
     {
         Debug.Log("Выход из игры");
         Application.Quit();
-    }
-    public void UpdateText(string text){
-        characterText.text = text;
     }
 }

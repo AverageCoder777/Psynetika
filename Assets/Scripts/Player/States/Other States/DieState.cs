@@ -76,14 +76,12 @@ public class DieState : State
             if (player.DebugMessages)
                 Debug.Log("Switched to Sobaka");
             player.CharacterSM.ChangeState(player.SobakaState);
-            uiScript.UpdateText("Sobaka");
         }
         else
         {
             player.Sobaka.SetActive(false);
             player.ActiveCharacter = player.Satan;
             player.Satan.SetActive(true);
-            uiScript.UpdateText("Satan");
             if (player.DebugMessages)
                 Debug.Log("Switched to Satan");
             player.CharacterSM.ChangeState(player.SatanState);
