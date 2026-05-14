@@ -2,10 +2,9 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
-public class Player : MonoBehaviour, IAbilityCaster
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(SpellController))]
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbilityDamageSource
 {
     #region Fields
     [Header("Персонажи")]
@@ -293,9 +292,12 @@ public class Player : MonoBehaviour
     #region Abilities functions
     public int TryDrainHP(int amount, int minHp)
     {
-        int hp = GetCurrentCharState() == SatanState ? hpSatan : hpSobaka;
+        bool isSatan = GetCurrentCharState() == SatanState;
+        int hp = isSatan ? hpSatan : hpSobaka;
         if (hp <= minHp) return 0;
         int actual = Mathf.Min(amount, hp - minHp);
+        if (isSatan) hpSatan -= actual;
+        else hpSobaka -= actual;
         UpdateHealthUI();
         return actual;
     }
@@ -374,6 +376,9 @@ public class Player : MonoBehaviour
     {
         isVisibleToEnemies = false;
     }
+
+    int IAbilityStatOwner.CurrentHp => GetCharHP();
+    int IAbilityDamageSource.GetBaseHitDamage() => GetHittingDamage();
     #endregion
     #region State Machine Variables
     public StateMovMachine PlayerSM { get; set; }
