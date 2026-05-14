@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 331cdfcadb86fa8428850325c254d61b, type: 3}
+  m_Name: Berserk
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityDefinition
+  id: berserk
+  displayName: Berserk
+  description: Drains HP over time and stacks attack buffs up to five times.
+  icon: {fileID: -2084964735090168002, guid: d8a09c2c06fdf7d40b735da826acb19c, type: 3}
+  slot: 2
+  cooldown: 8
+  costs: []
+  tags:
+  - buff
+  - self_drain
+  - berserk
+  animClip: {fileID: 0}
+  castDuration: 0.35
+  castMomentNormalized: 0.5
+  root:
+  - rid: 301
+  - rid: 302
+  - rid: 303
+  references:
+    version: 2
+    RefIds:
+    - rid: 301
+      type: {class: SnapshotOwnerStatsNode, ns: , asm: Assembly-CSharp}
+      data:
+        attackSpeedKey: berserk.baseAttackSpeed
+        damageKey: berserk.baseDamage
+        stacksKey: berserk.stacks
+        drainedKey: berserk.drained
+    - rid: 302
+      type: {class: TimedTickNode, ns: , asm: Assembly-CSharp}
+      data:
+        duration: 15
+        tickInterval: 1.5
+        onTick:
+        - rid: 304
+        - rid: 305
+    - rid: 303
+      type: {class: RestoreOwnerStatsNode, ns: , asm: Assembly-CSharp}
+      data:
+        attackSpeedKey: berserk.baseAttackSpeed
+        damageKey: berserk.baseDamage
+    - rid: 304
+      type: {class: DrainOwnerHpNode, ns: , asm: Assembly-CSharp}
+      data:
+        drainPercent: 0.1
+        criticalHpThreshold: 0.1
+        outputDrainedKey: berserk.drained
+    - rid: 305
+      type: {class: ApplyStackBuffFromDrainNode, ns: , asm: Assembly-CSharp}
+      data:
+        stacksKey: berserk.stacks
+        maxStacks: 5
+        boostPerStack: 0.1
+        buffAttackSpeed: 1
+        buffDamage: 1

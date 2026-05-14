@@ -469,10 +469,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a8f0617f662430c8f935b5e99f6bd62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellController
-  satanRegular: {fileID: 11400000, guid: 6391c52be62015f4dbf3397641d5f7ce, type: 2}
-  satanUltimate: {fileID: 0}
-  sobakaRegular: {fileID: 11400000, guid: 9a696dcaf5cb4d94ba20494e54dcbdde, type: 2}
-  sobakaUltimate: {fileID: 0}
+  satanRegular: {fileID: 11400000, guid: 8c74fd2cb4df4314bbbd6f2bfa812f09, type: 2}
+  satanUltimate: {fileID: 11400000, guid: b69d24b1dad74f6a99f522c7e4eb9e6a, type: 2}
+  sobakaRegular: {fileID: 11400000, guid: 92ad6057d6b864b4bbf69df138b66733, type: 2}
+  sobakaUltimate: {fileID: 11400000, guid: 0e0b98cb5e7848858c65ecde913f1b74, type: 2}
 --- !u!50 &104384304269117495
 Rigidbody2D:
   serializedVersion: 5

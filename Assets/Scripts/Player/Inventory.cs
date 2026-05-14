@@ -7,7 +7,7 @@ public class Inventory : MonoBehaviour
     public int coins = 0;
     public Action InventoryChenged;
     
-    public SpellData _SpellSatan;
+    public AbilityDefinition _AbilitySatan;
 
     public void AddCoins(int amount)
     {
@@ -21,11 +21,11 @@ public class Inventory : MonoBehaviour
         InventoryChenged?.Invoke();
     }
 
-    public void ChangSpell(SpellData spell)
+    public void ChangeAbility(AbilityDefinition ability, SpellOwner owner, SpellSlot slot)
     {
-        _SpellSatan =  spell;
-        _sc.SetSpell(spell);
-        
+        if (ability == null || _sc == null) return;
+        _AbilitySatan = ability;
+        _sc.SetAbility(ability, owner, slot);
     }
     
 }

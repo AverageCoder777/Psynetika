@@ -10,27 +10,38 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 331cdfcadb86fa8428850325c254d61b, type: 3}
-  m_Name: FireBulletAbility
+  m_Name: SatanDoubleShot
   m_EditorClassIdentifier: Assembly-CSharp::AbilityDefinition
-  id: satan.fire_bullet
-  displayName: Fire Bullet
-  description: Launches a fire projectile that burns enemies on hit.
+  id: satan.double_shot
+  displayName: Double Shot
+  description: Satan fires two quick high-damage projectiles.
   icon: {fileID: 7856930727806306150, guid: 30ae3fc2d332773469cdde1e70ea00a1, type: 3}
-  slot: 2
-  cooldown: 1
+  slot: 3
+  cooldown: 3
   costs: []
   tags:
   - fire
   - projectile
+  - burst
   animClip: {fileID: 0}
   castDuration: 0.35
-  castMomentNormalized: 0.5
+  castMomentNormalized: 0.4
   root:
-  - rid: 201
+  - rid: 601
+  - rid: 602
+  - rid: 603
   references:
     version: 2
     RefIds:
-    - rid: 201
+    - rid: 601
       type: {class: SpawnProjectileNode, ns: , asm: Assembly-CSharp}
       data:
-        projectile: {fileID: 11400000, guid: 6d7032a96f3b4b28bf867b8db4f9ea13, type: 2}
+        projectile: {fileID: 11400000, guid: 1b34f8a4ac7f4d2084de27cb4e15f887, type: 2}
+    - rid: 602
+      type: {class: DelayNode, ns: , asm: Assembly-CSharp}
+      data:
+        seconds: 0.12
+    - rid: 603
+      type: {class: SpawnProjectileNode, ns: , asm: Assembly-CSharp}
+      data:
+        projectile: {fileID: 11400000, guid: 1b34f8a4ac7f4d2084de27cb4e15f887, type: 2}

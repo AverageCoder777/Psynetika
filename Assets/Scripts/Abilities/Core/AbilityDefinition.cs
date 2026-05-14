@@ -6,6 +6,9 @@ using MackySoft.SerializeReferenceExtensions;
 public class AbilityDefinition : ScriptableObject
 {
     public string id;
+    public string displayName;
+    [TextArea] public string description;
+    public Sprite icon;
     public AbilitySlot slot = AbilitySlot.Regular;
     public float cooldown = 1f;
     public List<ResourceCost> costs = new List<ResourceCost>();

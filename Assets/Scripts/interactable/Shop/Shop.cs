@@ -35,10 +35,10 @@ public class Shop : MonoBehaviour, IInteractable
     public void ShowItem()
     {
         var Item = _shopList.ShoppingItems[_iItem];
-        
-        _iconSprite.sprite = Item.spell.SpellIcon;
-        _name_item.text = Item.spell.SpellName;
-        _description_item.text = Item.spell.SpellDescription;
+
+        _iconSprite.sprite = Item.ability != null ? Item.ability.icon : null;
+        _name_item.text = Item.ability != null ? Item.ability.displayName : string.Empty;
+        _description_item.text = Item.ability != null ? Item.ability.description : string.Empty;
         _cost_item.text = $"{Item.amount}";
     }
 
@@ -67,14 +67,21 @@ public class Shop : MonoBehaviour, IInteractable
 
     public void BuyItem()
     {
-        if (_inventory.coins < _shopList.ShoppingItems[_iItem].amount)
+        var item = _shopList.ShoppingItems[_iItem];
+        if (item.ability == null)
+        {
+            Debug.LogWarning("Shop item ability is null");
+            return;
+        }
+
+        if (_inventory.coins < item.amount)
         {
             Debug.Log("Not enough coins");
             return;
         }
         
-        _inventory.RemoveCoins(_shopList.ShoppingItems[_iItem].amount);
-        _inventory.ChangSpell(_shopList.ShoppingItems[_iItem].spell);
+        _inventory.RemoveCoins(item.amount);
+        _inventory.ChangeAbility(item.ability, item.owner, item.slot);
     }
     
     

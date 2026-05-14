@@ -26,10 +26,10 @@ public class PlayerUIManager : MonoBehaviour
 
     private static void UpdateSlot(Image icon, Image fill, SpellController sc, bool isSatan, SpellSlot slot)
     {
-        SpellData spell = sc.GetSpellData(isSatan, slot);
+        AbilityDefinition ability = sc.GetAbilityData(isSatan, slot);
 
-        if (icon != null && spell != null && spell.SpellIcon != null)
-            icon.sprite = spell.SpellIcon;
+        if (icon != null && ability != null && ability.icon != null)
+            icon.sprite = ability.icon;
 
         if (fill != null)
             fill.fillAmount = 1f - sc.GetCooldownProgress(isSatan, slot);

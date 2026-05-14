@@ -7,7 +7,9 @@ public class ShopList : ScriptableObject
     [System.Serializable]
     public struct ShopItem
     {
-        public SpellData spell;
+        public AbilityDefinition ability;
+        public SpellOwner owner;
+        public SpellSlot slot;
         public int amount;
     }
 
@@ -15,18 +17,18 @@ public class ShopList : ScriptableObject
 
     public IReadOnlyList<ShopItem> ShoppingItems => shoppingItems;
 
-    public Dictionary<SpellData, int> ToDictionary()
+    public Dictionary<AbilityDefinition, int> ToDictionary()
     {
-        Dictionary<SpellData, int> result = new Dictionary<SpellData, int>();
+        Dictionary<AbilityDefinition, int> result = new Dictionary<AbilityDefinition, int>();
 
         foreach (ShopItem entry in shoppingItems)
         {
-            if (entry.spell == null)
+            if (entry.ability == null)
             {
                 continue;
             }
 
-            result[entry.spell] = entry.amount;
+            result[entry.ability] = entry.amount;
         }
 
         return result;

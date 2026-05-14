@@ -3,84 +3,82 @@ using UnityEngine;
 public class SpellController : MonoBehaviour
 {
     [Header("Satan")]
-    [SerializeField] private SpellData satanRegular;
-    [SerializeField] private SpellData satanUltimate;
+    [SerializeField] private AbilityDefinition satanRegular;
+    [SerializeField] private AbilityDefinition satanUltimate;
 
     [Header("Sobaka")]
-    [SerializeField] private SpellData sobakaRegular;
-    [SerializeField] private SpellData sobakaUltimate;
+    [SerializeField] private AbilityDefinition sobakaRegular;
+    [SerializeField] private AbilityDefinition sobakaUltimate;
 
-    private float satanRegularNextCastAt;
-    private float satanUltimateNextCastAt;
-    private float sobakaRegularNextCastAt;
-    private float sobakaUltimateNextCastAt;
+    private AbilityRunner abilityRunner;
+    private Player owner;
 
-    public bool TryGetReadySpell(bool isSatan, SpellSlot slot, out SpellData spell)
+    private void Awake()
     {
-        spell = GetSlotData(isSatan, slot);
-        if (spell == null) return false;
-        return Time.time >= GetNextCastAt(isSatan, slot);
+        owner = GetComponent<Player>();
+        abilityRunner = GetComponent<AbilityRunner>();
+        if (abilityRunner == null)
+        {
+            abilityRunner = gameObject.AddComponent<AbilityRunner>();
+        }
+
+        if (abilityRunner.Caster == null && owner != null)
+        {
+            abilityRunner.Initialize(owner, new AbilityServices());
+        }
     }
 
-    public void StartCooldown(bool isSatan, SpellSlot slot, SpellData spell)
+    public bool TryGetReadyAbility(bool isSatan, SpellSlot slot, out AbilityDefinition ability)
     {
-        if (spell == null) return;
-        SetNextCastAt(isSatan, slot, Time.time + Mathf.Max(0f, spell.spellCooldown));
+        ability = GetSlotData(isSatan, slot);
+        if (ability == null || abilityRunner == null) return false;
+        return abilityRunner.IsReady(ability);
+    }
+
+    public bool TryCast(bool isSatan, SpellSlot slot, IAbilityTarget target, Vector2 aimPosition)
+    {
+        if (!TryGetReadyAbility(isSatan, slot, out AbilityDefinition ability))
+        {
+            return false;
+        }
+
+        return abilityRunner.TryCast(ability, target, aimPosition);
     }
 
     public float GetCooldownProgress(bool isSatan, SpellSlot slot)
     {
-        SpellData spell = GetSlotData(isSatan, slot);
-        if (spell == null) return 1f;
-        float remaining = GetNextCastAt(isSatan, slot) - Time.time;
-        if (remaining <= 0f) return 1f;
-        return 1f - remaining / spell.spellCooldown;
+        AbilityDefinition ability = GetSlotData(isSatan, slot);
+        if (ability == null || abilityRunner == null) return 1f;
+        return abilityRunner.GetCooldownProgress(ability);
     }
 
-    public void SetSpell(SpellData spell)
+    public void SetAbility(AbilityDefinition ability, SpellOwner ownerType, SpellSlot slot)
     {
-        bool isSatan = spell.Owner == SpellOwner.Satan;
-        bool isSobaka = spell.Owner == SpellOwner.Sobaka;
+        if (ability == null) return;
+        bool isSatan = ownerType == SpellOwner.Satan;
+        bool isSobaka = ownerType == SpellOwner.Sobaka;
         if (!isSatan && !isSobaka)
         {
-            Debug.LogWarning("Spell Owner not a player");
+            Debug.LogWarning("Ability owner is not a player");
             return;
         }
-        if (spell.Slot == SpellSlot.Regular)
+        if (slot == SpellSlot.Regular)
         {
-            if (isSatan) satanRegular = spell; else sobakaRegular = spell;
+            if (isSatan) satanRegular = ability;
+            else sobakaRegular = ability;
         }
         else
         {
-            if (isSatan) satanUltimate = spell; else sobakaUltimate = spell;
+            if (isSatan) satanUltimate = ability;
+            else sobakaUltimate = ability;
         }
     }
 
-    public SpellData GetSpellData(bool isSatan, SpellSlot slot) => GetSlotData(isSatan, slot);
+    public AbilityDefinition GetAbilityData(bool isSatan, SpellSlot slot) => GetSlotData(isSatan, slot);
 
-    private SpellData GetSlotData(bool isSatan, SpellSlot slot)
+    private AbilityDefinition GetSlotData(bool isSatan, SpellSlot slot)
     {
         if (isSatan) return slot == SpellSlot.Regular ? satanRegular : satanUltimate;
         return slot == SpellSlot.Regular ? sobakaRegular : sobakaUltimate;
-    }
-
-    private float GetNextCastAt(bool isSatan, SpellSlot slot)
-    {
-        if (isSatan) return slot == SpellSlot.Regular ? satanRegularNextCastAt : satanUltimateNextCastAt;
-        return slot == SpellSlot.Regular ? sobakaRegularNextCastAt : sobakaUltimateNextCastAt;
-    }
-
-    private void SetNextCastAt(bool isSatan, SpellSlot slot, float value)
-    {
-        if (isSatan)
-        {
-            if (slot == SpellSlot.Regular) satanRegularNextCastAt = value;
-            else satanUltimateNextCastAt = value;
-        }
-        else
-        {
-            if (slot == SpellSlot.Regular) sobakaRegularNextCastAt = value;
-            else sobakaUltimateNextCastAt = value;
-        }
     }
 }

@@ -29,8 +29,7 @@ public static class AbilitySampleCreator
         ProjectileDefinition projectile = CreateProjectileDefinition(legacySpell, runtimePrefab);
         AbilityDefinition ability = CreateAbilityDefinition(legacySpell, projectile);
         AbilitySpellData bridge = CreateBridgeSpell(legacySpell, ability);
-
-        MaybeAssignToPlayerPrefab(legacySpell, bridge);
+        MaybeAssignToPlayerPrefab(ability);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -98,6 +97,9 @@ public static class AbilitySampleCreator
     {
         AbilityDefinition ability = LoadOrCreateAsset<AbilityDefinition>(OutputAbilityPath);
         ability.id = "satan.fire_bullet";
+        ability.displayName = legacySpell.SpellName;
+        ability.description = legacySpell.SpellDescription;
+        ability.icon = legacySpell.SpellIcon;
         ability.slot = AbilitySlot.Regular;
         ability.cooldown = legacySpell.spellCooldown;
         ability.animClip = legacySpell.animClip;
@@ -136,7 +138,7 @@ public static class AbilitySampleCreator
         return bridge;
     }
 
-    private static void MaybeAssignToPlayerPrefab(SpellData legacySpell, SpellData newSpell)
+    private static void MaybeAssignToPlayerPrefab(AbilityDefinition ability)
     {
         GameObject playerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabPath);
         if (playerPrefab == null)
@@ -154,9 +156,9 @@ public static class AbilitySampleCreator
 
         SerializedObject so = new SerializedObject(controller);
         SerializedProperty satanRegular = so.FindProperty("satanRegular");
-        if (satanRegular != null && satanRegular.objectReferenceValue == legacySpell)
+        if (satanRegular != null)
         {
-            satanRegular.objectReferenceValue = newSpell;
+            satanRegular.objectReferenceValue = ability;
             so.ApplyModifiedPropertiesWithoutUndo();
             PrefabUtility.SaveAsPrefabAsset(prefabRoot, PlayerPrefabPath);
             Debug.Log("[AbilitySampleCreator] Player prefab updated to use Fire Bullet ability spell.");

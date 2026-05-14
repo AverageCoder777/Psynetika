@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: Shop1
   m_EditorClassIdentifier: Assembly-CSharp::ShopList
   shoppingItems:
-  - spell: {fileID: 11400000, guid: 6391c52be62015f4dbf3397641d5f7ce, type: 2}
+  - ability: {fileID: 11400000, guid: 8c74fd2cb4df4314bbbd6f2bfa812f09, type: 2}
+    owner: 1
+    slot: 0
     amount: 5
-  - spell: {fileID: 11400000, guid: 6391c52be62015f4dbf3397641d5f7ce, type: 2}
+  - ability: {fileID: 11400000, guid: 10f6afe7afd9937408cac6941f98fb21, type: 2}
+    owner: 2
+    slot: 0
     amount: 9
