@@ -118,39 +118,56 @@ public class HittingState : GroundedStates
             }
             if (!playerIsSatan && hitElapsed >= hittingSpeed)
             {
-                RaycastHit2D hit = Physics2D.Raycast(origin, direction, hitDistance, enemyMask);
-                if (hit.collider != null)
+                // Create a box area in front of the player
+                Vector2 boxSize = new(hitDistance, 2f);
+                Vector2 boxCenter = origin + direction * (hitDistance / 2f);
+                
+                Collider2D[] hits = Physics2D.OverlapBoxAll(boxCenter, boxSize, 0f, enemyMask);
+                
+                // Draw debug box
+                Debug.DrawLine(boxCenter + new Vector2(-boxSize.x/2, -boxSize.y/2), 
+                              boxCenter + new Vector2(boxSize.x/2, -boxSize.y/2), Color.green);
+                Debug.DrawLine(boxCenter + new Vector2(boxSize.x/2, -boxSize.y/2), 
+                              boxCenter + new Vector2(boxSize.x/2, boxSize.y/2), Color.green);
+                Debug.DrawLine(boxCenter + new Vector2(boxSize.x/2, boxSize.y/2), 
+                              boxCenter + new Vector2(-boxSize.x/2, boxSize.y/2), Color.green);
+                Debug.DrawLine(boxCenter + new Vector2(-boxSize.x/2, boxSize.y/2), 
+                              boxCenter + new Vector2(-boxSize.x/2, -boxSize.y/2), Color.green);
+                
+                if (hits.Length > 0)
                 {
-                    Debug.DrawLine(origin, hit.point, Color.green);
-                    if (player.DebugMessages)
-                        Debug.Log("Hit " + hit.collider.name);
-                    Enemy enemy = hit.collider.GetComponent<Enemy>();
-                    if (enemy != null)
+                    foreach (Collider2D collider in hits)
                     {
-                        enemy.TakeDamage(player.GetHittingDamage());
-                        Debug.Log(
-                            "Player hitted enemy with "
-                                + player.GetHittingDamage()
-                                + " damage points"
-                        );
-                    }
-                    else
-                    {
-                        DamageDummy dummy = hit.collider.GetComponent<DamageDummy>();
-                        if (dummy != null)
+                        if (player.DebugMessages)
+                            Debug.Log("Hit " + collider.name);
+                        Enemy enemy = collider.GetComponent<Enemy>();
+                        if (enemy != null)
                         {
-                            dummy.TakeDamage(player.GetHittingDamage());
+                            enemy.TakeDamage(player.GetHittingDamage());
                             Debug.Log(
-                                "Player hitted dummy with "
+                                "Player hitted enemy with "
                                     + player.GetHittingDamage()
                                     + " damage points"
                             );
                         }
+                        else
+                        {
+                            DamageDummy dummy = collider.GetComponent<DamageDummy>();
+                            if (dummy != null)
+                            {
+                                dummy.TakeDamage(player.GetHittingDamage());
+                                Debug.Log(
+                                    "Player hitted dummy with "
+                                        + player.GetHittingDamage()
+                                        + " damage points"
+                                );
+                            }
+                        }
                     }
                 }
-                else
+                else if (player.DebugMessages)
                 {
-                    Debug.DrawLine(origin, origin + direction * hitDistance, Color.red);
+                    Debug.Log("No enemies hit in area");
                 }
             }
             if (hitElapsed >= hittingSpeed)

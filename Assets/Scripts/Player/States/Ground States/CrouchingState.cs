@@ -9,6 +9,7 @@ public class CrouchingState : GroundedStates
     private LayerMask obstacleMask = LayerMask.GetMask("Up Walls"); // Слой препятствий
     private readonly float headCheckDistanceBuffer = 0.1f;
     private bool crouchHeld;
+    private bool attackInput;
     private bool jumpInput;
     private bool dropCompleted;
     private bool isDropping = false; // Флаг для предотвращения множественных запусков
@@ -33,6 +34,7 @@ public class CrouchingState : GroundedStates
     public override void HandleInput()
     {
         base.HandleInput();
+        attackInput = player.PlayerInput.actions["Attack"].WasPressedThisFrame();
         crouchHeld = player.PlayerInput.actions["Crouch"].IsPressed();
         jumpInput = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
     }
@@ -54,6 +56,10 @@ public class CrouchingState : GroundedStates
         if (dropCompleted)
         {
             stateMachine.ChangeState(player.AirState);
+        }
+        if (attackInput && player.GetCurrentCharState() == player.SatanState)
+        {
+            stateMachine.ChangeState(player.HittingState);
         }
     }
     public override void PhysicsUpdate()
