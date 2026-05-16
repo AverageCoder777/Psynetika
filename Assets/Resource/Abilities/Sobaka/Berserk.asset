@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Berserk
   description: Drains HP over time and stacks attack buffs up to five times.
   icon: {fileID: -2084964735090168002, guid: d8a09c2c06fdf7d40b735da826acb19c, type: 3}
-  slot: 2
+  slot: 3
   cooldown: 8
   costs: []
   tags:
@@ -43,8 +43,8 @@ MonoBehaviour:
     - rid: 302
       type: {class: TimedTickNode, ns: , asm: Assembly-CSharp}
       data:
-        duration: 15
-        tickInterval: 1.5
+        duration: 10
+        tickInterval: 2
         onTick:
         - rid: 304
         - rid: 305

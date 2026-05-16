@@ -105,7 +105,9 @@ public class ChestScript : MonoBehaviour, IInteractable
 
     private IEnumerator SpawnCoinsRoutine()
     {
-        if (coinPrefab == null) yield break;
+        if (coinPrefab == null) {
+            Debug.Log("PIDORAS NE POSTAVIL MONETKI");
+            yield break;}
 
         int count = Random.Range(minCoins, maxCoins + 1);
         // if spawnBox provided, use its bounds to get random spawn positions
