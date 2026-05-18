@@ -16,7 +16,7 @@ public class AreaStrikeSpellData : SpellData
         if (ctx.Caster == null) return;
 
         Vector2 center = ctx.CasterCenter + Vector2.right * (ctx.Direction * forwardOffset);
-        int dmg = Mathf.RoundToInt(ctx.Caster.GetHittingDamage() * damageMultiplier);
+        int dmg = Mathf.RoundToInt(ctx.Caster.GetHitDamage() * damageMultiplier);
 
         Collider2D[] hits = Physics2D.OverlapBoxAll(center, hitBoxSize, 0f, LayerMask.GetMask("Enemy"));
         foreach (Collider2D hit in hits)

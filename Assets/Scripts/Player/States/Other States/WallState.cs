@@ -38,7 +38,7 @@ public class WallState : State
         if (jumpInput)
         {
             WallJump();
-            stateMachine.ChangeState(player.AirState);
+            stateMachine.ChangeState(player.FlyingState);
         }
     }
 

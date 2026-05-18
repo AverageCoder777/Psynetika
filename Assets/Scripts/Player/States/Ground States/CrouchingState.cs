@@ -55,7 +55,7 @@ public class CrouchingState : GroundedStates
         }
         if (dropCompleted)
         {
-            stateMachine.ChangeState(player.AirState);
+            stateMachine.ChangeState(player.FlyingState);
         }
         if (attackInput && player.GetCurrentCharState() == player.SatanState)
         {

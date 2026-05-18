@@ -48,7 +48,7 @@ public class IdleState : GroundedStates
         {
             stateMachine.ChangeState(player.RollingState);
         }
-        else if (@switch && player.SobakaActive != false && player.SatanActive != false)
+        else if (@switch && player.DogActive != false && player.SatanActive != false)
         {
             stateMachine.ChangeState(player.SwitchState);
         }

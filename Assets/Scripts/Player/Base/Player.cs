@@ -9,13 +9,13 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     #region Fields
     [Header("Персонажи")]
     public GameObject satan;
-    public GameObject sobaka;
+    public GameObject dog;
     private GameObject activeCharacter;
     private Animator activeAnimator;
     private SpriteRenderer activeSR;
 
     [Header("Движение")]
-    [SerializeField] float sobakaSpeed = 8f; // базовая скорость собаки
+    [SerializeField] float dogSpeed = 8f; // базовая скорость собаки
     [SerializeField] float satanSpeed = 6f; // базовая скорость сатаны
     [SerializeField] float accelerationRate = 15f; //ускорение, с которым игрок начинает движение
     [SerializeField] float frictionRate = 20f; // трение, которое замедляет персонажа, если игрок перестал идти
@@ -46,10 +46,10 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     [SerializeField] UnityEngine.UI.Image healthBarDog;
     [SerializeField] GameObject HPOverlaySatan;
     [SerializeField] GameObject HPOverlayDog;
-    [SerializeField] int maxHpSobaka = 100;
-    [SerializeField] int maxHpSatan = 100;
-    [SerializeField] int hpSobaka = 100;
-    [SerializeField] int hpSatan = 100;
+    [SerializeField] int dogMaxHP = 100;
+    [SerializeField] int satanMaxHP = 100;
+    [SerializeField] int dogHP = 100;
+    [SerializeField] int satanHP = 100;
     [Header("Время смены персонажа")]
     [SerializeField] public float switchDelay = 0.5f;
 
@@ -60,15 +60,15 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     [SerializeField] private float dropThroughDuration = 0.5f; //время, на которое платформы перестают иметь коллизию для персонажа
     [Header("Удары Собаки")]
     [Tooltip("Скорость удара задает время на один удар")]
-    [SerializeField] private float hittingSpeedSobaka = 1f;
-    [SerializeField] private float hitDistanceSobaka = 1f;
-    [SerializeField] private int hittingDamageSobaka = 10;
+    [SerializeField] private float dogHitTime = 1f;
+    [SerializeField] private float dogHitDistance = 1f;
+    [SerializeField] private int dogHitDamage = 10;
     [Header("Стрельба Сатаны")]
     public GameObject bulletPrefab;
-    [SerializeField] private int hittingDamageSatana = 22;
+    [SerializeField] private int satanHitDamage = 22;
     [Tooltip("Скорость удара задает время на один выстрел")]
-    [SerializeField] private float hittingSpeedSatana = 2f;
-    [SerializeField] private float hitDistanceSatana = 2f;
+    [SerializeField] private float satanHitTime = 2f;
+    [SerializeField] private float satanHitDistance = 2f;
     [Header("Spells")]
     [SerializeField] private SpellController spellController;
     [Header("Interaction")]
@@ -91,14 +91,14 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     public SpriteRenderer ActiveSR { get => activeSR; set => activeSR = value; }
     public GameObject ActiveCharacter { get => activeCharacter; set => activeCharacter = value; }
     public GameObject Satan { get => satan; set => satan = value; }
-    public GameObject Sobaka { get => sobaka; set => sobaka = value; }
+    public GameObject Dog { get => dog; set => dog = value; }
     public Vector2 MovementInput { get => movementInput; set => movementInput = value; }
     public PlayerInput PlayerInput => playerInput;
     public string PlatformLayerName => platformLayerName;
     public float DropThroughDuration => dropThroughDuration;
     public float GetCharSpeed()
     {
-        float base_ = GetCurrentCharState() == SatanState ? satanSpeed : sobakaSpeed;
+        float base_ = GetCurrentCharState() == SatanState ? satanSpeed : dogSpeed;
         return base_ * speedMultiplier;
     }
     public float AccelerationRate => accelerationRate;
@@ -123,52 +123,52 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     public float AttackSpeedMultiplier { get => attackSpeedMultiplier; set => attackSpeedMultiplier = value; }
     public float DamageMultiplier { get => damageMultiplier; set => damageMultiplier = value; }
     public bool SatanActive;
-    public bool SobakaActive;
+    public bool DogActive;
     private InputAction InteractAction;
     public PlayerState GetCurrentCharState()
     {
         return CharacterSM.GetCurrentState();
     }
 
-    public float GetHittingSpeed()
+    public float GetHitTime()
     {
-        float baseHittingSpeed;
+        float baseHitTime;
         if (GetCurrentCharState() == SatanState)
         {
-            baseHittingSpeed = hittingSpeedSatana;
+            baseHitTime = satanHitTime;
         }
         else
         {
-            baseHittingSpeed = hittingSpeedSobaka;
+            baseHitTime = dogHitTime;
         }
 
         float safeAttackSpeedMultiplier = Mathf.Max(0.05f, attackSpeedMultiplier);
-        return baseHittingSpeed / safeAttackSpeedMultiplier;
+        return baseHitTime / safeAttackSpeedMultiplier;
     }
 
     public float GetHitDistance()
     {
         if (GetCurrentCharState() == SatanState)
         {
-            return hitDistanceSatana;
+            return satanHitDistance;
         }
         else
         {
-            return hitDistanceSobaka;
+            return dogHitDistance;
         }
     }
-    public int GetHittingDamage()
+    public int GetHitDamage()
     {
-        float base_ = GetCurrentCharState() == SatanState ? hittingDamageSatana : hittingDamageSobaka;
+        float base_ = GetCurrentCharState() == SatanState ? satanHitDamage : dogHitDamage;
         return Mathf.RoundToInt(base_ * damageMultiplier);
     }
     public int GetCharHP()
     {
-        return GetCurrentCharState() == SatanState ? hpSatan : hpSobaka;
+        return GetCurrentCharState() == SatanState ? satanHP : dogHP;
     }
     public int GetMaxHp()
     {
-        return GetCurrentCharState() == SatanState ? maxHpSatan : maxHpSobaka;
+        return GetCurrentCharState() == SatanState ? satanMaxHP : dogMaxHP;
     }
 
     // IAbilityCaster
@@ -199,12 +199,12 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
         }
 
         satan = transform.Find("Satan").gameObject;
-        sobaka = transform.Find("Dog").gameObject;
+        dog = transform.Find("Dog").gameObject;
 
         activeCharacter = satan;
         satan.SetActive(true);
-        sobaka.SetActive(false);
-        SobakaActive = true;
+        dog.SetActive(false);
+        DogActive = true;
         SatanActive = true;
 
         activeAnimator = activeCharacter.GetComponent<Animator>();
@@ -217,14 +217,14 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
         JumpingState = new JumpingState(this, PlayerSM);
         CrouchingState = new CrouchingState(this, PlayerSM);
         RollingState = new RollingState(this, PlayerSM);
-        AirState = new AirState(this, PlayerSM);
+        FlyingState = new FlyingState(this, PlayerSM);
         SwitchState = new SwitchState(this, PlayerSM);
         HittingState = new HittingState(this, PlayerSM);
         WallState = new WallState(this, PlayerSM);
         LadderState = new LadderState(this, PlayerSM);
         SpellCastState = new SpellCastState(this, PlayerSM);
-        DieState = new DieState(this, PlayerSM);
-        SobakaState = new SobakaState(this, CharacterSM);
+        DyingState = new DyingState(this, PlayerSM);
+        DogState = new DogState(this, CharacterSM);
         SatanState = new SatanState(this, CharacterSM);
         PlayerSM.Initialize(IdleState);
         CharacterSM.Initialize(SatanState);
@@ -268,7 +268,7 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     {
         if (collision.CompareTag("Ladder") && PlayerSM.CurrentPlayerState == LadderState)
         {
-            PlayerSM.ChangeState(AirState);
+            PlayerSM.ChangeState(FlyingState);
         }
     }
 
@@ -293,11 +293,11 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     public int TryDrainHP(int amount, int minHp)
     {
         bool isSatan = GetCurrentCharState() == SatanState;
-        int hp = isSatan ? hpSatan : hpSobaka;
+        int hp = isSatan ? satanHP : dogHP;
         if (hp <= minHp) return 0;
         int actual = Mathf.Min(amount, hp - minHp);
-        if (isSatan) hpSatan -= actual;
-        else hpSobaka -= actual;
+        if (isSatan) satanHP -= actual;
+        else dogHP -= actual;
         UpdateHealthUI();
         return actual;
     }
@@ -305,13 +305,13 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     {
         if (GetCurrentCharState() == SatanState)
         {
-            hpSatan -= damage;
-            if (hpSatan < 0) hpSatan = 0;
+            satanHP -= damage;
+            if (satanHP < 0) satanHP = 0;
         }
         else
         {
-            hpSobaka -= damage;
-            if (hpSobaka < 0) hpSobaka = 0;
+            dogHP -= damage;
+            if (dogHP < 0) dogHP = 0;
         }
         if (debugMessages) Debug.Log("Player took " + damage + " damage. Current HP: " + GetCharHP() + ", max HP: " + GetMaxHp());
         activeAnimator.SetTrigger("Hurt");
@@ -323,13 +323,13 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     {
         if (GetCurrentCharState() == SatanState)
         {
-            hpSatan += amount;
-            if (hpSatan > maxHpSatan) hpSatan = maxHpSatan;
+            satanHP += amount;
+            if (satanHP > satanMaxHP) satanHP = satanMaxHP;
         }
         else
         {
-            hpSobaka += amount;
-            if (hpSobaka > maxHpSobaka) hpSobaka = maxHpSobaka;
+            dogHP += amount;
+            if (dogHP > dogMaxHP) dogHP = dogMaxHP;
         }
         UpdateHealthUI();
     }
@@ -342,32 +342,32 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
         {
             HPOverlaySatan.SetActive(true);
             HPOverlayDog.SetActive(false);
-            healthBarSatan.fillAmount = (float)hpSatan / maxHpSatan;
+            healthBarSatan.fillAmount = (float)satanHP / satanMaxHP;
         }
 
         else if (healthBarDog != null)
         {
             HPOverlayDog.SetActive(true);
             HPOverlaySatan.SetActive(false);
-            healthBarDog.fillAmount = (float)hpSobaka / maxHpSobaka;
+            healthBarDog.fillAmount = (float)dogHP / dogMaxHP;
         }
     }
     public void ResetHealth()
     {
         if (GetCurrentCharState() == SatanState)
         {
-            hpSatan = maxHpSatan;
+            satanHP = satanMaxHP;
         }
         else
         {
-            hpSobaka = maxHpSobaka;
+            dogHP = dogMaxHP;
         }
         UpdateHealthUI();
     }
 
     public void Die()
     {
-        PlayerSM.ChangeState(DieState);
+        PlayerSM.ChangeState(DyingState);
     }
 
     public void DisableEnemyVisibility()
@@ -376,7 +376,7 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     }
 
     int IAbilityStatOwner.CurrentHp => GetCharHP();
-    int IAbilityDamageSource.GetBaseHitDamage() => GetHittingDamage();
+    int IAbilityDamageSource.GetBaseHitDamage() => GetHitDamage();
     public void EnableEnemyVisibility()
     {
         isVisibleToEnemies = true;
@@ -389,15 +389,15 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     public JumpingState JumpingState { get; set; }
     public CrouchingState CrouchingState { get; set; }
     public RollingState RollingState { get; set; }
-    public AirState AirState { get; set; }
+    public FlyingState FlyingState { get; set; }
     public SwitchState SwitchState { get; set; }
     public HittingState HittingState { get; set; }
     public SpellCastState SpellCastState { get; set; }
     public SpellSlot PendingSpellSlot { get; set; }
     public WallState WallState { get; set; }
     public LadderState LadderState { get; set; }
-    public DieState DieState { get; set; }
+    public DyingState DyingState { get; set; }
     public SatanState SatanState { get; set; }
-    public SobakaState SobakaState { get; set; }
+    public DogState DogState { get; set; }
     #endregion
 }

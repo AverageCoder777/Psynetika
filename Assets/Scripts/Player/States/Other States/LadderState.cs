@@ -44,13 +44,13 @@ public class LadderState : State
         base.LogicUpdate();
         if (Time.time - enterTime > exitDelay && player.PlayerInput.actions["Interact"].WasPressedThisFrame())
         {
-            stateMachine.ChangeState(player.AirState);
+            stateMachine.ChangeState(player.FlyingState);
             return;
         }
         
         if (player.MovementInput.x != 0)
         {
-            stateMachine.ChangeState(player.AirState);
+            stateMachine.ChangeState(player.FlyingState);
             return;
         }
     }

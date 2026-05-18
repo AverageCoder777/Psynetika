@@ -30,7 +30,7 @@ public class RollingState : GroundedStates
             else if (player.Rb.linearVelocity.y < 0f)
             {
                 Animator.SetBool(GroundedHash, false);
-                stateMachine.ChangeState(player.AirState);
+                stateMachine.ChangeState(player.FlyingState);
             }
         }
     }

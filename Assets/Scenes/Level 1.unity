@@ -2154,6 +2154,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1898631065}
     - target: {fileID: 3977752050607818052, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
+      propertyPath: satanHitTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3977752050607818052, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
       propertyPath: HPOverlaySatan
       value: 
       objectReference: {fileID: 801512781}

@@ -1,5 +1,5 @@
-public class SobakaState : PlayerState
+public class DogState : PlayerState
 {
-    public SobakaState(Player player, StateCharMachine stateMachine)
+    public DogState(Player player, StateCharMachine stateMachine)
         : base(player, stateMachine) { }
 }

@@ -2,9 +2,9 @@ using UnityEngine;
 using System.Collections;
 using Unity.VisualScripting;
 
-public class DieState : State
+public class DyingState : State
 {
-    public DieState(Player player, StateMovMachine stateMachine) : base(player, stateMachine)
+    public DyingState(Player player, StateMovMachine stateMachine) : base(player, stateMachine)
     {
     }
     private static readonly int DieHash = Animator.StringToHash("Die");
@@ -34,15 +34,15 @@ public class DieState : State
         deathTimer += Time.deltaTime;
         if (deathTimer >= resurrectionDelay)
         {
-            if (player.GetCurrentCharState() == player.SobakaState)
+            if (player.GetCurrentCharState() == player.DogState)
             {
-                player.SobakaActive = false;
+                player.DogActive = false;
             }
             else if (player.GetCurrentCharState() == player.SatanState)
             {
                 player.SatanActive = false;
             }
-            if (!player.SobakaActive && !player.SatanActive)
+            if (!player.DogActive && !player.SatanActive)
             {
                 uiScript.GameOver();
                 return;
@@ -71,15 +71,15 @@ public class DieState : State
         if (player.GetCurrentCharState() == player.SatanState)
         {
             player.Satan.SetActive(false);
-            player.ActiveCharacter = player.Sobaka;
-            player.Sobaka.SetActive(true);
+            player.ActiveCharacter = player.Dog;
+            player.Dog.SetActive(true);
             if (player.DebugMessages)
                 Debug.Log("Switched to Sobaka");
-            player.CharacterSM.ChangeState(player.SobakaState);
+            player.CharacterSM.ChangeState(player.DogState);
         }
         else
         {
-            player.Sobaka.SetActive(false);
+            player.Dog.SetActive(false);
             player.ActiveCharacter = player.Satan;
             player.Satan.SetActive(true);
             if (player.DebugMessages)

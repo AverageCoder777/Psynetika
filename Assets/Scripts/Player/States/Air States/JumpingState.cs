@@ -52,7 +52,7 @@ public class JumpingState : AirStates
 
         if (player.Rb.linearVelocity.y < -0.001f)
         {
-            stateMachine.ChangeState(player.AirState);
+            stateMachine.ChangeState(player.FlyingState);
         }
     }
 

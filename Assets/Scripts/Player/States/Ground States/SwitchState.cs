@@ -18,7 +18,7 @@ public class SwitchState : GroundedStates
 
     private IEnumerator SwitchCharacter()
     {
-        if (player.SobakaActive == false || player.SatanActive == false)
+        if (player.DogActive == false || player.SatanActive == false)
         {
             stateMachine.ChangeState(player.IdleState);
             yield break;
@@ -29,15 +29,15 @@ public class SwitchState : GroundedStates
         if (player.GetCurrentCharState() == player.SatanState)
         {
             player.Satan.SetActive(false);
-            player.ActiveCharacter = player.Sobaka;
-            player.Sobaka.SetActive(true);
+            player.ActiveCharacter = player.Dog;
+            player.Dog.SetActive(true);
             if (player.DebugMessages)
                 Debug.Log("Switched to Sobaka");
-            player.CharacterSM.ChangeState(player.SobakaState);
+            player.CharacterSM.ChangeState(player.DogState);
         }
         else
         {
-            player.Sobaka.SetActive(false);
+            player.Dog.SetActive(false);
             player.ActiveCharacter = player.Satan;
             player.Satan.SetActive(true);
             if (player.DebugMessages)

@@ -6,10 +6,11 @@ public class HittingState : GroundedStates
     private static readonly int ShootingHash = Animator.StringToHash("Shooting");
     private float hitElapsed = 0f;
     private float hitDir = 1f;
-    private float hittingSpeed = 0f;
+    private float timeOfOneHit = 0f;
     private float hitDistance = 0f;
-    private bool hitComplete = false;
+    private bool hitCompleted = false;
     private bool jumpRequested = false;
+    private bool attackRequested = false;
     private LayerMask enemyMask = LayerMask.GetMask("Enemy");
     private int comboCount = 0;
     private float lastHitTime = 0f;
@@ -29,25 +30,38 @@ public class HittingState : GroundedStates
         }
         shooted = false;
         playerIsSatan = player.GetCurrentCharState() == player.SatanState;
-        hittingSpeed = player.GetHittingSpeed();
+        timeOfOneHit = player.GetHitTime();
         hitDistance = player.GetHitDistance();
         comboCount++;
         if (comboCount > 2) comboCount = 1;
-        if (comboCount == 1)
+
+        if (playerIsSatan)
         {
-            if (playerIsSatan)
-            {
-                Animator.SetTrigger(ShootingHash);
-            }
-            else
-            {
-                Animator.SetTrigger(HittingHash);
-            }
+            Animator.SetTrigger(ShootingHash);
         }
+        else
+        {
+            Animator.SetTrigger(HittingHash);
+        }
+
+        // Выключить все флаги комбо перед включением нового
+        if (playerIsSatan)
+        {
+            Animator.SetBool("Shooting 1", false);
+            Animator.SetBool("Shooting 2", false);
+            Animator.SetBool("Shooting 3", false);
+        }
+        else
+        {
+            Animator.SetBool("Hitting 1", false);
+            Animator.SetBool("Hitting 2", false);
+            Animator.SetBool("Hitting 3", false);
+        }
+
+        // Установить флаг для текущего комбо
         if (playerIsSatan)
         {
             Animator.SetBool("Shooting " + comboCount, true);
-            Animator.SetTrigger("Shooting");
         }
         else
         {
@@ -56,12 +70,14 @@ public class HittingState : GroundedStates
         lastHitTime = Time.time;
         player.LastState = this;
         jumpRequested = false;
+        attackRequested = false;
         player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
     }
     public override void HandleInput()
     {
         base.HandleInput();
         jumpRequested = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
+        attackRequested = attackRequested || player.PlayerInput.actions["Attack"].WasPressedThisFrame();
     }
 
     public override void LogicUpdate()
@@ -70,39 +86,46 @@ public class HittingState : GroundedStates
         {
             if (playerIsSatan)
             {
-                
+
                 Animator.SetBool("Shooting " + comboCount, false);
             }
             else
             {
                 Animator.SetBool("Hitting " + comboCount, false);
             }
-            hitComplete = true;
+            hitCompleted = true;
             if (player.DebugMessages)
                 Debug.Log("Hitting interrupted by jump input -> switching to JumpingState");
             stateMachine.ChangeState(player.JumpingState);
             return;
         }
-        if (hitComplete)
+        if (hitCompleted)
         {
-            stateMachine.ChangeState(player.IdleState);
+            Debug.Log("Sostoyanie attackRequested: " + attackRequested);
+            if (attackRequested)
+            {
+                RestartAttack();
+            }
+            else
+            {
+                stateMachine.ChangeState(player.IdleState);
+            }
         }
     }
 
     public override void PhysicsUpdate()
     {
-        //base.PhysicsUpdate();
         player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
         hitDir = player.ActiveSR.flipX ? -1f : 1f;
         hitElapsed += Time.deltaTime;
         BoxCollider2D box = player.GetComponent<BoxCollider2D>();
         Vector2 origin = (box != null) ? box.bounds.center : (Vector2)player.transform.position;
         Vector2 direction = Vector2.right * hitDir;
-        if (!hitComplete)
+        if (!hitCompleted)
         {
-            if (playerIsSatan && !shooted && hitElapsed >= (hittingSpeed / 2))
+            if (playerIsSatan && !shooted && hitElapsed >= (timeOfOneHit / 2))
             {
-                Vector2 spawnPos = new(origin.x+(direction.x*0.65f), origin.y + (direction.y*0.22f));
+                Vector2 spawnPos = new(origin.x + (direction.x * 0.65f), origin.y + (direction.y * 0.22f));
                 GameObject bulletObj = Object.Instantiate(
                     player.bulletPrefab,
                     spawnPos,
@@ -110,13 +133,13 @@ public class HittingState : GroundedStates
                 );
                 Debug.DrawLine(spawnPos, spawnPos + Vector2.up * 0.1f, Color.blue, 0.1f);
                 Bullet bullet = bulletObj.GetComponent<Bullet>();
-                bullet.damage = player.GetHittingDamage();
+                bullet.damage = player.GetHitDamage();
                 bullet.SetDirection(hitDir);
                 shooted = true;
                 if (player.DebugMessages)
                     Debug.Log("Shot a bullet in direction " + hitDir);
             }
-            if (!playerIsSatan && hitElapsed >= hittingSpeed)
+            if (!playerIsSatan && hitElapsed >= timeOfOneHit)
             {
                 // Create a box area in front of the player
                 Vector2 boxSize = new(hitDistance, 2f);
@@ -143,10 +166,10 @@ public class HittingState : GroundedStates
                         Enemy enemy = collider.GetComponent<Enemy>();
                         if (enemy != null)
                         {
-                            enemy.TakeDamage(player.GetHittingDamage());
+                            enemy.TakeDamage(player.GetHitDamage());
                             Debug.Log(
                                 "Player hitted enemy with "
-                                    + player.GetHittingDamage()
+                                    + player.GetHitDamage()
                                     + " damage points"
                             );
                         }
@@ -155,10 +178,10 @@ public class HittingState : GroundedStates
                             DamageDummy dummy = collider.GetComponent<DamageDummy>();
                             if (dummy != null)
                             {
-                                dummy.TakeDamage(player.GetHittingDamage());
+                                dummy.TakeDamage(player.GetHitDamage());
                                 Debug.Log(
                                     "Player hitted dummy with "
-                                        + player.GetHittingDamage()
+                                        + player.GetHitDamage()
                                         + " damage points"
                                 );
                             }
@@ -170,18 +193,21 @@ public class HittingState : GroundedStates
                     Debug.Log("No enemies hit in area");
                 }
             }
-            if (hitElapsed >= hittingSpeed)
+            if (hitElapsed >= timeOfOneHit)
             {
-                hitComplete = true;
+                hitCompleted = true;
             }
         }
     }
-    public override void Exit()
+
+    private void RestartAttack()
     {
-        base.Exit();
         hitElapsed = 0f;
-        hitComplete = false;
+        hitCompleted = false;
         shooted = false;
+        attackRequested = false;
+
+        // Выключить текущий флаг комбо
         if (playerIsSatan)
         {
             Animator.SetBool("Shooting " + comboCount, false);
@@ -190,5 +216,40 @@ public class HittingState : GroundedStates
         {
             Animator.SetBool("Hitting " + comboCount, false);
         }
+
+        // Перейти на следующий комбо
+        comboCount++;
+        if (comboCount > 2) comboCount = 1;
+
+        // Включить новый флаг комбо
+        if (playerIsSatan)
+        {
+            Animator.SetBool("Shooting " + comboCount, true);
+        }
+        else
+        {
+            Animator.SetBool("Hitting " + comboCount, true);
+        }
+    }
+    private void ResetAnimator()
+    {
+        if (playerIsSatan)
+        {
+            Animator.SetBool("Shooting " + comboCount, false);
+        }
+        else
+        {
+            Animator.SetBool("Hitting " + comboCount, false);
+        }
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+        hitElapsed = 0f;
+        hitCompleted = false;
+        shooted = false;
+        attackRequested = false;
+        ResetAnimator();
     }
 }

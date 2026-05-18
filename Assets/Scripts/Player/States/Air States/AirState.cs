@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class AirState : AirStates
+public class FlyingState : AirStates
 {
     private static readonly int JumpingHash = Animator.StringToHash("Jumping");
     private static readonly int FallingHash = Animator.StringToHash("Falling");
 
-    public AirState(Player player, StateMovMachine stateMachine) : base(player, stateMachine) { }
+    public FlyingState(Player player, StateMovMachine stateMachine) : base(player, stateMachine) { }
 
     public override void Enter()
     {

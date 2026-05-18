@@ -81,7 +81,7 @@ public class SpellCastState : GroundedStates
         {
             if (player.Rb.linearVelocity.y < 0f)
             {
-                stateMachine.ChangeState(player.AirState);
+                stateMachine.ChangeState(player.FlyingState);
                 return;
             }
 
