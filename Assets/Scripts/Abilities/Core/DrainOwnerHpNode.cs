@@ -22,6 +22,6 @@ public class DrainOwnerHpNode : AbilityNode
         int drainAmount = Mathf.Max(1, Mathf.RoundToInt(maxHp * Mathf.Clamp01(drainPercent)));
         int drained = ownerStats.TryDrainHP(drainAmount, criticalHp);
         ctx.Instance.Blackboard[outputDrainedKey] = drained;
-        return UniTask.FromResult(NodeResult.Success);
+        return UniTask.FromResult(drained > 0 ? NodeResult.Success : NodeResult.Failure);
     }
 }

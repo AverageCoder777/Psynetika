@@ -18,11 +18,6 @@ MonoBehaviour:
   icon: {fileID: 7856930727806306150, guid: 30ae3fc2d332773469cdde1e70ea00a1, type: 3}
   slot: 3
   cooldown: 3
-  costs: []
-  tags:
-  - fire
-  - projectile
-  - burst
   animClip: {fileID: 0}
   castDuration: 0.35
   castMomentNormalized: 0.4

@@ -29,9 +29,40 @@ public class ProjectileRuntime : MonoBehaviour
             rb = GetComponent<Rigidbody2D>();
         }
 
+        // Зеркалим весь префаб по направлению полёта — флипает спрайт + любые дочерние VFX/трейлы.
+        Vector3 scale = transform.localScale;
+        scale.x = Mathf.Abs(scale.x) * direction;
+        transform.localScale = scale;
+
+        // Игнорируем коллизии с кастером — иначе пуля резолвится сразу о коллайдер игрока.
+        IgnoreCasterCollisions();
+
         rb.linearVelocity = new Vector2(direction * definition.speed, 0f);
         ExecuteNodeList(definition.onSpawn, null).Forget();
         ExpireAfterLifetime().Forget();
+    }
+
+    private void IgnoreCasterCollisions()
+    {
+        if (originContext == null || originContext.Owner == null || originContext.Owner.Transform == null)
+        {
+            return;
+        }
+
+        Collider2D[] projectileColliders = GetComponentsInChildren<Collider2D>();
+        Collider2D[] casterColliders = originContext.Owner.Transform.GetComponentsInChildren<Collider2D>(true);
+
+        for (int i = 0; i < projectileColliders.Length; i++)
+        {
+            Collider2D pc = projectileColliders[i];
+            if (pc == null) continue;
+            for (int j = 0; j < casterColliders.Length; j++)
+            {
+                Collider2D cc = casterColliders[j];
+                if (cc == null) continue;
+                Physics2D.IgnoreCollision(pc, cc, true);
+            }
+        }
     }
 
     private async UniTaskVoid ExpireAfterLifetime()

@@ -55,6 +55,8 @@ public class AbilityRunner : MonoBehaviour
         if (!IsReady(def)) return false;
 
         AbilityInstance inst = GetInstance(def);
+        inst.CooldownEndsAt = Time.time + Mathf.Max(0f, def.cooldown);
+
         AbilityContext ctx = new AbilityContext
         {
             Owner = caster,
@@ -101,7 +103,6 @@ public class AbilityRunner : MonoBehaviour
         finally
         {
             inst.IsExecuting = false;
-            inst.CooldownEndsAt = Time.time + Mathf.Max(0f, def.cooldown);
         }
     }
 }

@@ -18,52 +18,71 @@ MonoBehaviour:
   icon: {fileID: -2084964735090168002, guid: d8a09c2c06fdf7d40b735da826acb19c, type: 3}
   slot: 3
   cooldown: 8
-  costs: []
-  tags:
-  - buff
-  - self_drain
-  - berserk
   animClip: {fileID: 0}
   castDuration: 0.35
   castMomentNormalized: 0.5
   root:
-  - rid: 301
-  - rid: 302
-  - rid: 303
+  - rid: 401
+  - rid: 402
+  - rid: 403
+  - rid: 404
+  - rid: 405
   references:
     version: 2
     RefIds:
-    - rid: 301
-      type: {class: SnapshotOwnerStatsNode, ns: , asm: Assembly-CSharp}
+    - rid: 401
+      type: {class: SaveStatNode, ns: , asm: Assembly-CSharp}
       data:
-        attackSpeedKey: berserk.baseAttackSpeed
-        damageKey: berserk.baseDamage
-        stacksKey: berserk.stacks
-        drainedKey: berserk.drained
-    - rid: 302
+        stat: 2
+        key: berserk.baseAS
+    - rid: 402
+      type: {class: SaveStatNode, ns: , asm: Assembly-CSharp}
+      data:
+        stat: 1
+        key: berserk.baseDMG
+    - rid: 403
       type: {class: TimedTickNode, ns: , asm: Assembly-CSharp}
       data:
         duration: 10
         tickInterval: 2
         onTick:
-        - rid: 304
-        - rid: 305
-    - rid: 303
-      type: {class: RestoreOwnerStatsNode, ns: , asm: Assembly-CSharp}
+        - rid: 410
+    - rid: 404
+      type: {class: RestoreStatNode, ns: , asm: Assembly-CSharp}
       data:
-        attackSpeedKey: berserk.baseAttackSpeed
-        damageKey: berserk.baseDamage
-    - rid: 304
+        stat: 2
+        key: berserk.baseAS
+    - rid: 405
+      type: {class: RestoreStatNode, ns: , asm: Assembly-CSharp}
+      data:
+        stat: 1
+        key: berserk.baseDMG
+    - rid: 410
+      type: {class: SequenceNode, ns: , asm: Assembly-CSharp}
+      data:
+        children:
+        - rid: 420
+        - rid: 421
+        - rid: 422
+        - rid: 423
+    - rid: 420
       type: {class: DrainOwnerHpNode, ns: , asm: Assembly-CSharp}
       data:
         drainPercent: 0.1
         criticalHpThreshold: 0.1
         outputDrainedKey: berserk.drained
-    - rid: 305
-      type: {class: ApplyStackBuffFromDrainNode, ns: , asm: Assembly-CSharp}
+    - rid: 421
+      type: {class: IncrementCounterNode, ns: , asm: Assembly-CSharp}
       data:
-        stacksKey: berserk.stacks
-        maxStacks: 5
-        boostPerStack: 0.1
-        buffAttackSpeed: 1
-        buffDamage: 1
+        key: berserk.stacks
+        max: 5
+    - rid: 422
+      type: {class: ApplyStatBoostNode, ns: , asm: Assembly-CSharp}
+      data:
+        stat: 2
+        amount: 0.1
+    - rid: 423
+      type: {class: ApplyStatBoostNode, ns: , asm: Assembly-CSharp}
+      data:
+        stat: 1
+        amount: 0.1

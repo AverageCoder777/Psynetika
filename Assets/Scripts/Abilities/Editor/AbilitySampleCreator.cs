@@ -82,12 +82,6 @@ public static class AbilitySampleCreator
             amount = 10f,
             type = DamageType.Fire
         });
-        projectile.onHit.Add(new ApplyBurnNode
-        {
-            duration = 2f,
-            tickInterval = 0.5f,
-            tickDamage = 2
-        });
 
         EditorUtility.SetDirty(projectile);
         return projectile;
@@ -105,10 +99,6 @@ public static class AbilitySampleCreator
         ability.animClip = legacySpell.animClip;
         ability.castDuration = legacySpell.castDuration;
         ability.castMomentNormalized = legacySpell.castMomentNormalized;
-        ability.costs.Clear();
-        ability.tags.Clear();
-        ability.tags.Add("fire");
-        ability.tags.Add("projectile");
         ability.root.Clear();
         ability.root.Add(new SpawnProjectileNode
         {

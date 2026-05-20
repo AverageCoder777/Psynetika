@@ -11,8 +11,6 @@ public class AbilityDefinition : ScriptableObject
     public Sprite icon;
     public AbilitySlot slot = AbilitySlot.Regular;
     public float cooldown = 1f;
-    public List<ResourceCost> costs = new List<ResourceCost>();
-    public List<string> tags = new List<string>();
     public AnimationClip animClip;
 
     [Min(0.05f)]

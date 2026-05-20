@@ -18,11 +18,6 @@ MonoBehaviour:
   icon: {fileID: 0}
   slot: 2
   cooldown: 2
-  costs: []
-  tags:
-  - melee
-  - area
-  - dog
   animClip: {fileID: 0}
   castDuration: 0.35
   castMomentNormalized: 0.5
@@ -50,4 +45,4 @@ MonoBehaviour:
       data:
         inputTargetsKey: area.targets
         inputDamageKey: area.damage
-        type: 0
+        type: 2

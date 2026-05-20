@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(StatusEffectHandler))]
 public class Enemy : MonoBehaviour, IAbilityTarget
 {
     private static readonly int DamageHash = Animator.StringToHash("Damage");
@@ -18,15 +19,21 @@ public class Enemy : MonoBehaviour, IAbilityTarget
     private Player player;
     public Animator Animator => animator;
     public int EnemyHealth => enemyHealth;
-    public float EnemySpeed => enemySpeed;
+    public float EnemySpeed => enemySpeed * MoveSpeedMultiplier;
     public int EnemyDamage => enemyDamage;
-    public float EnemyHitDuration => enemyHitDuration;
+    public float EnemyHitDuration => enemyHitDuration / Mathf.Max(0.05f, AttackSpeedMultiplier);
     public bool PlayerInHitRange { get; private set; } = false;
     public bool PlayerInFollowRange { get; private set; } = false;
+    public float MoveSpeedMultiplier { get; set; } = 1f;
+    public float AttackSpeedMultiplier { get; set; } = 1f;
     void Start()
     {
         animator = GetComponent<Animator>();
         player = GameObject.FindWithTag("Player")?.GetComponent<Player>();
+        if (!TryGetComponent<StatusEffectHandler>(out _))
+        {
+            gameObject.AddComponent<StatusEffectHandler>();
+        }
         enemySM = new EnemyStateMachine();
         idleState = new EnemyIdleState(this, enemySM);
         followState = new FollowState(this, enemySM);
@@ -92,7 +99,16 @@ public class Enemy : MonoBehaviour, IAbilityTarget
     Transform IAbilityTarget.Transform => transform;
     bool IAbilityTarget.IsAlive => !isDead;
     Team IAbilityTarget.Team => global::Team.Enemy;
-    void IAbilityTarget.ReceiveDamage(DamageEvent ev) => TakeDamage(Mathf.RoundToInt(ev.Amount));
+    void IAbilityTarget.ReceiveDamage(DamageEvent ev)
+    {
+        StatusEffectHandler handler = GetComponent<StatusEffectHandler>();
+        float amount = handler != null ? handler.ProcessIncomingDamage(ev) : ev.Amount;
+        TakeDamage(Mathf.RoundToInt(amount));
+        if (!isDead && handler != null)
+        {
+            handler.MaybeApplyStatusFromDamage(ev);
+        }
+    }
     void DropCoins()
     {
         for (int i = 0; i < coinsToDrop; i++)

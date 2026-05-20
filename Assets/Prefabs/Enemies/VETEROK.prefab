@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 2006259624650983824}
   - component: {fileID: 5433366817759474643}
   - component: {fileID: 4958579326801671139}
+  - component: {fileID: 7118042609670232350}
   m_Layer: 10
   m_Name: VETEROK
   m_TagString: Enemy
@@ -304,3 +305,16 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &7118042609670232350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5375767678507587362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba74d569b01ec1d40ad444b8bdfd7333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectHandler
+  config: {fileID: 11400000, guid: aad54200f10b1b942b7a1fe3cb8d024d, type: 2}

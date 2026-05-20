@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: DoubleShotProjectile
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
   id: satan.double_shot.projectile
-  prefab: {fileID: 319351763887075280, guid: 5b8d1c63765d4f40a3d2a67bf3d17f11, type: 3}
+  prefab: {fileID: 394970719952954156, guid: 8851de3f9c4ef3e40b22953cccd8e265, type: 3}
   speed: 12
   lifetime: 5
-  spawnOffset: {x: 1, y: 0.22}
+  spawnOffset: {x: 1.6, y: 0.22}
   onSpawn: []
   onHit:
   - rid: 501

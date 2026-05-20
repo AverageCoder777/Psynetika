@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81bb7a418d14c7e45ac14327b73dc993, type: 3}
+  m_Name: DefaultStatusEffectConfig
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectConfig
+  burnVfxPrefab: {fileID: 6980728274882668050, guid: 8244d31c1cf1c1a44a03a35af4e500c1, type: 3}
+  glitchVfxPrefab: {fileID: 2295764869448824621, guid: aa3996c908739c949ba32bc42a9d9705, type: 3}
+  explosionVfxPrefab: {fileID: 1747842912770993739, guid: 86f63331685fdd6499e0fc87a218b788, type: 3}
+  burnDuration: 6
+  burnTickInterval: 1
+  burnTickDamage: 5
+  glitchDuration: 6
+  glitchSlowPerStack: 0.05
+  glitchMaxStacks: 3
+  explosionDamageMultiplier: 0.5
+  explosionVfxLifetime: 2

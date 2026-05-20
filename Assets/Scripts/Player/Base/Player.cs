@@ -377,6 +377,32 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
 
     int IAbilityStatOwner.CurrentHp => GetCharHP();
     int IAbilityDamageSource.GetBaseHitDamage() => GetHitDamage();
+
+    public float GetStat(StatId stat)
+    {
+        switch (stat)
+        {
+            case StatId.AttackSpeed: return attackSpeedMultiplier;
+            case StatId.Damage: return damageMultiplier;
+            case StatId.MoveSpeed: return speedMultiplier;
+            default:
+                Debug.LogWarning($"[Player.GetStat] StatId {stat} is not supported.");
+                return 1f;
+        }
+    }
+
+    public void SetStat(StatId stat, float value)
+    {
+        switch (stat)
+        {
+            case StatId.AttackSpeed: attackSpeedMultiplier = value; break;
+            case StatId.Damage: damageMultiplier = value; break;
+            case StatId.MoveSpeed: speedMultiplier = value; break;
+            default:
+                Debug.LogWarning($"[Player.SetStat] StatId {stat} is not supported.");
+                break;
+        }
+    }
     public void EnableEnemyVisibility()
     {
         isVisibleToEnemies = true;
