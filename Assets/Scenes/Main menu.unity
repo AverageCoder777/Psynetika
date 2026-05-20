@@ -371,7 +371,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIScript
   pauseMenu: {fileID: 0}
   GameOverMenu: {fileID: 0}
-  _skillsUI: {fileID: 0}
+  player: {fileID: 0}
+  characterText: {fileID: 0}
 --- !u!1 &490961518
 GameObject:
   m_ObjectHideFlags: 0
@@ -536,7 +537,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 484641722}
         m_TargetAssemblyTypeName: UIScript, Assembly-CSharp
-        m_MethodName: ExitButton
+        m_MethodName: Exit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using MackySoft.SerializeReferenceExtensions;
 
 [CreateAssetMenu(menuName = "Psynetika/Projectile Definition", fileName = "ProjectileDefinition")]
 public class ProjectileDefinition : ScriptableObject
@@ -8,7 +9,7 @@ public class ProjectileDefinition : ScriptableObject
     public GameObject prefab;
     public float speed = 10f;
     public float lifetime = 5f;
-    public Vector2 spawnOffset = new(0.65f, 0.22f);
+    public Vector2 spawnOffset = new Vector2(0.65f, 0.22f);
 
     [SerializeReference, SubclassSelector]
     public List<AbilityNode> onSpawn = new();

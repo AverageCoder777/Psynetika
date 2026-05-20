@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using MackySoft.SerializeReferenceExtensions;
 using UnityEngine;
 
 [Serializable]
@@ -10,7 +11,7 @@ public class TimedTickNode : AbilityNode
     [Min(0.1f)] public float tickInterval = 1.5f;
 
     [SerializeReference, SubclassSelector]
-    public List<AbilityNode> onTick = new();
+    public List<AbilityNode> onTick = new List<AbilityNode>();
 
     public override async UniTask<NodeResult> Execute(AbilityContext ctx)
     {
