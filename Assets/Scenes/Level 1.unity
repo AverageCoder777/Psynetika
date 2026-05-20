@@ -2156,6 +2156,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1311729016}
   m_SourcePrefab: {fileID: 100100000, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
+--- !u!1 &676709934 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6171011128472094625, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
+  m_PrefabInstance: {fileID: 676709933}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &698526741
 GameObject:
   m_ObjectHideFlags: 0
@@ -3041,6 +3046,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIScript
   pauseMenu: {fileID: 1654810211}
   GameOverMenu: {fileID: 389397474}
+  _skillsUI: {fileID: 676709934}
 --- !u!1 &1377978844
 GameObject:
   m_ObjectHideFlags: 0
@@ -5002,7 +5008,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DeadZone
   _playerTag: Player
   _destroyGameObjectIfNoHealth: 0
-  _uiScript: {fileID: 0}
 --- !u!61 &2121904941
 BoxCollider2D:
   m_ObjectHideFlags: 0

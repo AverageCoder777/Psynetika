@@ -74,9 +74,7 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     [Header("Interaction")]
     [SerializeField] private InteractionDetector interactionDetector;
     private State lastState;
-#if UNITY_EDITOR
     [SerializeField] private bool debugMessages = false;
-#endif
     Rigidbody2D rb;
     private PlayerInput playerInput;
     private float speedMultiplier = 1f;
