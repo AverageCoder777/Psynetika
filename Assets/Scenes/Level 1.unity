@@ -1850,7 +1850,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4941266193295258863, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -540.23
+      value: -540
       objectReference: {fileID: 0}
     - target: {fileID: 5616443461791227971, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: m_OverrideSorting
