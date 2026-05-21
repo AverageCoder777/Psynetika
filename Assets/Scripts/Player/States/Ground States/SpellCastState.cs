@@ -4,6 +4,8 @@ public class SpellCastState : GroundedStates
 {
     private const string SpellPlaceholderClipName = "SpellPlaceholder";
     private static readonly int SpellTriggerHash = Animator.StringToHash("Spell");
+    private static bool warnedAboutOverride = false;
+    private static bool warnedAboutPlaceholder = false;
 
     private float elapsed = 0f;
     private float castMoment = 0f;
@@ -96,21 +98,51 @@ public class SpellCastState : GroundedStates
 
     private void PlayCastAnimation()
     {
-        if (activeAbility.animClip == null) return;
-
         Animator animator = player.ActiveAnimator;
         if (animator == null) return;
 
         if (animator.runtimeAnimatorController is AnimatorOverrideController over)
         {
-            over[SpellPlaceholderClipName] = activeAbility.animClip;
-            animator.SetTrigger(SpellTriggerHash);
+            if (activeAbility.animClip != null)
+            {
+                AnimationClip key = FindPlaceholderKey(over);
+                if (key != null)
+                {
+                    over[key] = activeAbility.animClip;
+                }
+                else if (!warnedAboutPlaceholder)
+                {
+                    Debug.LogWarning(
+                        $"[SpellCastState] В базовом контроллере '{over.runtimeAnimatorController.name}' " +
+                        $"нет AnimationClip с именем '{SpellPlaceholderClipName}'. " +
+                        "Переименуй .anim-файл, который стоит Motion'ом в стейте SpellPlaceholder, " +
+                        $"чтобы его asset-имя было '{SpellPlaceholderClipName}'.");
+                    warnedAboutPlaceholder = true;
+                }
+            }
         }
-        else
+        else if (!warnedAboutOverride)
         {
             Debug.LogWarning(
-                "[SpellCastState] У персонажа не настроен AnimatorOverrideController — анимация спелла не сыграет.");
+                "[SpellCastState] У персонажа не настроен AnimatorOverrideController — " +
+                "анимация скилла будет играть только то, что зашито в SpellPlaceholder-стейт.");
+            warnedAboutOverride = true;
         }
+
+        animator.SetTrigger(SpellTriggerHash);
+    }
+
+    private static AnimationClip FindPlaceholderKey(AnimatorOverrideController over)
+    {
+        AnimationClip[] clips = over.animationClips;
+        for (int i = 0; i < clips.Length; i++)
+        {
+            if (clips[i] != null && clips[i].name == SpellPlaceholderClipName)
+            {
+                return clips[i];
+            }
+        }
+        return null;
     }
 
     private void CastSpell()

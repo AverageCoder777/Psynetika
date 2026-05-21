@@ -206,7 +206,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1258554789045574420, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -146.65205
+      value: -146.65227
       objectReference: {fileID: 0}
     - target: {fileID: 1258554789045574420, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.y
@@ -218,7 +218,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1341792782285845634, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -141.78114
+      value: -141.77802
       objectReference: {fileID: 0}
     - target: {fileID: 1341792782285845634, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1405,6 +1405,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 632793021609228900, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 22100000, guid: e26c19230dfffd747aef6aadba7bc216, type: 2}
     - target: {fileID: 3039743151244778813, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
       propertyPath: m_LocalPosition.x
       value: -106.65
@@ -1521,6 +1525,10 @@ PrefabInstance:
       propertyPath: sobakaUltimate
       value: 
       objectReference: {fileID: 11400000, guid: 92ad6057d6b864b4bbf69df138b66733, type: 2}
+    - target: {fileID: 5097471844997715643, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 22100000, guid: 1262ae82b2aa64a46a01d75ca09ff725, type: 2}
     - target: {fileID: 5868496344035386359, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
       propertyPath: m_Name
       value: Player

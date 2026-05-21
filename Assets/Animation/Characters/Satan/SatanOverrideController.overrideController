@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SatanOverrideController
+  m_Controller: {fileID: 9100000, guid: 7bea39b0ffe05de4ba038c43c9615e7a, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: af745faa222d32240833866ebd286fe6, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: e5d7b04d4188fd74ca238a8ee485d1b5, type: 2}

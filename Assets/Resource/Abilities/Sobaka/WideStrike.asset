@@ -18,7 +18,7 @@ MonoBehaviour:
   icon: {fileID: 5553972759691046475, guid: de563b57c66f1d440af1dfd2482f4dba, type: 3}
   slot: 2
   cooldown: 2
-  animClip: {fileID: 0}
+  animClip: {fileID: 7400000, guid: 3b9a328ad1c39e0459ea01972954094f, type: 2}
   castDuration: 0.35
   castMomentNormalized: 0.5
   root:
