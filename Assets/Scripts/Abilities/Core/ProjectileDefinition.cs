@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using MackySoft.SerializeReferenceExtensions;
 
 [CreateAssetMenu(menuName = "Psynetika/Projectile Definition", fileName = "ProjectileDefinition")]
 public class ProjectileDefinition : ScriptableObject

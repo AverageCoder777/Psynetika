@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using MackySoft.SerializeReferenceExtensions;
 
 [CreateAssetMenu(menuName = "Psynetika/Ability", fileName = "Ability")]
 public class AbilityDefinition : ScriptableObject
