@@ -16,8 +16,9 @@ GameObject:
   - component: {fileID: 7594696716455142006}
   - component: {fileID: 7368152271631217361}
   - component: {fileID: 5119255254032657305}
+  - component: {fileID: 7983110400695799234}
   m_Layer: 10
-  m_Name: Spider
+  m_Name: SpiderBoy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87,9 +88,9 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -7790390431087295733, guid: 7f52fcea1ea761c43b2ebfdae426255a, type: 3}
+  m_Sprite: {fileID: -5011190765155131672, guid: 5f103dd664a96044f81a198405cb474d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.09, y: 0.08}
@@ -107,7 +108,7 @@ Animator:
   m_GameObject: {fileID: 3158713932220752135}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 535f418744b369c429e6e7ef40ce3c69, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -131,10 +132,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 229bb46bb6408dd4686072ba39d4989b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  enemyHealth: 20
+  enemyHealth: 40
   enemySpeed: 2
-  enemyDamage: 5
-  enemyHitDuration: 2
+  enemyDamage: 10
+  enemyHitDuration: 1
   hitTrigger: {fileID: 1082582903096260156}
   followTrigger: {fileID: 7368152271631217361}
   coinsToDrop: 0
@@ -173,17 +174,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.00089257956, y: 0.04085851}
+  m_Offset: {x: 0.009006195, y: 0.122110575}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.09, y: 0.08}
+    pivot: {x: 0.54545456, y: -0.23529413}
+    oldSize: {x: 0.22, y: 0.17}
     newSize: {x: 0.09, y: 0.08}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.20851466, y: 0.08460703}
+  m_Size: {x: 0.38670158, y: 0.16800359}
   m_EdgeRadius: 0
 --- !u!61 &7594696716455142006
 BoxCollider2D:
@@ -219,17 +220,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.0005182363, y: 0.041086107}
+  m_Offset: {x: 0.019980073, y: 0.12004861}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.09, y: 0.08}
+    pivot: {x: 0.54545456, y: -0.23529413}
+    oldSize: {x: 0.22, y: 0.17}
     newSize: {x: 0.09, y: 0.08}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.0894678, y: 0.08227226}
+  m_Size: {x: 0.18367809, y: 0.16320181}
   m_EdgeRadius: 0
 --- !u!61 &7368152271631217361
 BoxCollider2D:
@@ -265,17 +266,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.00043678284, y: 0.03884618}
+  m_Offset: {x: 0.020267606, y: 0.120911986}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.09, y: 0.08}
+    pivot: {x: 0.54545456, y: -0.23529413}
+    oldSize: {x: 0.22, y: 0.17}
     newSize: {x: 0.09, y: 0.08}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.0032195, y: 0.084519744}
+  m_Size: {x: 1.4877925, y: 0.16654879}
   m_EdgeRadius: 0
 --- !u!50 &5119255254032657305
 Rigidbody2D:
@@ -304,3 +305,16 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &7983110400695799234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3158713932220752135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba74d569b01ec1d40ad444b8bdfd7333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectHandler
+  config: {fileID: 0}

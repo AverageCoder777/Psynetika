@@ -4,6 +4,7 @@ public abstract class EnemyStates
     protected Enemy enemy;
     protected EnemyStateMachine stateMachine;
     protected Animator animator => enemy.Animator;
+    protected SpriteRenderer _spriteRenderer => enemy.GetComponent<SpriteRenderer>();
     public EnemyStates(Enemy enemy, EnemyStateMachine stateMachine)
     {
         this.enemy = enemy;

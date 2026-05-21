@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class IdleState : GroundedStates
@@ -48,6 +49,11 @@ public class IdleState : GroundedStates
         {
             stateMachine.ChangeState(player.RollingState);
         }
+        else if (Mathf.Abs(player.Rb.linearVelocityY) > 0.1f && !DetectPlatform())
+        {
+            grounded = false;
+            stateMachine.ChangeState(player.FlyingState);
+        }
         else if (@switch && player.DogActive != false && player.SatanActive != false)
         {
             stateMachine.ChangeState(player.SwitchState);
@@ -95,15 +101,11 @@ public class IdleState : GroundedStates
             detectionDistance,
             LayerMask.GetMask("Platform")
         );
-
-        // Отрисовка raycast для отладки (синий - столкновение, желтый - нет)
-#if UNITY_EDITOR
         if (player.DebugMessages)
         {
             Debug.DrawRay(raycastOrigin, platformDetectionDirection * detectionDistance,
                 hit.collider != null ? Color.blue : Color.yellow);
         }
-#endif
 
         return hit.collider != null;
     }

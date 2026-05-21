@@ -3,7 +3,6 @@ using UnityEngine;
 public class FlyingState : AirStates
 {
     private static readonly int JumpingHash = Animator.StringToHash("Jumping");
-    private static readonly int FallingHash = Animator.StringToHash("Falling");
 
     public FlyingState(Player player, StateMovMachine stateMachine) : base(player, stateMachine) { }
 
@@ -11,7 +10,6 @@ public class FlyingState : AirStates
     {
         if (player.Rb.linearVelocity.y < 0)
         {
-            Animator.SetTrigger(FallingHash);
             player.Rb.gravityScale = player.DownGravityScale;
         }
         else if (player.Rb.linearVelocity.y > 0)
@@ -62,7 +60,6 @@ public class FlyingState : AirStates
     public override void Exit()
     {
         player.Rb.gravityScale = player.Rb.linearVelocity.y >= 0f ? player.UpGravityScale : player.DownGravityScale;
-        Animator.ResetTrigger(FallingHash);
         Animator.ResetTrigger(JumpingHash);
     }
 }

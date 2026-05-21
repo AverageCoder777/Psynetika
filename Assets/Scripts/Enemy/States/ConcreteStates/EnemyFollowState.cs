@@ -4,7 +4,6 @@ public class FollowState : EnemyStates
 {
     private static readonly int WalkingHash = Animator.StringToHash("Walking");
     private Transform playerT;
-    private Vector3 initialScale;
 
     public FollowState(Enemy enemy, EnemyStateMachine stateMachine) : base(enemy, stateMachine)
     {
@@ -14,7 +13,6 @@ public class FollowState : EnemyStates
     {
         base.Enter();
         playerT = GameObject.FindWithTag("Player").transform;
-        initialScale = enemy.transform.localScale;
         enemy.Animator.SetBool(WalkingHash, true);
     }
 
@@ -49,9 +47,10 @@ public class FollowState : EnemyStates
         float dirX = targetPos.x - currentPos.x;
         if (Mathf.Abs(dirX) > 0.01f)
         {
-            Vector3 scale = initialScale;
-            scale.x = (dirX > 0f) ? Mathf.Abs(initialScale.x) : -Mathf.Abs(initialScale.x);
-            enemy.transform.localScale = scale;
+            if (_spriteRenderer != null)
+            {
+                _spriteRenderer.flipX = dirX > 0f;
+            }
         }
     }
 

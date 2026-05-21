@@ -15,7 +15,7 @@ MonoBehaviour:
   id: sobaka.wide_strike
   displayName: Wide Strike
   description: Dog strikes forward in a wider area and deals increased damage.
-  icon: {fileID: 0}
+  icon: {fileID: 5553972759691046475, guid: de563b57c66f1d440af1dfd2482f4dba, type: 3}
   slot: 2
   cooldown: 2
   animClip: {fileID: 0}

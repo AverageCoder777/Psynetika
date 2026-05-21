@@ -15,7 +15,7 @@ MonoBehaviour:
   id: satan.double_shot
   displayName: Double Shot
   description: Satan fires two quick high-damage projectiles.
-  icon: {fileID: 7856930727806306150, guid: 30ae3fc2d332773469cdde1e70ea00a1, type: 3}
+  icon: {fileID: -1043322889483587456, guid: a409630fc6b8d4c4eb09241d2799edf8, type: 3}
   slot: 3
   cooldown: 3
   animClip: {fileID: 0}
