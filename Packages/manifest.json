@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "ayellowpaper.serialized-dictionary": "https://github.com/ayellowpaper/SerializedDictionary.git",
     "com.unity.2d.animation": "13.0.5",
     "com.unity.2d.aseprite": "3.0.2",
     "com.unity.2d.psdimporter": "12.0.2",

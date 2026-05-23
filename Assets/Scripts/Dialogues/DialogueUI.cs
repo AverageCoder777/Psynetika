@@ -4,22 +4,34 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using AYellowpaper.SerializedCollections;
+using DG.Tweening;
+
 
 public class DialogueUI : MonoBehaviour
 {
     [SerializeField] private CanvasGroup root;
     [SerializeField] private TMP_Text lineText;
     [SerializeField] private TMP_Text speakerText;
+    [SerializeField] private Image speakerAvatar;
     [SerializeField] private Transform choicesContainer;
     [SerializeField] private Button choiceButtonPrefab;
     [SerializeField] private Button continueButton;
     [SerializeField] private Button closeButton;
-
+    
+    [SerializeField] private float charsPerSecond = 30f;
+    [SerializeField]
+    public SerializedDictionary<string, Sprite> CharacterAvatar ;
+    
+    
     private readonly List<Button> choiceButtons = new List<Button>();
     private DialogueManager manager;
+    
+    private Tween _typingTween;
 
     private void Awake()
     {
+        DOTween.Init();
         if (continueButton != null)
         {
             continueButton.onClick.RemoveListener(OnContinuePressed);
@@ -61,12 +73,27 @@ public class DialogueUI : MonoBehaviour
 
         SetVisible(false);
     }
+    
+    public void ShowText(string text)
+    {
+        _typingTween?.Kill();
+        lineText.text = "";
+        float duration = text.Length / charsPerSecond;
+
+        _typingTween = DOVirtual.Float(0, text.Length, duration, x =>
+        {
+            Debug.Log($"x = {x}"); // вызывается ли лямбда?
+            int index = Mathf.Clamp((int)x, 0, text.Length);
+            lineText.text = text.Substring(0, index);
+        }).SetEase(Ease.Linear).SetUpdate(true);;
+    }
 
     public void Render(string line, string speaker, IReadOnlyList<string> choices)
     {
         if (lineText != null)
         {
-            lineText.text = line ?? string.Empty;
+            
+            ShowText(line);
         }
 
         if (speakerText != null)
@@ -74,6 +101,11 @@ public class DialogueUI : MonoBehaviour
             bool hasSpeaker = !string.IsNullOrWhiteSpace(speaker);
             speakerText.gameObject.SetActive(hasSpeaker);
             speakerText.text = hasSpeaker ? speaker : string.Empty;
+            if (speakerAvatar != null)
+            {
+                speakerAvatar.sprite = CharacterAvatar.TryGetValue(speaker, out Sprite avatar) ? avatar : null;
+            }
+            
         }
 
         BuildChoices(choices);
