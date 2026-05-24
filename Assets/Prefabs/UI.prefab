@@ -231,10 +231,13 @@ MonoBehaviour:
   root: {fileID: 132075724567833465}
   lineText: {fileID: 185400646266643072}
   speakerText: {fileID: 3800864675571879590}
+  speakerAvatar: {fileID: 0}
   choicesContainer: {fileID: 174087450087991944}
   choiceButtonPrefab: {fileID: 1579504919484578727}
   continueButton: {fileID: 6834547259903088499}
   closeButton: {fileID: 1316144138462597038}
+  charsPerSecond: 30
+  characterDatabase: {fileID: 0}
 --- !u!225 &132075724567833465
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1025,7 +1028,6 @@ RectTransform:
   - {fileID: 4721243826112067980}
   - {fileID: 7788435322701786780}
   - {fileID: 5276682096927764439}
-  - {fileID: 7955051665262141589}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1959,6 +1961,7 @@ RectTransform:
   - {fileID: 140294600644195254}
   - {fileID: 3319103936669457304}
   - {fileID: 453155338111015244}
+  - {fileID: 7955051665262141589}
   m_Father: {fileID: 7810212452034021073}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -3964,18 +3967,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6171011128472094625}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6347610361130864317}
   - {fileID: 1527699050857858332}
-  m_Father: {fileID: 7810212452034021073}
+  m_Father: {fileID: 4941266193295258863}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -476.8, y: 141.63}
+  m_AnchoredPosition: {x: -476.79977, y: 142.38795}
   m_SizeDelta: {x: 476.8, y: 141.63}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5626053111691261395

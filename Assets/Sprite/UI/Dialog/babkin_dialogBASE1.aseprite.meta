@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9accb2dcb4c92024e969e5b59cfacc51
+guid: 580e8a664bc137448a5f9b663f1021d9
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -127,9 +127,9 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: babkin_dialogBASE
+  - name: babkin_dialogBASE1
     originalName: 
-    pivot: {x: 0.5029586, y: 0}
+    pivot: {x: 0.5, y: 0}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -137,9 +137,9 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 169
-      height: 196
-    spriteID: 3116d9c00b4b25e47be137d3e2cd61af
+      width: 200
+      height: 200
+    spriteID: 1145c41ca31cb4346b521dc682f9fd00
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -153,25 +153,25 @@ ScriptedImporter:
   asepriteLayers:
   - layerIndex: 0
     uuid:
-      value0: 339060279
+      value0: 3489919020
       value1: 0
       value2: 0
       value3: 0
     guid: 0
-    name: babkin_dialogBASE
+    name: babkin_dialogBASE1
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: babkin_dialogBASE
+    - name: babkin_dialogBASE1
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
         x: 0
         y: 0
-        width: 169
-        height: 196
-      spriteId: 3116d9c00b4b25e47be137d3e2cd61af
+        width: 200
+        height: 200
+      spriteId: 1145c41ca31cb4346b521dc682f9fd00
     linkedCells: []
     tileCells: []
     tileSetIndex: 0
@@ -181,5 +181,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 170, y: 200}
+  canvasSize: {x: 200, y: 200}
   previousTextureSize: {x: 256, y: 256}

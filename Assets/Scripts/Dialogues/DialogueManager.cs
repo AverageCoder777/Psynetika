@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Ink.Runtime;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,15 +10,18 @@ public class DialogueManager : MonoBehaviour
 
     [SerializeField] private DialogueUI dialogueUI;
     [SerializeField] private bool pauseGameplay;
+    [Tooltip("UI elements (HUD, mini-map, etc.) that should be hidden while a dialogue is active.")]
+    [SerializeField] private GameObject[] gameplayUI;
 
-    private Story currentStory;
+    private IDialogueRunner currentRunner;
+    private IReadOnlyList<string> currentChoices = Array.Empty<string>();
     private PlayerInput activePlayerInput;
     private InputAction submitAction;
     private InputAction cancelAction;
     private string previousActionMap = "Player";
     private float cachedTimeScale = 1f;
 
-    public bool IsDialogueActive => currentStory != null;
+    public bool IsDialogueActive => currentRunner != null;
     public event Action DialogueEnded;
 
     private void Awake()
@@ -33,14 +35,40 @@ public class DialogueManager : MonoBehaviour
         Instance = this;
     }
 
-    public bool StartDialogue(TextAsset inkJsonAsset, PlayerInput playerInput)
+    public bool StartDialogue(IDialogueSource source, PlayerInput playerInput)
     {
-        if (inkJsonAsset == null || IsDialogueActive)
+        if (source == null)
         {
             return false;
         }
 
-        currentStory = new Story(inkJsonAsset.text);
+        return StartDialogueInternal(source.CreateRunner(), playerInput);
+    }
+
+    public bool StartDialogue(TextAsset inkJsonAsset, PlayerInput playerInput)
+    {
+        if (inkJsonAsset == null)
+        {
+            return false;
+        }
+
+        return StartDialogueInternal(new InkDialogueRunner(inkJsonAsset), playerInput);
+    }
+
+    private bool StartDialogueInternal(IDialogueRunner runner, PlayerInput playerInput)
+    {
+        if (runner == null || IsDialogueActive)
+        {
+            return false;
+        }
+
+        if (dialogueUI == null)
+        {
+            Debug.LogError("DialogueManager: DialogueUI reference is missing.");
+            return false;
+        }
+
+        currentRunner = runner;
         activePlayerInput = playerInput;
 
         if (activePlayerInput != null)
@@ -59,17 +87,28 @@ public class DialogueManager : MonoBehaviour
             Time.timeScale = 0f;
         }
 
-        if (dialogueUI == null)
-        {
-            Debug.LogError("DialogueManager: DialogueUI reference is missing.");
-            EndDialogue();
-            return false;
-        }
+        SetGameplayUIVisible(false);
 
         dialogueUI.SetManager(this);
         dialogueUI.Show();
         ContinueStory();
         return true;
+    }
+
+    private void SetGameplayUIVisible(bool visible)
+    {
+        if (gameplayUI == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < gameplayUI.Length; i++)
+        {
+            if (gameplayUI[i] != null)
+            {
+                gameplayUI[i].SetActive(visible);
+            }
+        }
     }
 
     public void ContinueStory()
@@ -79,14 +118,14 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        if (!TryReadNextLine(out string line, out string speaker))
+        if (!currentRunner.TryGetNext(out string line, out string speaker, out IReadOnlyList<string> choices))
         {
             EndDialogue();
             return;
         }
 
-        List<string> choices = ExtractChoiceTexts();
-        dialogueUI.Render(line, speaker, choices);
+        currentChoices = choices ?? Array.Empty<string>();
+        dialogueUI.Render(line, speaker, currentChoices);
     }
 
     public void ChooseChoice(int index)
@@ -96,12 +135,12 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        if (index < 0 || index >= currentStory.currentChoices.Count)
+        if (index < 0 || index >= currentChoices.Count)
         {
             return;
         }
 
-        currentStory.ChooseChoiceIndex(index);
+        currentRunner.Choose(index);
         ContinueStory();
     }
 
@@ -115,84 +154,10 @@ public class DialogueManager : MonoBehaviour
         EndDialogue();
     }
 
-    private bool TryReadNextLine(out string line, out string speaker)
-    {
-        line = string.Empty;
-        speaker = string.Empty;
-
-        while (currentStory.canContinue)
-        {
-            string nextLine = currentStory.Continue();
-            nextLine = string.IsNullOrWhiteSpace(nextLine) ? string.Empty : nextLine.Trim();
-
-            ParseTags(currentStory.currentTags, out string parsedSpeaker);
-            if (!string.IsNullOrEmpty(parsedSpeaker))
-            {
-                speaker = parsedSpeaker;
-            }
-
-            if (!string.IsNullOrEmpty(nextLine))
-            {
-                line = nextLine;
-                return true;
-            }
-        }
-
-        if (currentStory.currentChoices.Count > 0)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    private static void ParseTags(IReadOnlyList<string> tags, out string speaker)
-    {
-        speaker = string.Empty;
-        if (tags == null || tags.Count == 0)
-        {
-            return;
-        }
-
-        for (int i = 0; i < tags.Count; i++)
-        {
-            string tag = tags[i];
-            if (string.IsNullOrWhiteSpace(tag))
-            {
-                continue;
-            }
-
-            int separator = tag.IndexOf(':');
-            if (separator <= 0 || separator >= tag.Length - 1)
-            {
-                continue;
-            }
-
-            string key = tag.Substring(0, separator).Trim().ToLowerInvariant();
-            string value = tag.Substring(separator + 1).Trim();
-
-            if (key == "speaker")
-            {
-                speaker = value;
-            }
-        }
-    }
-
-    private List<string> ExtractChoiceTexts()
-    {
-        int count = currentStory.currentChoices.Count;
-        List<string> result = new List<string>(count);
-        for (int i = 0; i < count; i++)
-        {
-            result.Add(currentStory.currentChoices[i].text.Trim());
-        }
-
-        return result;
-    }
-
     private void EndDialogue()
     {
-        currentStory = null;
+        currentRunner = null;
+        currentChoices = Array.Empty<string>();
 
         UnsubscribeUiActions();
         if (activePlayerInput != null)
@@ -209,6 +174,8 @@ public class DialogueManager : MonoBehaviour
         {
             dialogueUI.Hide();
         }
+
+        SetGameplayUIVisible(true);
 
         activePlayerInput = null;
         submitAction = null;
@@ -258,7 +225,7 @@ public class DialogueManager : MonoBehaviour
 
     private void OnSubmitPerformed(InputAction.CallbackContext context)
     {
-        if (!IsDialogueActive || currentStory.currentChoices.Count > 0)
+        if (!IsDialogueActive || currentChoices.Count > 0)
         {
             return;
         }

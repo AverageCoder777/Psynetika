@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9fe417a7a292ada4da616f26a62ecf97
+guid: e770415722d76d8428d77b257d51326b
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -127,9 +127,9 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: SatanaDialog (2)
+  - name: SobakaDialog1
     originalName: 
-    pivot: {x: 0.525, y: 0}
+    pivot: {x: 0.5, y: 0}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -137,9 +137,9 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 160
-      height: 191
-    spriteID: 8436ba136297eb444b845f0747510e3a
+      width: 200
+      height: 200
+    spriteID: b6f6f9c40d441f94eadd057a55c69a81
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -153,25 +153,25 @@ ScriptedImporter:
   asepriteLayers:
   - layerIndex: 0
     uuid:
-      value0: 4176976407
+      value0: 522987340
       value1: 0
       value2: 0
       value3: 0
     guid: 0
-    name: SatanaDialog (2)
+    name: SobakaDialog1
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: SatanaDialog (2)
+    - name: SobakaDialog1
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 1
+        x: 0
         y: 0
-        width: 160
-        height: 191
-      spriteId: 8436ba136297eb444b845f0747510e3a
+        width: 200
+        height: 200
+      spriteId: b6f6f9c40d441f94eadd057a55c69a81
     linkedCells: []
     tileCells: []
     tileSetIndex: 0
@@ -181,5 +181,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 170, y: 200}
+  canvasSize: {x: 200, y: 200}
   previousTextureSize: {x: 256, y: 256}

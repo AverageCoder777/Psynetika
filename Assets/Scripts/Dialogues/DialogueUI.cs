@@ -1,14 +1,12 @@
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using AYellowpaper.SerializedCollections;
 using DG.Tweening;
 
 
-public class DialogueUI : MonoBehaviour
+public class DialogueUI : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private CanvasGroup root;
     [SerializeField] private TMP_Text lineText;
@@ -18,15 +16,14 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private Button choiceButtonPrefab;
     [SerializeField] private Button continueButton;
     [SerializeField] private Button closeButton;
-    
+
     [SerializeField] private float charsPerSecond = 30f;
-    [SerializeField]
-    public SerializedDictionary<string, Sprite> CharacterAvatar ;
-    
-    
+    [SerializeField] private CharacterDatabase characterDatabase;
+
+
     private readonly List<Button> choiceButtons = new List<Button>();
     private DialogueManager manager;
-    
+
     private Tween _typingTween;
 
     private void Awake()
@@ -73,7 +70,7 @@ public class DialogueUI : MonoBehaviour
 
         SetVisible(false);
     }
-    
+
     public void ShowText(string text)
     {
         _typingTween?.Kill();
@@ -82,30 +79,30 @@ public class DialogueUI : MonoBehaviour
 
         _typingTween = DOVirtual.Float(0, text.Length, duration, x =>
         {
-            Debug.Log($"x = {x}"); // вызывается ли лямбда?
             int index = Mathf.Clamp((int)x, 0, text.Length);
             lineText.text = text.Substring(0, index);
-        }).SetEase(Ease.Linear).SetUpdate(true);;
+        }).SetEase(Ease.Linear).SetUpdate(true);
     }
 
     public void Render(string line, string speaker, IReadOnlyList<string> choices)
     {
         if (lineText != null)
         {
-            
             ShowText(line);
         }
 
+        bool hasSpeaker = !string.IsNullOrWhiteSpace(speaker);
         if (speakerText != null)
         {
-            bool hasSpeaker = !string.IsNullOrWhiteSpace(speaker);
             speakerText.gameObject.SetActive(hasSpeaker);
             speakerText.text = hasSpeaker ? speaker : string.Empty;
-            if (speakerAvatar != null)
-            {
-                speakerAvatar.sprite = CharacterAvatar.TryGetValue(speaker, out Sprite avatar) ? avatar : null;
-            }
-            
+        }
+
+        if (speakerAvatar != null)
+        {
+            Sprite avatar = hasSpeaker && characterDatabase != null ? characterDatabase.GetAvatar(speaker) : null;
+            speakerAvatar.sprite = avatar;
+            speakerAvatar.gameObject.SetActive(avatar != null);
         }
 
         BuildChoices(choices);
@@ -166,6 +163,34 @@ public class DialogueUI : MonoBehaviour
     private void OnContinuePressed()
     {
         manager?.ContinueStory();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (manager == null)
+        {
+            return;
+        }
+
+        if (choiceButtons.Count > 0)
+        {
+            return;
+        }
+
+        if (eventData.pointerPress != null)
+        {
+            if (eventData.pointerPress == (continueButton != null ? continueButton.gameObject : null))
+            {
+                return;
+            }
+
+            if (eventData.pointerPress == (closeButton != null ? closeButton.gameObject : null))
+            {
+                return;
+            }
+        }
+
+        manager.ContinueStory();
     }
 
     private void OnClosePressed()

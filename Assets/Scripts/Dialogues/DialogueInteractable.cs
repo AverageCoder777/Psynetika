@@ -4,7 +4,8 @@ using UnityEngine.InputSystem;
 
 public class DialogueInteractable : MonoBehaviour, IInteractable
 {
-    [SerializeField] private TextAsset inkJsonAsset;
+    [Tooltip("LinearDialogue or InkDialogue asset (any ScriptableObject implementing IDialogueSource).")]
+    [SerializeField] private ScriptableObject dialogueSource;
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private bool oneShot;
     [SerializeField] private UnityEvent onDialogueStarted;
@@ -12,6 +13,22 @@ public class DialogueInteractable : MonoBehaviour, IInteractable
 
     private bool hasPlayed;
     private bool waitingForDialogueEnd;
+
+    public bool TryPlay()
+    {
+        Interact();
+        return waitingForDialogueEnd;
+    }
+
+    public void SetDialogueSource(ScriptableObject source)
+    {
+        if (source != null && source is not IDialogueSource)
+        {
+            Debug.LogWarning($"DialogueInteractable '{name}': '{source.name}' не реализует IDialogueSource.", this);
+            return;
+        }
+        dialogueSource = source;
+    }
 
     public void Interact()
     {
@@ -31,9 +48,10 @@ public class DialogueInteractable : MonoBehaviour, IInteractable
             return;
         }
 
-        if (inkJsonAsset == null)
+        IDialogueSource source = dialogueSource as IDialogueSource;
+        if (source == null)
         {
-            Debug.LogWarning($"DialogueInteractable '{name}': inkJsonAsset is not assigned.");
+            Debug.LogWarning($"DialogueInteractable '{name}': dialogueSource is not assigned or does not implement IDialogueSource.");
             return;
         }
 
@@ -47,7 +65,7 @@ public class DialogueInteractable : MonoBehaviour, IInteractable
             }
         }
 
-        bool started = DialogueManager.Instance.StartDialogue(inkJsonAsset, playerInput);
+        bool started = DialogueManager.Instance.StartDialogue(source, playerInput);
         if (!started)
         {
             return;
@@ -62,6 +80,14 @@ public class DialogueInteractable : MonoBehaviour, IInteractable
     private void OnDisable()
     {
         Unsubscribe();
+    }
+
+    private void OnValidate()
+    {
+        if (dialogueSource != null && dialogueSource is not IDialogueSource)
+        {
+            Debug.LogWarning($"DialogueInteractable '{name}': assigned dialogueSource '{dialogueSource.name}' does not implement IDialogueSource.", this);
+        }
     }
 
     private void HandleDialogueEnded()
