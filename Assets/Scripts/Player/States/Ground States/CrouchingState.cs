@@ -24,7 +24,7 @@ public class CrouchingState : GroundedStates
         capsule = player.GetComponent<BoxCollider2D>();
         originalCapsuleSize = capsule.size;
         originalCapsuleOffset = capsule.offset;
-        Vector2 newSize = new(originalCapsuleSize.x, originalCapsuleSize.y * player.CrouchHeightMultiplier);
+        Vector2 newSize = new(originalCapsuleSize.x, originalCapsuleSize.y * player.CrouchMult);
         float delta = originalCapsuleSize.y - newSize.y;
         capsule.size = newSize;
         capsule.offset = new Vector2(originalCapsuleOffset.x, originalCapsuleOffset.y - delta / 2f);

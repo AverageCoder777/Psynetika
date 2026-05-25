@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(SpellController))]
 public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbilityDamageSource
 {
+    private static readonly int VelocityHash = Animator.StringToHash("Velocity");
     #region Fields
     [Header("Персонажи")]
     public GameObject satan;
@@ -34,7 +35,7 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     [SerializeField] float wallWaitTime = 0.2f; //Время, которое игрок должен провести на стене, чтобы можно было отпрыгнуть от неё
 
     [Header("Приседание")]
-    [SerializeField] readonly float CROUCH_HEIGHT_MULTIPLIER = 0.7f; //Модификатор, который умножает высоту коллайдера при приседании
+    [SerializeField] float crouchMult = 0.7f; //Модификатор, который умножает высоту коллайдера при приседании
 
     [Header("Рывок/кувырок")]
     [SerializeField] float rollDistance = 4f; //расстояние рывка/кувырка
@@ -111,7 +112,7 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     public float WallWaitTime => wallWaitTime;
     public float RollDistance => rollDistance;
     public float RollDuration => rollDuration;
-    public float CrouchHeightMultiplier => CROUCH_HEIGHT_MULTIPLIER;
+    public float CrouchMult => crouchMult;
     public float SwitchDelay => switchDelay;
     public State LastState { get => lastState; set => lastState = value; }
     public bool DebugMessages => debugMessages;
@@ -208,7 +209,6 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
         activeAnimator = activeCharacter.GetComponent<Animator>();
         activeSR = activeCharacter.GetComponent<SpriteRenderer>();
 
-        // Initialize state machines early to prevent null references
         PlayerSM = new StateMovMachine();
         CharacterSM = new StateCharMachine();
         IdleState = new IdleState(this, PlayerSM);
@@ -255,7 +255,7 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     {
         PlayerSM.CurrentPlayerState.PhysicsUpdate();
         CharacterSM.CurrentPlayerState.PhysicsUpdate();
-        activeAnimator.SetFloat("Velocity", rb.linearVelocity.y);
+        activeAnimator.SetFloat(VelocityHash, rb.linearVelocity.y);
     }
 
     private void OnInteractPerformed(InputAction.CallbackContext context)
@@ -312,7 +312,7 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
             if (dogHP < 0) dogHP = 0;
         }
         if (debugMessages) Debug.Log("Player took " + damage + " damage. Current HP: " + GetCharHP() + ", max HP: " + GetMaxHp());
-        activeAnimator.SetTrigger("Hurt");
+        StartCoroutine(FlashRed(0.15f));
         UpdateHealthUI();
         if (GetCharHP() <= 0) Die();
     }
@@ -423,5 +423,14 @@ public class Player : MonoBehaviour, IAbilityCaster, IAbilityStatOwner, IAbility
     public DyingState DyingState { get; set; }
     public SatanState SatanState { get; set; }
     public DogState DogState { get; set; }
+    #endregion
+    #region Damage Flash Effect
+    private IEnumerator FlashRed(float duration)
+    {
+        Color originalColor = activeSR.color;
+        activeSR.color = Color.red;
+        yield return new WaitForSeconds(duration);
+        activeSR.color = originalColor;
+    }
     #endregion
 }

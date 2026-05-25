@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class HittingState : GroundedStates
 {
-    private static readonly int HittingHash = Animator.StringToHash("Hitting");
-    private static readonly int ShootingHash = Animator.StringToHash("Shooting");
     private float hitElapsed = 0f;
     private float hitDir = 1f;
     private float timeOfOneHit = 0f;
@@ -37,11 +35,11 @@ public class HittingState : GroundedStates
 
         if (playerIsSatan)
         {
-            Animator.SetTrigger(ShootingHash);
+            Animator.SetTrigger("Shooting");
         }
         else
         {
-            Animator.SetTrigger(HittingHash);
+            Animator.SetTrigger("Hitting");
         }
 
         // Выключить все флаги комбо перед включением нового

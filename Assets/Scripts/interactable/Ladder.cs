@@ -6,7 +6,6 @@ public class Ladder : MonoBehaviour, IInteractable
 
     private void Start()
     {
-        // Находим игрока на сцене при загрузке
         player = FindFirstObjectByType<Player>();
         if (player == null)
         {
@@ -16,7 +15,6 @@ public class Ladder : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        // Get the ladder state and set this ladder as current
         if (player == null)
         {
             Debug.LogWarning("Игрок не найден для скрипта лестницы");

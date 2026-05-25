@@ -1,10 +1,10 @@
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(StatusEffectHandler))]
 public class Enemy : MonoBehaviour, IAbilityTarget
 {
-    private static readonly int DamageHash = Animator.StringToHash("Damage");
     private static readonly int DieHash = Animator.StringToHash("Die");
     [SerializeField] private int enemyHealth = 100;
     [SerializeField] private float enemySpeed = 2f;
@@ -15,6 +15,8 @@ public class Enemy : MonoBehaviour, IAbilityTarget
     [SerializeField] private int coinsToDrop = 5;
     [SerializeField] private GameObject coinPrefab;
     private Animator animator;
+    private SpriteRenderer spriteRenderer;
+    private Color originalColor;
     private bool isDead = false;
     private Player player;
     public Animator Animator => animator;
@@ -29,6 +31,8 @@ public class Enemy : MonoBehaviour, IAbilityTarget
     void Start()
     {
         animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        originalColor = spriteRenderer.color;
         player = GameObject.FindWithTag("Player")?.GetComponent<Player>();
         if (!TryGetComponent<StatusEffectHandler>(out _))
         {
@@ -88,17 +92,23 @@ public class Enemy : MonoBehaviour, IAbilityTarget
     {
         if (isDead) return;
         enemyHealth -= damage;
-        animator?.SetTrigger(DamageHash);
+        StartCoroutine(FlashRed(0.15f));
         if (enemyHealth <= 0)
         {
             Die();
         }
     }
+    private IEnumerator FlashRed(float duration)
+    {
+        spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(duration);
+        spriteRenderer.color = originalColor;
+    }
 
     // IAbilityTarget
     Transform IAbilityTarget.Transform => transform;
     bool IAbilityTarget.IsAlive => !isDead;
-    Team IAbilityTarget.Team => global::Team.Enemy;
+    Team IAbilityTarget.Team => Team.Enemy;
     void IAbilityTarget.ReceiveDamage(DamageEvent ev)
     {
         StatusEffectHandler handler = GetComponent<StatusEffectHandler>();
@@ -121,6 +131,7 @@ public class Enemy : MonoBehaviour, IAbilityTarget
     {
         if (isDead) return;
         isDead = true;
+        spriteRenderer.color = originalColor;
         animator?.SetTrigger(DieHash);
         if (hitTrigger != null) hitTrigger.enabled = false;
         if (followTrigger != null) followTrigger.enabled = false;

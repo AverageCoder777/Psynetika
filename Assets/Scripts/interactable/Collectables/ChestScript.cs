@@ -22,7 +22,7 @@ public class ChestScript : MonoBehaviour, IInteractable
     [Header("Scatter")]
     [SerializeField] private float minForce = 2f;
     [SerializeField] private float maxForce = 6f;
-    [SerializeField, Range(0f, 1f)] private float upwardBias = 0.6f; // how much force is directed upward
+    [SerializeField, Range(0f, 1f)] private float upwardBias = 0.6f;
 
     [Header("Pop animation (2D)")]
     [Tooltip("Duration of the pop animation in seconds")]
@@ -98,7 +98,6 @@ public class ChestScript : MonoBehaviour, IInteractable
         if (animator != null)
             animator.SetTrigger("Open");
         Debug.Log("ChestScript: Chest opened");
-        // запустить спавн монеток корутиной (2D физика)
         StartCoroutine(SpawnCoinsRoutine());
         onOpened?.Invoke();
     }
@@ -110,7 +109,6 @@ public class ChestScript : MonoBehaviour, IInteractable
             yield break;}
 
         int count = Random.Range(minCoins, maxCoins + 1);
-        // if spawnBox provided, use its bounds to get random spawn positions
         bool useBox = spawnBox != null;
 
         for (int i = 0; i < count; i++)
@@ -118,7 +116,7 @@ public class ChestScript : MonoBehaviour, IInteractable
             Vector2 spawnPos2D;
             if (useBox)
             {
-                Bounds b = spawnBox.bounds; // world-space AABB of the box collider
+                Bounds b = spawnBox.bounds;
                 float x = Random.Range(b.min.x, b.max.x);
                 float y = Random.Range(b.min.y, b.max.y);
                 spawnPos2D = new Vector2(x, y);
@@ -131,34 +129,28 @@ public class ChestScript : MonoBehaviour, IInteractable
 
             Vector3 spawnPos = (Vector3)spawnPos2D;
 
-            // создаём префаб без вращения (спрайт будет ориентирован как в префабе)
             GameObject coin = Instantiate(coinPrefab, spawnPos, Quaternion.identity);
             coin.SetActive(true);
             coin.transform.rotation = Quaternion.identity;
 
             if (coin.TryGetComponent<Rigidbody2D>(out var rb2))
             {
-                // сброс состояний и фиксируем ротацию, чтобы спрайт не крутился
                 rb2.linearVelocity = Vector2.zero;
                 rb2.angularVelocity = 0f;
                 rb2.constraints = RigidbodyConstraints2D.FreezeRotation;
 
-                // направление от центра сундука к спавн-позиции (или вверх если совпадает)
                 Vector2 dir = ((Vector2)spawnPos - (Vector2)transform.position).magnitude > 0.01f
                     ? ((Vector2)spawnPos - (Vector2)transform.position).normalized
                     : Vector2.up;
 
                 dir = (dir + Vector2.up * upwardBias).normalized;
 
-                // добавим небольшую вариацию угла для "разных" направлений
                 float angleVariation = Random.Range(-30f, 30f);
                 dir = (Quaternion.Euler(0f, 0f, angleVariation) * dir).normalized;
 
                 float force = Random.Range(minForce, maxForce);
                 rb2.AddForce(dir * force, ForceMode2D.Impulse);
             }
-
-            // небольшой интервал между появлениями для лучшей визуалки
             yield return _waitForSeconds0_02;
         }
     }
