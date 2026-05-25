@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Shop1
   m_EditorClassIdentifier: Assembly-CSharp::ShopList
   shoppingItems:
-  - ability: {fileID: 11400000, guid: 8c74fd2cb4df4314bbbd6f2bfa812f09, type: 2}
+  - ability: {fileID: 11400000, guid: b69d24b1dad74f6a99f522c7e4eb9e6a, type: 2}
     owner: 1
-    slot: 0
+    slot: 1
     amount: 5
-  - ability: {fileID: 11400000, guid: 10f6afe7afd9937408cac6941f98fb21, type: 2}
+  - ability: {fileID: 11400000, guid: 92ad6057d6b864b4bbf69df138b66733, type: 2}
     owner: 2
-    slot: 0
-    amount: 9
+    slot: 1
+    amount: 8
