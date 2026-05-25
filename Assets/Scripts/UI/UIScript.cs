@@ -6,9 +6,11 @@ public class UIScript : MonoBehaviour
     [SerializeField] CanvasGroup pauseMenu;
     [SerializeField] CanvasGroup GameOverMenu;
     [SerializeField] GameObject _skillsUI;
+    [SerializeField] GameObject FinishPanel;
     //[SerializeField] TeleportManager teleportManager;
     public void Start()
     {
+        FinishPanel.SetActive(false);
         ResetPlayableState();
     }
     public void ResetPlayableState()
@@ -23,7 +25,11 @@ public class UIScript : MonoBehaviour
         GameOverMenu.blocksRaycasts = false;
         _skillsUI.SetActive(true);
     }
-    
+    public void EnableFinishPanel()
+    {
+        Time.timeScale = 0f;
+        FinishPanel.SetActive(true);
+    }
     public void StartGame()
     {
         Time.timeScale = 1f;
