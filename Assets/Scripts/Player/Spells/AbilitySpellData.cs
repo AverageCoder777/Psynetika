@@ -13,20 +13,20 @@ public class AbilitySpellData : SpellData
             return;
         }
 
-        if (ctx.Caster == null)
+        if (ctx.attackCaster == null)
         {
             return;
         }
 
-        AbilityRunner runner = ctx.Caster.GetComponent<AbilityRunner>();
+        AbilityRunner runner = ctx.attackCaster.GetComponent<AbilityRunner>();
         if (runner == null)
         {
-            runner = ctx.Caster.gameObject.AddComponent<AbilityRunner>();
+            runner = ctx.attackCaster.gameObject.AddComponent<AbilityRunner>();
         }
 
         if (runner.Caster == null)
         {
-            runner.Initialize(ctx.Caster, new AbilityServices());
+            runner.Initialize(ctx.attackCaster, new AbilityServices());
         }
 
         Vector2 aimPosition = ctx.CasterCenter + Vector2.right * ctx.Direction;

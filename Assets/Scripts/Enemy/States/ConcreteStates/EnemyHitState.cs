@@ -9,7 +9,7 @@ public class EnemyHitState : EnemyStates
     private int HitDamage => enemy.EnemyDamage;
     private bool hitCompleted = false;
     private bool damageDone = false;
-    private Player playerScript;
+    private PlayerController playerScript;
 
     public EnemyHitState(Enemy enemy, EnemyStateMachine stateMachine)
         : base(enemy, stateMachine) { }
@@ -18,7 +18,7 @@ public class EnemyHitState : EnemyStates
     {
         if (playerScript == null)
         {
-            playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
+            playerScript = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         }
         enemy.Animator.SetTrigger(HitHash);
         hitElapsed = 0f;
@@ -36,7 +36,12 @@ public class EnemyHitState : EnemyStates
                 hitElapsed += Time.deltaTime;
                 if (hitElapsed >= HitDuration && !damageDone)
                 {
-                    playerScript.TakeDamage(HitDamage);
+                    var playerHealth = playerScript.GetComponent<PlayerHealth>();
+                    if (playerHealth != null)
+                    {
+                        playerHealth.TakeDamage(HitDamage);
+                    }
+
                     damageDone = true;
                 }
                 if (hitElapsed >= HitDuration)
@@ -56,11 +61,7 @@ public class EnemyHitState : EnemyStates
             stateMachine.ChangeState(enemy.idleState);
         }
     }
-
-    public override void PhysicsUpdate()
-    {
-    }
-
+    
     public override void Exit()
     {
         enemy.Animator.SetBool(HitHash, false);

@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class Shop : MonoBehaviour, IInteractable
 {
     [SerializeField] private ShopList _shopList;
-    [SerializeField] private PlayerInput _playerInput;
+    [SerializeField] private UnityEngine.InputSystem.PlayerInput _playerInput;
     [SerializeField] private Inventory _inventory;
     [Header("UI")]
     [SerializeField] private GameObject _UIShop;

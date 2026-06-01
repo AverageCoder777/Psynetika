@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class StateMovMachine
+public class StateMachine
 {
     public State CurrentPlayerState { get; set; }
 

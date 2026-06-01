@@ -18,7 +18,7 @@ public class Enemy : MonoBehaviour, IAbilityTarget
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
     private bool isDead = false;
-    private Player player;
+    private PlayerController player;
     public Animator Animator => animator;
     public int EnemyHealth => enemyHealth;
     public float EnemySpeed => enemySpeed * MoveSpeedMultiplier;
@@ -33,7 +33,7 @@ public class Enemy : MonoBehaviour, IAbilityTarget
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalColor = spriteRenderer.color;
-        player = GameObject.FindWithTag("Player")?.GetComponent<Player>();
+        player = GameObject.FindWithTag("Player")?.GetComponent<PlayerController>();
         if (!TryGetComponent<StatusEffectHandler>(out _))
         {
             gameObject.AddComponent<StatusEffectHandler>();

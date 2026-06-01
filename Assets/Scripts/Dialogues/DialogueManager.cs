@@ -15,7 +15,7 @@ public class DialogueManager : MonoBehaviour
 
     private IDialogueRunner currentRunner;
     private IReadOnlyList<string> currentChoices = Array.Empty<string>();
-    private PlayerInput activePlayerInput;
+    private UnityEngine.InputSystem.PlayerInput activePlayerInput;
     private InputAction submitAction;
     private InputAction cancelAction;
     private string previousActionMap = "Player";
@@ -35,7 +35,7 @@ public class DialogueManager : MonoBehaviour
         Instance = this;
     }
 
-    public bool StartDialogue(IDialogueSource source, PlayerInput playerInput)
+    public bool StartDialogue(IDialogueSource source, UnityEngine.InputSystem.PlayerInput playerInput)
     {
         if (source == null)
         {
@@ -45,7 +45,7 @@ public class DialogueManager : MonoBehaviour
         return StartDialogueInternal(source.CreateRunner(), playerInput);
     }
 
-    public bool StartDialogue(TextAsset inkJsonAsset, PlayerInput playerInput)
+    public bool StartDialogue(TextAsset inkJsonAsset, UnityEngine.InputSystem.PlayerInput playerInput)
     {
         if (inkJsonAsset == null)
         {
@@ -55,7 +55,7 @@ public class DialogueManager : MonoBehaviour
         return StartDialogueInternal(new InkDialogueRunner(inkJsonAsset), playerInput);
     }
 
-    private bool StartDialogueInternal(IDialogueRunner runner, PlayerInput playerInput)
+    private bool StartDialogueInternal(IDialogueRunner runner, UnityEngine.InputSystem.PlayerInput playerInput)
     {
         if (runner == null || IsDialogueActive)
         {
@@ -191,7 +191,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    private void CacheUiActions(PlayerInput playerInput)
+    private void CacheUiActions(UnityEngine.InputSystem.PlayerInput playerInput)
     {
         submitAction = playerInput.actions["Submit"];
         cancelAction = playerInput.actions["Cancel"];

@@ -9,7 +9,7 @@ public class LadderState : State
     private float enterTime = 0f;
     private readonly float exitDelay = 0.25f; // Задержка перед возможностью выхода
 
-    public LadderState(Player player, StateMovMachine stateMachine) : base(player, stateMachine)
+    public LadderState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine)
     {
     }
 
@@ -22,8 +22,8 @@ public class LadderState : State
     {
         base.Enter();
     
-        player.Rb.gravityScale = 0f;
-        player.Rb.linearVelocity = Vector2.zero;
+        Movement.Rb.gravityScale = 0f;
+        Movement.Rb.linearVelocity = Vector2.zero;
         
         Animator.SetBool(ClimbingHash, true);
         Animator.SetBool(GroundedHash, false);
@@ -36,19 +36,19 @@ public class LadderState : State
     public override void HandleInput()
     {
         base.HandleInput();
-        player.MovementInput = player.PlayerInput.actions["Move"].ReadValue<Vector2>();
+        Movement.MovementInput = Movement.PlayerInput.actions["Move"].ReadValue<Vector2>();
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        if (Time.time - enterTime > exitDelay && player.PlayerInput.actions["Interact"].WasPressedThisFrame())
+        if (Time.time - enterTime > exitDelay && Movement.PlayerInput.actions["Interact"].WasPressedThisFrame())
         {
             stateMachine.ChangeState(player.FlyingState);
             return;
         }
         
-        if (player.MovementInput.x != 0)
+        if (Movement.MovementInput.x != 0)
         {
             stateMachine.ChangeState(player.FlyingState);
             return;
@@ -67,22 +67,22 @@ public class LadderState : State
 
         float verticalMovement = 0f;
         
-        if (player.MovementInput.y > 0)
+        if (Movement.MovementInput.y > 0)
         {
             verticalMovement = climbSpeed;
         }
-        else if (player.MovementInput.y < 0)
+        else if (Movement.MovementInput.y < 0)
         {
             verticalMovement = -climbSpeed;
         }
-        player.Rb.linearVelocity = new Vector2(0f, verticalMovement);
+        Movement.Rb.linearVelocity = new Vector2(0f, verticalMovement);
     }
 
     public override void Exit()
     {
         base.Exit();
 
-        player.Rb.gravityScale = player.DownGravityScale;
+        Movement.Rb.gravityScale = Movement.DownGravityScale;
         Animator.SetBool(ClimbingHash, false);
         Animator.SetBool(GroundedHash, true);
     }

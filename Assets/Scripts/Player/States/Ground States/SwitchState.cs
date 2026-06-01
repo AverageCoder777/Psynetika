@@ -5,7 +5,7 @@ public class SwitchState : GroundedStates
 {
     private static readonly int IsSwitchingHash = Animator.StringToHash("isSwitching");
 
-    public SwitchState(Player player, StateMovMachine stateMachine)
+    public SwitchState(PlayerController player, StateMachine stateMachine)
         : base(player, stateMachine) { }
 
     public override void Enter()
@@ -15,44 +15,44 @@ public class SwitchState : GroundedStates
         player.LastState = this;
     }
 
-
     private IEnumerator SwitchCharacter()
     {
-        if (player.DogActive == false || player.SatanActive == false)
+        if (CharManager.DogActive == false || CharManager.SatanActive == false)
         {
             stateMachine.ChangeState(player.IdleState);
             yield break;
         }
-        player.ActiveAnimator.SetTrigger(IsSwitchingHash);
+        CharManager.ActiveAnimator.SetTrigger(IsSwitchingHash);
         yield return new WaitForSeconds(player.SwitchDelay);
 
-        if (player.GetCurrentCharState() == player.SatanState)
+        if (player.GetCurrentCharacterType() == PlayerCharacterType.Satan)
+
         {
-            player.Satan.SetActive(false);
-            player.ActiveCharacter = player.Dog;
-            player.Dog.SetActive(true);
-            if (player.DebugMessages)
-                Debug.Log("Switched to Sobaka");
-            player.CharacterSM.ChangeState(player.DogState);
+            CharManager.Satan.SetActive(false);
+            CharManager.ActiveCharacter = CharManager.Dog;
+            CharManager.Dog.SetActive(true);
+            if (player.debugMessages) Debug.Log("Switched to Sobaka");
+            player.SetCurrentCharacterType(PlayerCharacterType.Dog);
         }
         else
         {
-            player.Dog.SetActive(false);
-            player.ActiveCharacter = player.Satan;
-            player.Satan.SetActive(true);
-            if (player.DebugMessages)
-                Debug.Log("Switched to Satan");
-            player.CharacterSM.ChangeState(player.SatanState);
+
+            CharManager.Dog.SetActive(false);
+            CharManager.ActiveCharacter = CharManager.Satan;
+            CharManager.Satan.SetActive(true);
+            if (player.debugMessages) Debug.Log("Switched to Satan");
+            player.SetCurrentCharacterType(PlayerCharacterType.Satan);
         }
-        player.ActiveAnimator.SetBool(IsSwitchingHash, false);
+
+
+        CharManager.ActiveAnimator.SetBool(IsSwitchingHash, false);
         CacheActiveVisuals();
-        player.UpdateHealthUI();
         stateMachine.ChangeState(player.IdleState);
     }
 
     void CacheActiveVisuals()
     {
-        player.ActiveAnimator = player.ActiveCharacter.GetComponent<Animator>();
-        player.ActiveSR = player.ActiveCharacter.GetComponent<SpriteRenderer>();
+        CharManager.ActiveAnimator = CharManager.ActiveCharacter.GetComponent<Animator>();
+        CharManager.ActiveSR = CharManager.ActiveCharacter.GetComponent<SpriteRenderer>();
     }
 }

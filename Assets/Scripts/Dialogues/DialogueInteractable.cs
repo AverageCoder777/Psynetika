@@ -6,7 +6,7 @@ public class DialogueInteractable : MonoBehaviour, IInteractable
 {
     [Tooltip("LinearDialogue or InkDialogue asset (any ScriptableObject implementing IDialogueSource).")]
     [SerializeField] private ScriptableObject dialogueSource;
-    [SerializeField] private PlayerInput playerInput;
+    [SerializeField] private UnityEngine.InputSystem.PlayerInput playerInput;
     [SerializeField] private bool oneShot;
     [SerializeField] private UnityEvent onDialogueStarted;
     [SerializeField] private UnityEvent onDialogueFinished;
@@ -57,7 +57,7 @@ public class DialogueInteractable : MonoBehaviour, IInteractable
 
         if (playerInput == null)
         {
-            playerInput = FindObjectOfType<PlayerInput>();
+            playerInput = FindObjectOfType<UnityEngine.InputSystem.PlayerInput>();
             if (playerInput == null)
             {
                 Debug.LogWarning($"DialogueInteractable '{name}': PlayerInput not found.");

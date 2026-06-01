@@ -4,18 +4,18 @@ public class FlyingState : AirStates
 {
     private static readonly int JumpingHash = Animator.StringToHash("Jumping");
 
-    public FlyingState(Player player, StateMovMachine stateMachine) : base(player, stateMachine) { }
+    public FlyingState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine) { }
 
     public override void Enter()
     {
-        if (player.Rb.linearVelocity.y < 0)
+        if (Movement.Rb.linearVelocity.y < 0)
         {
-            player.Rb.gravityScale = player.DownGravityScale;
+            Movement.Rb.gravityScale = Movement.DownGravityScale;
         }
-        else if (player.Rb.linearVelocity.y > 0)
+        else if (Movement.Rb.linearVelocity.y > 0)
         {
             Animator.SetTrigger(JumpingHash);
-            player.Rb.gravityScale = player.UpGravityScale;
+            Movement.Rb.gravityScale = Movement.UpGravityScale;
         }
     }
 
@@ -35,13 +35,13 @@ public class FlyingState : AirStates
         }
         else
         {
-            if (player.Rb.linearVelocity.y > 0)
+            if (Movement.Rb.linearVelocity.y > 0)
             {
-                player.Rb.gravityScale = player.UpGravityScale;
+                Movement.Rb.gravityScale = Movement.UpGravityScale;
             }
             else
             {
-                player.Rb.gravityScale = player.DownGravityScale;
+                Movement.Rb.gravityScale = Movement.DownGravityScale;
             }
         }
     }
@@ -59,7 +59,7 @@ public class FlyingState : AirStates
 
     public override void Exit()
     {
-        player.Rb.gravityScale = player.Rb.linearVelocity.y >= 0f ? player.UpGravityScale : player.DownGravityScale;
+        Movement.Rb.gravityScale = Movement.Rb.linearVelocity.y >= 0f ? Movement.UpGravityScale : Movement.DownGravityScale;
         Animator.ResetTrigger(JumpingHash);
     }
 }

@@ -6,7 +6,7 @@ public abstract class GroundedStates : State
     private static readonly int MovingHash = Animator.StringToHash("Moving");
     protected Vector2 movementInput;
     protected bool grounded = true;
-    public GroundedStates(Player player, StateMovMachine stateMachine) : base(player, stateMachine)
+    public GroundedStates(PlayerController player, StateMachine stateMachine) : base(player, stateMachine)
     {
     }
     public override void Enter()
@@ -28,23 +28,23 @@ public abstract class GroundedStates : State
     public override void HandleInput()
     {
         base.HandleInput();
-        movementInput = player.PlayerInput.actions["Move"].ReadValue<Vector2>();
+        movementInput = Movement.PlayerInput.actions["Move"].ReadValue<Vector2>();
     }
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-        float targetVelocityX = movementInput.x * player.GetCharSpeed();
-        float currentVelocityX = player.Rb.linearVelocity.x;
-        float accelerationToUse = movementInput.x != 0 ? player.AccelerationRate : player.FrictionRate;
+        float targetVelocityX = movementInput.x * Movement.GetCharSpeed();
+        float currentVelocityX = Movement.Rb.linearVelocity.x;
+        float accelerationToUse = movementInput.x != 0 ? Movement.AccelerationRate : Movement.FrictionRate;
         float newVelocityX = Mathf.Lerp(currentVelocityX, targetVelocityX, accelerationToUse * Time.fixedDeltaTime);
         
-        player.Rb.linearVelocity = new Vector2(newVelocityX, player.Rb.linearVelocity.y);
+        Movement.Rb.linearVelocity = new Vector2(newVelocityX, Movement.Rb.linearVelocity.y);
         
         // Крутим спрайт в зависимости от направления
         if (movementInput.x > 0.01f)
-            player.ActiveSR.flipX = false;
+            CharManager.ActiveSR.flipX = false;
         else if (movementInput.x < -0.01f)
-            player.ActiveSR.flipX = true;
+            CharManager.ActiveSR.flipX = true;
     }
     public override void Exit()
     {

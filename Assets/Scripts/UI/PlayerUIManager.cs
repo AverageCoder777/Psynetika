@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class PlayerUIManager : MonoBehaviour
 {
-    [SerializeField] private Player player;
+    [SerializeField] private PlayerController player;
 
     [Header("Обычная способность")]
     [Tooltip("Опционально: корневой объект слота. Если задан, скрывается целиком при отсутствии способности.")]
@@ -21,7 +21,7 @@ public class PlayerUIManager : MonoBehaviour
     {
         if (player == null) return;
 
-        bool isSatan = player.GetCurrentCharState() == player.SatanState;
+        bool isSatan = player.GetCurrentCharacterType() == PlayerCharacterType.Satan;
         SpellController sc = player.SpellController;
 
         UpdateSlot(regularSlotRoot,  regularIcon,  regularCooldownFill,  sc, isSatan, SpellSlot.Regular);

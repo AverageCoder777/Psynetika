@@ -1,5 +1,7 @@
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerAttack))]
+[RequireComponent(typeof(AbilityRunner))]
 public class SpellController : MonoBehaviour
 {
     [Header("Satan")]
@@ -11,20 +13,20 @@ public class SpellController : MonoBehaviour
     [SerializeField] private AbilityDefinition sobakaUltimate;
 
     private AbilityRunner abilityRunner;
-    private Player owner;
+    private PlayerAttack attackOwner;
 
     private void Awake()
     {
-        owner = GetComponent<Player>();
+        attackOwner = GetComponent<PlayerAttack>();
         abilityRunner = GetComponent<AbilityRunner>();
         if (abilityRunner == null)
         {
             abilityRunner = gameObject.AddComponent<AbilityRunner>();
         }
 
-        if (abilityRunner.Caster == null && owner != null)
+        if (abilityRunner.Caster == null && attackOwner != null)
         {
-            abilityRunner.Initialize(owner, new AbilityServices());
+            abilityRunner.Initialize(attackOwner, new AbilityServices());
         }
     }
 

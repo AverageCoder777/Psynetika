@@ -13,10 +13,10 @@ public class AreaStrikeSpellData : SpellData
 
     public override void Cast(SpellCastContext ctx)
     {
-        if (ctx.Caster == null) return;
+        if (ctx.attackCaster == null) return;
 
         Vector2 center = ctx.CasterCenter + Vector2.right * (ctx.Direction * forwardOffset);
-        int dmg = Mathf.RoundToInt(ctx.Caster.GetHitDamage() * damageMultiplier);
+        int dmg = Mathf.RoundToInt(ctx.attackCaster.GetHitDamage() * damageMultiplier);
 
         Collider2D[] hits = Physics2D.OverlapBoxAll(center, hitBoxSize, 0f, LayerMask.GetMask("Enemy"));
         foreach (Collider2D hit in hits)

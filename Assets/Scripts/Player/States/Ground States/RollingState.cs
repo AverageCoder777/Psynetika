@@ -9,13 +9,13 @@ public class RollingState : GroundedStates
     readonly int playerLayer = LayerMask.NameToLayer("Player");
     readonly int enemyLayer = LayerMask.NameToLayer("Enemy");
 
-    public RollingState(Player player, StateMovMachine stateMachine) : base(player, stateMachine) { }
+    public RollingState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine) { }
 
     public override void Enter()
     {
         base.Enter();
         rollElapsed = 0f;
-        rollDir = player.ActiveSR != null && player.ActiveSR.flipX ? -1f : 1f;
+        rollDir = CharManager.ActiveSR != null && CharManager.ActiveSR.flipX ? -1f : 1f;
         Animator.SetTrigger(RollingHash);
         Animator.SetBool(GroundedHash, true);
         Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
@@ -25,9 +25,9 @@ public class RollingState : GroundedStates
     {
         if (rollEnd)
         {
-            if (Mathf.Abs(player.Rb.linearVelocity.y) < 0.001f)
+            if (Mathf.Abs(Movement.Rb.linearVelocity.y) < 0.001f)
                 stateMachine.ChangeState(player.IdleState);
-            else if (player.Rb.linearVelocity.y < 0f)
+            else if (Movement.Rb.linearVelocity.y < 0f)
             {
                 Animator.SetBool(GroundedHash, false);
                 stateMachine.ChangeState(player.FlyingState);
@@ -38,16 +38,16 @@ public class RollingState : GroundedStates
     {
         if (!rollEnd)
         {
-            float duration = player.RollDuration > 0f ? player.RollDuration : 0.0001f;
-            float rollSpeed = player.RollDistance / duration;
-            player.Rb.linearVelocity = new Vector2(rollDir * rollSpeed, player.Rb.linearVelocity.y);
+            float duration = Movement.RollDuration > 0f ? Movement.RollDuration : 0.0001f;
+            float rollSpeed = Movement.RollDistance / duration;
+            Movement.Rb.linearVelocity = new Vector2(rollDir * rollSpeed, Movement.Rb.linearVelocity.y);
 
             rollElapsed += Time.fixedDeltaTime;
             if (rollElapsed >= duration)
             {
                 rollEnd = true;
                 Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, false);
-                player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
+                Movement.Rb.linearVelocity = new Vector2(0f, Movement.Rb.linearVelocity.y);
             }
         }
     }

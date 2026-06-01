@@ -25,7 +25,7 @@ public class DeadZone : MonoBehaviour
     // Falls back to destroying the GameObject if Health component is not found.
     private void HandlePlayerDeath(GameObject playerObject)
     {
-        Player playerScript = playerObject.GetComponent<Player>();
+        PlayerController playerScript = playerObject.GetComponent<PlayerController>();
 
         if (playerScript != null)
         {

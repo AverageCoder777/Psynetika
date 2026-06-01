@@ -5,7 +5,7 @@ public class TeleportManager : MonoBehaviour
 {
    public List<TeleportPoint> teleportPoints = new List<TeleportPoint>();
    private int teleportPointIndex = 0;
-   [SerializeField] private Player _player;
+   [SerializeField] private PlayerController _player;
 
    public void NextTeleportPoint()
    {

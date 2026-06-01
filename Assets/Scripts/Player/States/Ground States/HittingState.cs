@@ -16,7 +16,7 @@ public class HittingState : GroundedStates
     private bool playerIsSatan;
     private bool shooted = false;
 
-    public HittingState(Player player, StateMovMachine playerStateMachine)
+    public HittingState(PlayerController player, StateMachine playerStateMachine)
         : base(player, playerStateMachine) { }
 
     public override void Enter()
@@ -27,9 +27,9 @@ public class HittingState : GroundedStates
             comboCount = 0;
         }
         shooted = false;
-        playerIsSatan = player.GetCurrentCharState() == player.SatanState;
-        timeOfOneHit = player.GetHitTime();
-        hitDistance = player.GetHitDistance();
+        playerIsSatan = player.GetCurrentCharacterType() == PlayerCharacterType.Satan;
+        timeOfOneHit = Attack.GetHitTime();
+        hitDistance = Attack.GetHitDistance();
         comboCount++;
         if (comboCount > 2) comboCount = 1;
 
@@ -69,13 +69,13 @@ public class HittingState : GroundedStates
         player.LastState = this;
         jumpRequested = false;
         attackRequested = false;
-        player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
+        Movement.Rb.linearVelocity = new Vector2(0f, Movement.Rb.linearVelocity.y);
     }
     public override void HandleInput()
     {
         base.HandleInput();
-        jumpRequested = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
-        attackRequested = attackRequested || player.PlayerInput.actions["Attack"].WasPressedThisFrame();
+        jumpRequested = Movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
+        attackRequested = attackRequested || Movement.PlayerInput.actions["Attack"].WasPressedThisFrame();
     }
 
     public override void LogicUpdate()
@@ -92,7 +92,7 @@ public class HittingState : GroundedStates
                 Animator.SetBool("Hitting " + comboCount, false);
             }
             hitCompleted = true;
-            if (player.DebugMessages)
+            if (player.debugMessages)
                 Debug.Log("Hitting interrupted by jump input -> switching to JumpingState");
             stateMachine.ChangeState(player.JumpingState);
             return;
@@ -113,8 +113,8 @@ public class HittingState : GroundedStates
 
     public override void PhysicsUpdate()
     {
-        player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
-        hitDir = player.ActiveSR.flipX ? -1f : 1f;
+        Movement.Rb.linearVelocity = new Vector2(0f, Movement.Rb.linearVelocity.y);
+        hitDir = CharManager.ActiveSR.flipX ? -1f : 1f;
         hitElapsed += Time.deltaTime;
         BoxCollider2D box = player.GetComponent<BoxCollider2D>();
         Vector2 origin = (box != null) ? box.bounds.center : (Vector2)player.transform.position;
@@ -125,16 +125,16 @@ public class HittingState : GroundedStates
             {
                 Vector2 spawnPos = new(origin.x + (direction.x * 0.65f), origin.y + (direction.y * 0.22f));
                 GameObject bulletObj = Object.Instantiate(
-                    player.bulletPrefab,
+                    Attack.bulletPrefab,
                     spawnPos,
                     Quaternion.identity
                 );
                 Debug.DrawLine(spawnPos, spawnPos + Vector2.up * 0.1f, Color.blue, 0.1f);
                 Bullet bullet = bulletObj.GetComponent<Bullet>();
-                bullet.damage = player.GetHitDamage();
+                bullet.damage = Attack.GetHitDamage();
                 bullet.SetDirection(hitDir);
                 shooted = true;
-                if (player.DebugMessages)
+                if (player.debugMessages)
                     Debug.Log("Shot a bullet in direction " + hitDir);
             }
             if (!playerIsSatan && hitElapsed >= timeOfOneHit)
@@ -159,15 +159,15 @@ public class HittingState : GroundedStates
                 {
                     foreach (Collider2D collider in hits)
                     {
-                        if (player.DebugMessages)
+                        if (player.debugMessages)
                             Debug.Log("Hit " + collider.name);
                         Enemy enemy = collider.GetComponent<Enemy>();
                         if (enemy != null)
                         {
-                            enemy.TakeDamage(player.GetHitDamage());
+                            enemy.TakeDamage(Attack.GetHitDamage());
                             Debug.Log(
                                 "Player hitted enemy with "
-                                    + player.GetHitDamage()
+                                    + Attack.GetHitDamage()
                                     + " damage points"
                             );
                         }
@@ -176,17 +176,17 @@ public class HittingState : GroundedStates
                             DamageDummy dummy = collider.GetComponent<DamageDummy>();
                             if (dummy != null)
                             {
-                                dummy.TakeDamage(player.GetHitDamage());
+                                dummy.TakeDamage(Attack.GetHitDamage());
                                 Debug.Log(
                                     "Player hitted dummy with "
-                                        + player.GetHitDamage()
+                                        + Attack.GetHitDamage()
                                         + " damage points"
                                 );
                             }
                         }
                     }
                 }
-                else if (player.DebugMessages)
+                else if (player.debugMessages)
                 {
                     Debug.Log("No enemies hit in area");
                 }

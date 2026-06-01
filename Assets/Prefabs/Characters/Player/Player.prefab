@@ -193,7 +193,7 @@ Animator:
   m_GameObject: {fileID: 5657514967229252165}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7bea39b0ffe05de4ba038c43c9615e7a, type: 2}
+  m_Controller: {fileID: 22100000, guid: 1262ae82b2aa64a46a01d75ca09ff725, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -214,12 +214,19 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3039743151244778813}
-  - component: {fileID: 3118019941505062873}
   - component: {fileID: 3977752050607818052}
   - component: {fileID: 4449052849760632079}
-  - component: {fileID: 104384304269117495}
-  - component: {fileID: 885946949448962829}
   - component: {fileID: 7790578205910899678}
+  - component: {fileID: 6161539932656449959}
+  - component: {fileID: 5070882045547477553}
+  - component: {fileID: 4279762284409354990}
+  - component: {fileID: 3238211951885222272}
+  - component: {fileID: 3863086145341163272}
+  - component: {fileID: 4200766791878785369}
+  - component: {fileID: 8504989227509369689}
+  - component: {fileID: 3118019941505062873}
+  - component: {fileID: 885946949448962829}
+  - component: {fileID: 104384304269117495}
   - component: {fileID: 2606416635417318025}
   m_Layer: 6
   m_Name: Player
@@ -246,6 +253,170 @@ Transform:
   - {fileID: 1004924292641632401}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3977752050607818052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5868496344035386359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e39da343aa508247a9e83d884e243e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  switchDelay: 0.5
+  debugMessages: 1
+--- !u!114 &4449052849760632079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5868496344035386359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a8f0617f662430c8f935b5e99f6bd62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellController
+  satanRegular: {fileID: 11400000, guid: 8c74fd2cb4df4314bbbd6f2bfa812f09, type: 2}
+  satanUltimate: {fileID: 0}
+  sobakaRegular: {fileID: 11400000, guid: 0e0b98cb5e7848858c65ecde913f1b74, type: 2}
+  sobakaUltimate: {fileID: 0}
+--- !u!114 &7790578205910899678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5868496344035386359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff3276b54da466a49a7b1e9153c9fa49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  _sc: {fileID: 4449052849760632079}
+  coins: 0
+  _AbilitySatan: {fileID: 0}
+--- !u!114 &6161539932656449959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5868496344035386359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ba330aabd240a42aa549b8bd7b134f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerActions
+--- !u!114 &5070882045547477553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5868496344035386359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 778ef637d20f40942ad4971803d3f44e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  dogMaxHP: 100
+  dogHP: 100
+  satanMaxHP: 100
+  satanHP: 100
+--- !u!114 &4279762284409354990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5868496344035386359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2653367ebc9cb5040bf995f6e3d0194d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMoving
+  dogSpeed: 8
+  satanSpeed: 6
+  accelerationRate: 15
+  frictionRate: 20
+  movementInput: {x: 0, y: 0}
+  thrust: 8
+  doubleJumpThrust: 4
+  upGravityScale: 1.1
+  downGravityScale: 2
+  wallSlideSpeed: 1
+  wallJumpForce: 18
+  wallDetectionDistance: 0.5
+  wallWaitTime: 0.2
+  crouchMult: 0.7
+  rollDistance: 4
+  rollDuration: 0.25
+  platformLayerName: Platform
+  dropThroughDuration: 0.5
+--- !u!114 &3238211951885222272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5868496344035386359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04a084edc5ef6b84492252e8f8abaafa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
+  dogHitTime: 1
+  dogHitDistance: 1
+  dogHitDamage: 10
+  bulletPrefab: {fileID: 7568458503567619839, guid: 19f0135fb9cbb644ab800844ea9cfc57, type: 3}
+  satanHitTime: 1
+  satanHitDistance: 2
+  satanHitDamage: 22
+  attackSpeedMultiplier: 1
+  damageMultiplier: 1
+--- !u!114 &3863086145341163272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5868496344035386359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f30fc296260b8440b9c70d1d9e0cd5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityRunner
+--- !u!114 &4200766791878785369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5868496344035386359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06d918ccf6cd4f446ad00f743adec542, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDeathObserver
+--- !u!114 &8504989227509369689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5868496344035386359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d3001d1cc255b64ca09ffdae04c618f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterManager
+  satan: {fileID: 0}
+  dog: {fileID: 0}
+  SatanActive: 0
+  DogActive: 0
 --- !u!114 &3118019941505062873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -396,7 +567,19 @@ MonoBehaviour:
     m_ActionId: f4543994-b2c4-4726-acef-23a37beeaf2c
     m_ActionName: 'Player/Character Switch[/Keyboard/f]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UIScript, Assembly-CSharp
+        m_MethodName: Open
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 6f33fde4-c2ae-4415-86ee-8b51b0e68f36
     m_ActionName: 'Player/Pause[/Keyboard/escape]'
   - m_PersistentCalls:
@@ -412,94 +595,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &3977752050607818052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5868496344035386359}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e39da343aa508247a9e83d884e243e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  satan: {fileID: 5657514967229252165}
-  sobaka: {fileID: 7312007642943744988}
-  sobakaSpeed: 8
-  satanSpeed: 6
-  accelerationRate: 7
-  frictionRate: 20
-  thrust: 7
-  doubleJumpThrust: 4
-  upGravityScale: 1.1
-  downGravityScale: 2.1
-  wallSlideSpeed: 1
-  wallJumpForce: 21
-  wallDetectionDistance: 0.5
-  wallWaitTime: 0.1
-  rollDistance: 4
-  rollDuration: 0.25
-  ui: {fileID: 0}
-  healthBar: {fileID: 0}
-  maxHp: 100
-  hp: 100
-  switchDelay: 0.5
-  platformLayerName: Platform
-  dropThroughDuration: 0.7
-  hittingSpeedSobaka: 0.5
-  hitDistanceSobaka: 1
-  hittingDamageSobaka: 10
-  bulletPrefab: {fileID: 7568458503567619839, guid: 19f0135fb9cbb644ab800844ea9cfc57, type: 3}
-  hittingDamageSatana: 22
-  hittingSpeedSatana: 0.7
-  hitDistanceSatana: 2
-  spellController: {fileID: 4449052849760632079}
-  interactionDetector: {fileID: 3652200563004638195}
-  debugMessages: 1
---- !u!114 &4449052849760632079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5868496344035386359}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a8f0617f662430c8f935b5e99f6bd62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpellController
-  satanRegular: {fileID: 11400000, guid: 8c74fd2cb4df4314bbbd6f2bfa812f09, type: 2}
-  satanUltimate: {fileID: 11400000, guid: b69d24b1dad74f6a99f522c7e4eb9e6a, type: 2}
-  sobakaRegular: {fileID: 11400000, guid: 92ad6057d6b864b4bbf69df138b66733, type: 2}
-  sobakaUltimate: {fileID: 11400000, guid: 0e0b98cb5e7848858c65ecde913f1b74, type: 2}
---- !u!50 &104384304269117495
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5868496344035386359}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1.1
-  m_Material: {fileID: 6200000, guid: a8d90f88943ba4f48b9289f99821e971, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 2
-  m_SleepingMode: 0
-  m_CollisionDetection: 1
-  m_Constraints: 4
 --- !u!61 &885946949448962829
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -546,21 +641,33 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.0224705, y: 2.0813303}
   m_EdgeRadius: 0
---- !u!114 &7790578205910899678
-MonoBehaviour:
+--- !u!50 &104384304269117495
+Rigidbody2D:
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5868496344035386359}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff3276b54da466a49a7b1e9153c9fa49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Inventory
-  _sc: {fileID: 4449052849760632079}
-  coins: 0
-  _SpellSatan: {fileID: 0}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1.1
+  m_Material: {fileID: 6200000, guid: a8d90f88943ba4f48b9289f99821e971, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 2
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
+  m_Constraints: 4
 --- !u!210 &2606416635417318025
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -665,7 +772,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 1
+  m_SpriteSortPoint: 0
 --- !u!95 &632793021609228900
 Animator:
   serializedVersion: 7
@@ -676,7 +783,7 @@ Animator:
   m_GameObject: {fileID: 7312007642943744988}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ba5277ff704c11947ab1811225789134, type: 2}
+  m_Controller: {fileID: 22100000, guid: e26c19230dfffd747aef6aadba7bc216, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

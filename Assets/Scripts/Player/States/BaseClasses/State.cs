@@ -1,10 +1,13 @@
 using UnityEngine;
 public abstract class State
 {
-    protected Player player;
-    protected StateMovMachine stateMachine;
-    protected Animator Animator => player.ActiveAnimator;
-    public State(Player player, StateMovMachine stateMachine)
+    protected PlayerController player;
+    protected PlayerMoving Movement => player.Movement;
+    protected PlayerAttack Attack => player.Attack;
+    protected PlayerCharacterManager CharManager => player.PlayerCharManager;
+    protected Animator Animator => CharManager.ActiveAnimator;
+    protected StateMachine stateMachine;
+    public State(PlayerController player, StateMachine stateMachine)
     {
         this.player = player;
         this.stateMachine = stateMachine;

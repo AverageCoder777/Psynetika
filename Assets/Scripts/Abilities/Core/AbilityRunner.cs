@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class AbilityRunner : MonoBehaviour
 {
-    private readonly Dictionary<AbilityDefinition, AbilityInstance> instances = new Dictionary<AbilityDefinition, AbilityInstance>();
+    private readonly Dictionary<AbilityDefinition, AbilityInstance> instances = new();
     private AbilityServices services;
     private IAbilityCaster caster;
 
@@ -57,7 +56,7 @@ public class AbilityRunner : MonoBehaviour
         AbilityInstance inst = GetInstance(def);
         inst.CooldownEndsAt = Time.time + Mathf.Max(0f, def.cooldown);
 
-        AbilityContext ctx = new AbilityContext
+        AbilityContext ctx = new()
         {
             Owner = caster,
             ResolvedTarget = target,

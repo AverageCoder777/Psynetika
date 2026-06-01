@@ -17,7 +17,7 @@ public class SpellCastState : GroundedStates
     private SpellSlot activeSlot;
     private AbilityDefinition activeAbility;
 
-    public SpellCastState(Player player, StateMovMachine stateMachine)
+    public SpellCastState(PlayerController player, StateMachine stateMachine)
         : base(player, stateMachine) { }
 
     public override void Enter()
@@ -28,8 +28,8 @@ public class SpellCastState : GroundedStates
         jumpRequested = false;
         activeAbility = null;
 
-        isSatanCaster = player.GetCurrentCharState() == player.SatanState;
-        castDirection = player.ActiveSR != null && player.ActiveSR.flipX ? -1f : 1f;
+        isSatanCaster = player.GetCurrentCharacterType() == PlayerCharacterType.Satan;
+        castDirection = CharManager.ActiveSR != null && CharManager.ActiveSR.flipX ? -1f : 1f;
         activeSlot = player.PendingSpellSlot;
 
         if (player.SpellController == null)
@@ -46,7 +46,7 @@ public class SpellCastState : GroundedStates
 
         castDuration = Mathf.Max(0.05f, activeAbility.castDuration);
         castMoment = castDuration * Mathf.Clamp01(activeAbility.castMomentNormalized);
-        player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
+        Movement.Rb.linearVelocity = new Vector2(0f, Movement.Rb.linearVelocity.y);
 
         PlayCastAnimation();
     }
@@ -54,12 +54,12 @@ public class SpellCastState : GroundedStates
     public override void HandleInput()
     {
         base.HandleInput();
-        jumpRequested = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
+        jumpRequested = Movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
     }
 
     public override void PhysicsUpdate()
     {
-        player.Rb.linearVelocity = new Vector2(0f, player.Rb.linearVelocity.y);
+        Movement.Rb.linearVelocity = new Vector2(0f, Movement.Rb.linearVelocity.y);
     }
 
     public override void LogicUpdate()
@@ -81,7 +81,7 @@ public class SpellCastState : GroundedStates
 
         if (elapsed >= castDuration)
         {
-            if (player.Rb.linearVelocity.y < 0f)
+            if (Movement.Rb.linearVelocity.y < 0f)
             {
                 stateMachine.ChangeState(player.FlyingState);
                 return;
@@ -98,7 +98,7 @@ public class SpellCastState : GroundedStates
 
     private void PlayCastAnimation()
     {
-        Animator animator = player.ActiveAnimator;
+        Animator animator = CharManager.ActiveAnimator;
         if (animator == null) return;
 
         if (animator.runtimeAnimatorController is AnimatorOverrideController over)

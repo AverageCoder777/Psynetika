@@ -11,7 +11,7 @@ public class IdleState : GroundedStates
     private bool hit;
     private bool spell;
     private bool spellUltimate;
-    public IdleState(Player player, StateMovMachine stateMachine)
+    public IdleState(PlayerController player, StateMachine stateMachine)
         : base(player, stateMachine)
     {
     }
@@ -20,18 +20,18 @@ public class IdleState : GroundedStates
         base.Enter();
         Animator.SetBool(MovingHash, false);
         grounded = true;
-        player.Rb.linearVelocity = new Vector2(0, player.Rb.linearVelocity.y);
+        Movement.Rb.linearVelocity = new Vector2(0, Movement.Rb.linearVelocity.y);
     }
     public override void HandleInput()
     {
         base.HandleInput();
-        crouch = player.PlayerInput.actions["Crouch"].IsPressed();
-        jump = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
-        roll = player.PlayerInput.actions["Roll"].WasPressedThisFrame();
-        @switch = player.PlayerInput.actions["Switch"].WasPressedThisFrame();
-        hit = player.PlayerInput.actions["Attack"].WasPressedThisFrame();
-        spell = player.PlayerInput.actions["Spell"].WasPressedThisFrame();
-        spellUltimate = player.PlayerInput.actions["SpellUltimate"].WasPressedThisFrame();
+        crouch = Movement.PlayerInput.actions["Crouch"].IsPressed();
+        jump = Movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
+        roll = Movement.PlayerInput.actions["Roll"].WasPressedThisFrame();
+        @switch = Movement.PlayerInput.actions["Switch"].WasPressedThisFrame();
+        hit = Movement.PlayerInput.actions["Attack"].WasPressedThisFrame();
+        spell = Movement.PlayerInput.actions["Spell"].WasPressedThisFrame();
+        spellUltimate = Movement.PlayerInput.actions["SpellUltimate"].WasPressedThisFrame();
     }
     public override void LogicUpdate()
     {
@@ -49,12 +49,12 @@ public class IdleState : GroundedStates
         {
             stateMachine.ChangeState(player.RollingState);
         }
-        else if (Mathf.Abs(player.Rb.linearVelocityY) > 0.1f && !DetectPlatform())
+        else if (Mathf.Abs(Movement.Rb.linearVelocityY) > 0.1f && !DetectPlatform())
         {
             grounded = false;
             stateMachine.ChangeState(player.FlyingState);
         }
-        else if (@switch && player.DogActive != false && player.SatanActive != false)
+        else if (@switch && CharManager.DogActive != false && CharManager.SatanActive != false)
         {
             stateMachine.ChangeState(player.SwitchState);
         }
@@ -101,7 +101,7 @@ public class IdleState : GroundedStates
             detectionDistance,
             LayerMask.GetMask("Platform")
         );
-        if (player.DebugMessages)
+        if (player.debugMessages)
         {
             Debug.DrawRay(raycastOrigin, platformDetectionDirection * detectionDistance,
                 hit.collider != null ? Color.blue : Color.yellow);

@@ -15,16 +15,17 @@ public class BerserkSpellData : SpellData
 
     public override void Cast(SpellCastContext ctx)
     {
-        if (ctx.Caster == null) return;
-        ctx.Caster.StartCoroutine(Routine(ctx.Caster));
+        if (ctx.attackCaster == null) return;
+        ctx.attackCaster.StartCoroutine(Routine(ctx.attackCaster));
     }
 
-    private IEnumerator Routine(Player caster)
+    private IEnumerator Routine(PlayerAttack caster)
     {
         int stacks = 0;
         float elapsed = 0f;
         float nextDrainAt = hpDrainInterval;
-        int criticalHp = Mathf.Max(1, Mathf.RoundToInt(caster.MaxHp * criticalHpThreshold));
+        var playerHealth = caster.GetComponent<PlayerHealth>();
+        int criticalHp = Mathf.Max(1, Mathf.RoundToInt(playerHealth.GetCurrentMaxHP() * criticalHpThreshold));
 
         float baseAttackSpeed = caster.AttackSpeedMultiplier;
         float baseDamage = caster.DamageMultiplier;
@@ -46,8 +47,20 @@ public class BerserkSpellData : SpellData
 
                 if (stacks < maxStacks && elapsed >= nextDrainAt)
                 {
-                    int drainAmount = Mathf.RoundToInt(caster.MaxHp * hpDrainPercent);
-                    int drained = caster.TryDrainHP(drainAmount, criticalHp);
+                    int drainAmount = Mathf.RoundToInt(playerHealth.GetCurrentMaxHP() * hpDrainPercent);
+                    int drained = 0;
+                    if (playerHealth != null)
+                    {
+                        PlayerController player = caster.GetComponent<PlayerController>();
+                        var type = player.GetCurrentCharacterType();
+                        int hp = playerHealth.GetCurrentHPOfCharacter(type);
+                        if (hp > criticalHp)
+                        {
+                            int actual = Mathf.Min(drainAmount, hp - criticalHp);
+                            playerHealth.TakeDamage(actual);
+                            drained = actual;
+                        }
+                    }
 
                     if (drained > 0)
                     {

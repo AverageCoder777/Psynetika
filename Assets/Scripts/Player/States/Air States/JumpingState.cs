@@ -7,24 +7,24 @@ public class JumpingState : AirStates
     private bool canDoubleJump;
     private bool doubleJumpInput;
 
-    public JumpingState(Player player, StateMovMachine stateMachine)
+    public JumpingState(PlayerController player, StateMachine stateMachine)
         : base(player, stateMachine)
     {
     }
 
     public override void Enter()
     {
-        Jump(player.Thrust);
+        Jump(Movement.Thrust);
         canDoubleJump = true;
         Animator.SetTrigger(JumpingHash);
-        player.Rb.gravityScale = player.UpGravityScale;
+        Movement.Rb.gravityScale = Movement.UpGravityScale;
         wallContactTime = 0f;
         player.LastState = this;
     }
 
     private void Jump(float jumpForce)
     {
-        player.Rb.AddForce(player.transform.up * jumpForce, ForceMode2D.Impulse);
+        Movement.Rb.AddForce(Movement.Rb.transform.up * jumpForce, ForceMode2D.Impulse);
     }
 
     public override void PhysicsUpdate()
@@ -40,17 +40,17 @@ public class JumpingState : AirStates
     public override void HandleInput()
     {
         base.HandleInput();
-        doubleJumpInput = player.PlayerInput.actions["Jump"].WasPressedThisFrame();
+        doubleJumpInput = Movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
 
         if (doubleJumpInput && canDoubleJump)
         {
-            Jump(player.DoubleJumpThrust);
+            Jump(Movement.DoubleJumpThrust);
             Animator.SetTrigger(DoubleJumpingHash);
             canDoubleJump = false;
         }
-        player.Rb.gravityScale = player.Rb.linearVelocity.y >= 0 ? player.UpGravityScale : player.DownGravityScale;
+        Movement.Rb.gravityScale = Movement.Rb.linearVelocity.y >= 0 ? Movement.UpGravityScale : Movement.DownGravityScale;
 
-        if (player.Rb.linearVelocity.y < -0.001f)
+        if (Movement.Rb.linearVelocity.y < -0.001f)
         {
             stateMachine.ChangeState(player.FlyingState);
         }

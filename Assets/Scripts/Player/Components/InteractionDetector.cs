@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class InteractionDetector : MonoBehaviour
 {
-    private readonly List<MonoBehaviour> interactablesInRange = new List<MonoBehaviour>();
+    private readonly List<MonoBehaviour> interactablesInRange = new();
 
     private void OnTriggerEnter2D(Collider2D other)
     {

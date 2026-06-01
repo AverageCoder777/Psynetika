@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class AirStates : State
 {
-    public AirStates(Player player, StateMovMachine stateMachine)
+    public AirStates(PlayerController player, StateMachine stateMachine)
         : base(player, stateMachine)
     {
     }
@@ -14,24 +14,24 @@ public abstract class AirStates : State
     public override void HandleInput()
     {
         base.HandleInput();
-        player.MovementInput = player.PlayerInput.actions["Move"].ReadValue<Vector2>();
+        Movement.MovementInput = Movement.PlayerInput.actions["Move"].ReadValue<Vector2>();
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
 
-        if (player.Rb.linearVelocity.y <= 0 && DetectFloor()=="Floor")
+        if (Movement.Rb.linearVelocity.y <= 0 && DetectFloor()=="Floor")
         {
             stateMachine.ChangeState(player.IdleState);
             return;
         }
 
         bool touchingWall = DetectWall();
-        if (touchingWall && (player.GetCurrentCharState() != player.SatanState))
+        if (touchingWall && (player.GetCurrentCharacterType() != PlayerCharacterType.Satan))
         {
             wallContactTime += Time.deltaTime;
-            if (wallContactTime >= player.WallWaitTime)
+            if (wallContactTime >= Movement.WallWaitTime)
             {
                 stateMachine.ChangeState(player.WallState);
                 return;
@@ -45,31 +45,31 @@ public abstract class AirStates : State
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-        float targetVelocityX = player.MovementInput.x * player.GetCharSpeed() * 0.75f;//0.75 - фактор скорости перемещения в воздухе, добавить переменную!!!
-        float currentVelocityX = player.Rb.linearVelocity.x;
+        float targetVelocityX = Movement.MovementInput.x * Movement.GetCharSpeed() * 0.75f;//0.75 - фактор скорости перемещения в воздухе, добавить переменную!!!
+        float currentVelocityX = Movement.Rb.linearVelocity.x;
 
         float newVelocityX = currentVelocityX;
-        if (player.MovementInput.x != 0)
+        if (Movement.MovementInput.x != 0)
         {
-            newVelocityX = Mathf.Lerp(currentVelocityX, targetVelocityX, player.AccelerationRate * Time.fixedDeltaTime);
+            newVelocityX = Mathf.Lerp(currentVelocityX, targetVelocityX, Movement.AccelerationRate * Time.fixedDeltaTime);
         }
         else if (Mathf.Abs(currentVelocityX) > 0.1f)
         {
             newVelocityX = currentVelocityX;
         }
-        player.Rb.linearVelocity = new Vector2(newVelocityX, player.Rb.linearVelocity.y);
+        Movement.Rb.linearVelocity = new Vector2(newVelocityX, Movement.Rb.linearVelocity.y);
 
-        if (player.MovementInput.x > 0.01f)
-            player.ActiveSR.flipX = false;
-        else if (player.MovementInput.x < -0.01f)
-            player.ActiveSR.flipX = true;
-        if (player.Rb.linearVelocity.y > 0)
+        if (Movement.MovementInput.x > 0.01f)
+            CharManager.ActiveSR.flipX = false;
+        else if (Movement.MovementInput.x < -0.01f)
+            CharManager.ActiveSR.flipX = true;
+        if (Movement.Rb.linearVelocity.y > 0)
         {
-            player.Rb.gravityScale = player.UpGravityScale;
+            Movement.Rb.gravityScale = Movement.UpGravityScale;
         }
         else
         {
-            player.Rb.gravityScale = player.DownGravityScale;
+            Movement.Rb.gravityScale = Movement.DownGravityScale;
         }
     }
     public override void Exit()
@@ -78,19 +78,19 @@ public abstract class AirStates : State
     }
     protected bool DetectWall()
     {
-        Vector2 wallDetectionDirection = player.ActiveSR.flipX ? Vector2.left : Vector2.right;
+        Vector2 wallDetectionDirection = CharManager.ActiveSR.flipX ? Vector2.left : Vector2.right;
         Vector2 raycastOrigin = (Vector2)player.transform.position + wallDetectionDirection * 0.25f;
 
         RaycastHit2D hit = Physics2D.Raycast(
             raycastOrigin,
             wallDetectionDirection,
-            player.WallDetectionDistance,
+            Movement.WallDetectionDistance,
             LayerMask.GetMask("Walls")
         );
         #if UNITY_EDITOR
-        if (player.DebugMessages)
+        if (player.debugMessages)
         {
-            Debug.DrawRay(raycastOrigin, wallDetectionDirection * player.WallDetectionDistance,
+            Debug.DrawRay(raycastOrigin, wallDetectionDirection * Movement.WallDetectionDistance,
                 hit.collider != null ? Color.green : Color.red);
         }
         #endif
@@ -116,7 +116,7 @@ public abstract class AirStates : State
             LayerMask.GetMask("Platform")
         );
         #if UNITY_EDITOR
-        if (player.DebugMessages)
+        if (player.debugMessages)
         {
             Debug.DrawRay(raycastOrigin, floorDetectionDirection * detectionDistance,
                 hitFloor.collider != null ? Color.blue : Color.yellow);

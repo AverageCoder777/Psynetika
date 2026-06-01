@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class Ladder : MonoBehaviour, IInteractable
 {
-    private Player player;
+    private PlayerController player;
 
     private void Start()
     {
-        player = FindFirstObjectByType<Player>();
+        player = FindFirstObjectByType<PlayerController>();
         if (player == null)
         {
             Debug.LogError("Игрок не найден на сцене!");
