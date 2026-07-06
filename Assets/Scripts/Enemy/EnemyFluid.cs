@@ -6,46 +6,34 @@ public class EnemyFluid : MonoBehaviour
     [SerializeField] private float damageTime = 1.5f;
     [SerializeField] private int damageAmount = 10;
     private Coroutine damageCoroutine;
-    private PlayerController currentPlayer;
-    private bool damageActive = false;
+
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (damageActive == false && other.CompareTag("Player"))
+        if (damageCoroutine == null && other.CompareTag("Player")
+            && other.TryGetComponent(out PlayerHealth playerHealth))
         {
-            damageActive = true;
-            currentPlayer = other.GetComponent<PlayerController>();
-            damageCoroutine = StartCoroutine(DamageOverTime(currentPlayer));
-            Debug.Log("Player has entered enemy fluid! Status of damageactive: "+ damageActive);
-
+            damageCoroutine = StartCoroutine(DamageOverTime(playerHealth));
         }
     }
+
     void OnTriggerExit2D(Collider2D other)
     {
-        if (damageActive == true && other.CompareTag("Player"))
+        if (damageCoroutine != null && other.CompareTag("Player"))
         {
-            if (damageCoroutine != null)
-            {
-                StopCoroutine(damageCoroutine);
-                damageCoroutine = null;
-                damageActive = false;
-            }
-
-            currentPlayer = null;
-            Debug.Log("Player has exited enemy fluid! Status of damageactive: " + damageActive);
+            StopCoroutine(damageCoroutine);
+            damageCoroutine = null;
         }
     }
-    private IEnumerator DamageOverTime(PlayerController player)
+
+    private IEnumerator DamageOverTime(PlayerHealth playerHealth)
     {
-        if (damageTime <= 0f || damageActive == false)
+        if (damageTime <= 0f)
             yield break;
 
-        while (player != null)
+        while (playerHealth != null)
         {
-            var playerHealth = player.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(damageAmount);
-            }
+            // Attacker = null: урон от окружения, без атакующего.
+            DamageHelper.TryDamage(playerHealth, damageAmount, DamageType.Physical);
             yield return new WaitForSeconds(damageTime);
         }
     }

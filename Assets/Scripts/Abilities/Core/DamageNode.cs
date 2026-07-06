@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 [System.Serializable]
+[AddTypeMenu("Урон/Урон цели")]
 public class DamageNode : AbilityNode
 {
     [Min(0f)] public float amount = 10f;

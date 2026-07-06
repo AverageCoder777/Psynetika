@@ -12,6 +12,9 @@ public class AbilityDefinition : ScriptableObject
     public float cooldown = 1f;
     public AnimationClip animClip;
 
+    [Tooltip("Взять длительность стойки каста из длины animClip (castDuration тогда игнорируется)")]
+    public bool matchDurationToClip = false;
+
     [Min(0.05f)]
     public float castDuration = 0.35f;
 

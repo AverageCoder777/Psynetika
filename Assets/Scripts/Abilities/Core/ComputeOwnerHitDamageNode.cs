@@ -3,9 +3,10 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 [Serializable]
+[AddTypeMenu("Урон/Расчёт урона от атаки")]
 public class ComputeOwnerHitDamageNode : AbilityNode
 {
-    public string outputDamageKey = "area.damage";
+    [BlackboardKeyOutput] public string outputDamageKey = "area.damage";
     [Min(0f)] public float damageMultiplier = 1.5f;
 
     public override UniTask<NodeResult> Execute(AbilityContext ctx)
@@ -17,7 +18,7 @@ public class ComputeOwnerHitDamageNode : AbilityNode
         }
 
         float damage = Mathf.Max(0f, damageSource.GetBaseHitDamage() * Mathf.Max(0f, damageMultiplier));
-        ctx.Instance.Blackboard[outputDamageKey] = damage;
+        ctx.Blackboard.Set(outputDamageKey, damage);
         return UniTask.FromResult(NodeResult.Success);
     }
 }

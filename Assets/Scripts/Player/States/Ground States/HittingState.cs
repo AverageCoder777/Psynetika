@@ -132,6 +132,7 @@ public class HittingState : GroundedStates
                 Debug.DrawLine(spawnPos, spawnPos + Vector2.up * 0.1f, Color.blue, 0.1f);
                 Bullet bullet = bulletObj.GetComponent<Bullet>();
                 bullet.damage = Attack.GetHitDamage();
+                bullet.Attacker = Attack;
                 bullet.SetDirection(hitDir);
                 shooted = true;
                 if (player.debugMessages)
@@ -161,28 +162,10 @@ public class HittingState : GroundedStates
                     {
                         if (player.debugMessages)
                             Debug.Log("Hit " + collider.name);
-                        Enemy enemy = collider.GetComponent<Enemy>();
-                        if (enemy != null)
+                        if (DamageHelper.TryDamage(collider, Attack.GetHitDamage(), DamageType.Physical, Attack)
+                            && player.debugMessages)
                         {
-                            enemy.TakeDamage(Attack.GetHitDamage());
-                            Debug.Log(
-                                "Player hitted enemy with "
-                                    + Attack.GetHitDamage()
-                                    + " damage points"
-                            );
-                        }
-                        else
-                        {
-                            DamageDummy dummy = collider.GetComponent<DamageDummy>();
-                            if (dummy != null)
-                            {
-                                dummy.TakeDamage(Attack.GetHitDamage());
-                                Debug.Log(
-                                    "Player hitted dummy with "
-                                        + Attack.GetHitDamage()
-                                        + " damage points"
-                                );
-                            }
+                            Debug.Log("Player hit " + collider.name + " with " + Attack.GetHitDamage() + " damage points");
                         }
                     }
                 }

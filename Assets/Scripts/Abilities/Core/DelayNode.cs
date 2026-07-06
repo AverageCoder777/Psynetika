@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 [Serializable]
+[AddTypeMenu("Тайминг/Пауза")]
 public class DelayNode : AbilityNode
 {
     [Min(0f)] public float seconds = 0.12f;

@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-
+// Персистентное состояние способности между кастами (данные одного каста — в AbilityContext).
 public class AbilityInstance
 {
     public float CooldownEndsAt;
-    public int Stacks;
     public bool IsExecuting;
-    public readonly Dictionary<string, object> Blackboard = new Dictionary<string, object>();
 }

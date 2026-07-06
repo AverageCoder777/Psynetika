@@ -4,28 +4,31 @@ public class EnemyIdleState : EnemyStates
 {
     private static readonly int IdleHash = Animator.StringToHash("Idle");
 
-    public EnemyIdleState(Enemy enemy, EnemyStateMachine stateMachine) : base(enemy, stateMachine)
+    public EnemyIdleState(EnemyController controller, EnemyStateMachine stateMachine)
+        : base(controller, stateMachine)
     {
     }
+
     public override void Enter()
     {
-        enemy.Animator.SetBool(IdleHash, true);
+        Animator.SetBool(IdleHash, true);
     }
+
     public override void LogicUpdate()
     {
-        if (enemy.PlayerInFollowRange)
+        // Один переход за кадр, приоритет атаке.
+        if (Sensor.PlayerInHitRange)
         {
-            enemy.Animator.SetBool("Idle", false);
-            stateMachine.ChangeState(enemy.followState);
-            if (enemy.PlayerInHitRange)
-            {
-                enemy.Animator.SetBool("Idle", false);
-                stateMachine.ChangeState(enemy.hitState);
-            }
+            stateMachine.ChangeState(controller.AttackState);
+        }
+        else if (Sensor.PlayerInFollowRange)
+        {
+            stateMachine.ChangeState(controller.FollowState);
         }
     }
+
     public override void Exit()
     {
-        enemy.Animator.SetBool(IdleHash, false);
+        Animator.SetBool(IdleHash, false);
     }
 }

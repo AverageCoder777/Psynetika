@@ -1,19 +1,24 @@
 using UnityEngine;
+
 public abstract class EnemyStates
 {
-    protected Enemy enemy;
-    protected EnemyStateMachine stateMachine;
-    protected Animator animator => enemy.Animator;
-    protected SpriteRenderer _spriteRenderer => enemy.GetComponent<SpriteRenderer>();
-    public EnemyStates(Enemy enemy, EnemyStateMachine stateMachine)
+    protected readonly EnemyController controller;
+    protected readonly EnemyStateMachine stateMachine;
+
+    protected EnemyMovement Movement => controller.Movement;
+    protected EnemyAttack Attack => controller.Attack;
+    protected EnemySensor Sensor => controller.Sensor;
+    protected Animator Animator => controller.Animator;
+
+    protected EnemyStates(EnemyController controller, EnemyStateMachine stateMachine)
     {
-        this.enemy = enemy;
+        this.controller = controller;
         this.stateMachine = stateMachine;
     }
+
     public virtual void Enter() { }
     public virtual void Exit() { }
+    public virtual void HandleInput() { }
     public virtual void LogicUpdate() { }
-
-    public virtual void HandleInput(){ }
-    public virtual void PhysicsUpdate(){}
+    public virtual void PhysicsUpdate() { }
 }

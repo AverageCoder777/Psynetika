@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f397adc63a830414fb7708bc74fb8e09, type: 3}
+  m_Name: SpiderBoyConfig
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyConfig
+  maxHp: 40
+  moveSpeed: 4
+  meleeDamage: 10
+  attackDuration: 3
+  bulletPrefab: {fileID: 0}
+  bulletDamage: 0
+  bulletSpawnOffset: {x: 0.65, y: 0.22}
+  coinsToDrop: 0
+  coinPrefab: {fileID: 0}
+  statusEffects: {fileID: 11400000, guid: aad54200f10b1b942b7a1fe3cb8d024d, type: 2}
+  deathDespawnDelay: 2.5
+  abilities: []

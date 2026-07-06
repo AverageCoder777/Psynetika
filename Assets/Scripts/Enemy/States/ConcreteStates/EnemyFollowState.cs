@@ -1,62 +1,43 @@
 using UnityEngine;
 
-public class FollowState : EnemyStates
+public class EnemyFollowState : EnemyStates
 {
     private static readonly int WalkingHash = Animator.StringToHash("Walking");
-    private Transform playerT;
 
-    public FollowState(Enemy enemy, EnemyStateMachine stateMachine) : base(enemy, stateMachine)
+    public EnemyFollowState(EnemyController controller, EnemyStateMachine stateMachine)
+        : base(controller, stateMachine)
     {
     }
 
     public override void Enter()
     {
-        base.Enter();
-        playerT = GameObject.FindWithTag("Player").transform;
-        enemy.Animator.SetBool(WalkingHash, true);
+        Animator.SetBool(WalkingHash, true);
     }
 
     public override void LogicUpdate()
     {
-        base.LogicUpdate();
-        if (!enemy.PlayerInFollowRange)
+        if (!Sensor.PlayerInFollowRange)
         {
-            enemy.Animator.SetBool(WalkingHash, false);
-            stateMachine.ChangeState(enemy.idleState);
+            stateMachine.ChangeState(controller.IdleState);
             return;
         }
-        if (enemy.PlayerInHitRange)
+        if (Sensor.PlayerInHitRange)
         {
-            enemy.Animator.SetBool(WalkingHash, false);
-            stateMachine.ChangeState(enemy.hitState);
-            return;
+            stateMachine.ChangeState(controller.AttackState);
         }
     }
 
     public override void PhysicsUpdate()
     {
-        base.PhysicsUpdate();
-
-        Vector2 currentPos = enemy.transform.position;
-        float targetX = playerT.position.x;
-        Vector2 targetPos = new(targetX, currentPos.y);
-        float step = enemy.EnemySpeed * Time.fixedDeltaTime;
-        Vector2 newPos = Vector2.MoveTowards(currentPos, targetPos, step);
-        enemy.transform.position = newPos;
-
-        float dirX = targetPos.x - currentPos.x;
-        if (Mathf.Abs(dirX) > 0.01f)
+        Transform target = Sensor.PlayerTransform;
+        if (target != null)
         {
-            if (_spriteRenderer != null)
-            {
-                _spriteRenderer.flipX = dirX > 0f;
-            }
+            Movement.MoveTowardsX(target.position.x);
         }
     }
 
     public override void Exit()
     {
-        base.Exit();
-        enemy.Animator.SetBool(WalkingHash, false);
+        Animator.SetBool(WalkingHash, false);
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 
 [RequireComponent(typeof(PlayerController))]
-public class PlayerHealth : MonoBehaviour, IDamagable
+public class PlayerHealth : MonoBehaviour, IDamagable, IAbilityTarget, IDirectDamageReceiver
 {
     [Header("Dog HP")]
     [SerializeField] private int dogMaxHP = 100;
@@ -124,5 +124,12 @@ public class PlayerHealth : MonoBehaviour, IDamagable
     {
         HpChanged?.Invoke(type, GetCurrentHPOfCharacter(type), GetMaxHPOfCharacter(type));
     }
+
+    // IAbilityTarget / IDirectDamageReceiver — единый путь урона (враги, снаряды, зоны).
+    Transform IAbilityTarget.Transform => transform;
+    bool IAbilityTarget.IsAlive => GetCurrentHP() > 0;
+    Team IAbilityTarget.Team => Team.Player;
+    void IAbilityTarget.ReceiveDamage(DamageEvent ev) => TakeDamage(Mathf.RoundToInt(ev.Amount));
+    void IDirectDamageReceiver.ApplyDamage(DamageEvent ev) => TakeDamage(Mathf.RoundToInt(ev.Amount));
 }
 

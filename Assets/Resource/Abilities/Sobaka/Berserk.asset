@@ -22,24 +22,10 @@ MonoBehaviour:
   castDuration: 0.35
   castMomentNormalized: 0.5
   root:
-  - rid: 401
-  - rid: 402
   - rid: 403
-  - rid: 404
-  - rid: 405
   references:
     version: 2
     RefIds:
-    - rid: 401
-      type: {class: SaveStatNode, ns: , asm: Assembly-CSharp}
-      data:
-        stat: 2
-        key: berserk.baseAS
-    - rid: 402
-      type: {class: SaveStatNode, ns: , asm: Assembly-CSharp}
-      data:
-        stat: 1
-        key: berserk.baseDMG
     - rid: 403
       type: {class: TimedTickNode, ns: , asm: Assembly-CSharp}
       data:
@@ -47,16 +33,6 @@ MonoBehaviour:
         tickInterval: 2
         onTick:
         - rid: 410
-    - rid: 404
-      type: {class: RestoreStatNode, ns: , asm: Assembly-CSharp}
-      data:
-        stat: 2
-        key: berserk.baseAS
-    - rid: 405
-      type: {class: RestoreStatNode, ns: , asm: Assembly-CSharp}
-      data:
-        stat: 1
-        key: berserk.baseDMG
     - rid: 410
       type: {class: SequenceNode, ns: , asm: Assembly-CSharp}
       data:
@@ -69,7 +45,7 @@ MonoBehaviour:
       type: {class: DrainOwnerHpNode, ns: , asm: Assembly-CSharp}
       data:
         drainPercent: 0.1
-        criticalHpThreshold: 0.1
+        criticalHpPercent: 0.1
         outputDrainedKey: berserk.drained
     - rid: 421
       type: {class: IncrementCounterNode, ns: , asm: Assembly-CSharp}
@@ -81,8 +57,10 @@ MonoBehaviour:
       data:
         stat: 2
         amount: 0.1
+        revertOnEnd: 1
     - rid: 423
       type: {class: ApplyStatBoostNode, ns: , asm: Assembly-CSharp}
       data:
         stat: 1
         amount: 0.1
+        revertOnEnd: 1

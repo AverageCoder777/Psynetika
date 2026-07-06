@@ -17,6 +17,11 @@ GameObject:
   - component: {fileID: 7368152271631217361}
   - component: {fileID: 5119255254032657305}
   - component: {fileID: 7983110400695799234}
+  - component: {fileID: 1146891841331277001}
+  - component: {fileID: 1146891841331277002}
+  - component: {fileID: 1146891841331277003}
+  - component: {fileID: 1146891841331277004}
+  - component: {fileID: 1146891841331277005}
   m_Layer: 10
   m_Name: SpiderBoy
   m_TagString: Untagged
@@ -130,16 +135,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 229bb46bb6408dd4686072ba39d4989b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  enemyHealth: 40
-  enemySpeed: 2
-  enemyDamage: 10
-  enemyHitDuration: 1
-  hitTrigger: {fileID: 1082582903096260156}
-  followTrigger: {fileID: 7368152271631217361}
-  coinsToDrop: 0
-  coinPrefab: {fileID: 0}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  config: {fileID: 11400000, guid: 761857a43f2d48bf83c32af53f102e86, type: 2}
 --- !u!61 &1082582903096260156
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -318,3 +316,67 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatusEffectHandler
   config: {fileID: 0}
+--- !u!114 &1146891841331277001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3158713932220752135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 842f07b70fa5636428d7cc2da9069705, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+--- !u!114 &1146891841331277002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3158713932220752135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0817c259bca48409bc1e3024e9521c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+--- !u!114 &1146891841331277003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3158713932220752135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62fb83b4160867f4fbc025f3f966c446, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
+--- !u!114 &1146891841331277004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3158713932220752135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1c353701b088d94788a63315398cf55, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySensor
+  hitTrigger: {fileID: 1082582903096260156}
+  followTrigger: {fileID: 7368152271631217361}
+--- !u!114 &1146891841331277005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3158713932220752135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69e5219159f21a741b68580d1c27c33e, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::DamageFlash
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.15

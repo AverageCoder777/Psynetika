@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]
-public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, IAbilityStatOwner
+public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, IAbilityStatOwner, IAbilityHealth
 {
     [Header("Удары Собаки")]
     [Tooltip("Скорость удара задает время на один удар")]
@@ -26,6 +26,7 @@ public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource,
     MonoBehaviour IAbilityCaster.CoroutineHost => this;
 
     private PlayerController player;
+    private PlayerHealth health;
 
     public float AttackSpeedMultiplier
     {
@@ -72,6 +73,7 @@ public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource,
     private void Awake()
     {
         player = GetComponent<PlayerController>();
+        health = GetComponent<PlayerHealth>();
     }
 
     public float GetHitTime()
@@ -104,5 +106,8 @@ public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource,
     }
 
     int IAbilityDamageSource.GetBaseHitDamage() => GetHitDamage();
+
+    int IAbilityHealth.GetMaxHP() => health != null ? health.GetCurrentMaxHP() : 0;
+    int IAbilityHealth.TryDrainHP(int amount, int minHp) => health != null ? health.TryDrainHP(amount, minHp) : 0;
 }
 

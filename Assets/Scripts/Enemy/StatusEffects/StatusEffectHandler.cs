@@ -2,7 +2,8 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-[RequireComponent(typeof(Enemy))]
+// Работает с любым носителем IDirectDamageReceiver (+ опционально IAbilityStatOwner для замедления Glitch):
+// врагом, а в будущем игроком или другим объектом.
 public class StatusEffectHandler : MonoBehaviour
 {
     // Хардкод-дефолты на случай, если config не назначен — статусы работают без редакторской настройки,
@@ -18,7 +19,8 @@ public class StatusEffectHandler : MonoBehaviour
 
     [SerializeField] private StatusEffectConfig config;
 
-    private Enemy enemy;
+    private IDirectDamageReceiver damageSink;
+    private IAbilityStatOwner statOwner;
     private BurnRuntime burn;
     private GlitchRuntime glitch;
     private bool reactionConsumedThisHit;
@@ -38,14 +40,24 @@ public class StatusEffectHandler : MonoBehaviour
 
     private void Awake()
     {
-        enemy = GetComponent<Enemy>();
+        damageSink = GetComponent<IDirectDamageReceiver>();
+        statOwner = GetComponent<IAbilityStatOwner>();
+    }
+
+    // Инъекция конфига из EnemyConfig; ссылка, заданная на префабе вручную, имеет приоритет.
+    public void SetConfigIfEmpty(StatusEffectConfig cfg)
+    {
+        if (config == null)
+        {
+            config = cfg;
+        }
     }
 
     private void WarnIfConfigMissing()
     {
         if (config != null || configMissingLogged) return;
         configMissingLogged = true;
-        Debug.LogWarning($"[StatusEffectHandler] {name}: 'config' не назначен. Статусы работают на дефолтах, но VFX не будут отображаться. Создай StatusEffectConfig через Create → Psynetika → Status Effect Config и положи ссылку в поле Config на префабе врага.");
+        Debug.LogWarning($"[StatusEffectHandler] {name}: 'config' не назначен. Статусы работают на дефолтах, но VFX не будут отображаться. Создай StatusEffectConfig через Create → Psynetika → Status Effect Config и положи ссылку в EnemyConfig или в поле Config на префабе.");
     }
 
     public float ProcessIncomingDamage(DamageEvent ev)
@@ -193,11 +205,17 @@ public class StatusEffectHandler : MonoBehaviour
                     await UniTask.Delay(delayMs, cancellationToken: token);
                     elapsed += tickInterval;
 
-                    if (handler == null || handler.enemy == null)
+                    if (handler == null || handler.damageSink == null)
                     {
                         return;
                     }
-                    handler.enemy.TakeDamage(tickDamage);
+                    // Тик обязан идти через ApplyDamage (сырой урон), не через ReceiveDamage —
+                    // иначе Fire-тик бесконечно перенакладывал бы Burn на самого себя.
+                    handler.damageSink.ApplyDamage(new DamageEvent
+                    {
+                        Amount = tickDamage,
+                        Type = DamageType.Fire
+                    });
                 }
             }
             catch (System.OperationCanceledException) { }
@@ -259,18 +277,18 @@ public class StatusEffectHandler : MonoBehaviour
 
         private void ApplyMultipliers()
         {
-            if (handler == null || handler.enemy == null) return;
+            if (handler == null || handler.statOwner == null) return;
             float slow = Mathf.Clamp01(handler.GlitchSlowPerStack);
             float multiplier = Mathf.Pow(1f - slow, stacks);
-            handler.enemy.MoveSpeedMultiplier = multiplier;
-            handler.enemy.AttackSpeedMultiplier = multiplier;
+            handler.statOwner.SetStat(StatId.MoveSpeed, multiplier);
+            handler.statOwner.SetStat(StatId.AttackSpeed, multiplier);
         }
 
         private void ResetMultipliers()
         {
-            if (handler == null || handler.enemy == null) return;
-            handler.enemy.MoveSpeedMultiplier = 1f;
-            handler.enemy.AttackSpeedMultiplier = 1f;
+            if (handler == null || handler.statOwner == null) return;
+            handler.statOwner.SetStat(StatId.MoveSpeed, 1f);
+            handler.statOwner.SetStat(StatId.AttackSpeed, 1f);
         }
 
         private async UniTaskVoid Run(CancellationToken token)

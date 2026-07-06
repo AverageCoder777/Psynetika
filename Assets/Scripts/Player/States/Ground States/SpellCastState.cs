@@ -44,7 +44,9 @@ public class SpellCastState : GroundedStates
             return;
         }
 
-        castDuration = Mathf.Max(0.05f, activeAbility.castDuration);
+        castDuration = activeAbility.matchDurationToClip && activeAbility.animClip != null
+            ? Mathf.Max(0.05f, activeAbility.animClip.length)
+            : Mathf.Max(0.05f, activeAbility.castDuration);
         castMoment = castDuration * Mathf.Clamp01(activeAbility.castMomentNormalized);
         Movement.Rb.linearVelocity = new Vector2(0f, Movement.Rb.linearVelocity.y);
 
@@ -103,22 +105,22 @@ public class SpellCastState : GroundedStates
 
         if (animator.runtimeAnimatorController is AnimatorOverrideController over)
         {
-            if (activeAbility.animClip != null)
+            if (HasPlaceholderInBaseController(over))
             {
-                AnimationClip key = FindPlaceholderKey(over);
-                if (key != null)
-                {
-                    over[key] = activeAbility.animClip;
-                }
-                else if (!warnedAboutPlaceholder)
-                {
-                    Debug.LogWarning(
-                        $"[SpellCastState] В базовом контроллере '{over.runtimeAnimatorController.name}' " +
-                        $"нет AnimationClip с именем '{SpellPlaceholderClipName}'. " +
-                        "Переименуй .anim-файл, который стоит Motion'ом в стейте SpellPlaceholder, " +
-                        $"чтобы его asset-имя было '{SpellPlaceholderClipName}'.");
-                    warnedAboutPlaceholder = true;
-                }
+                // Строковый индексатор ссылается на имя клипа БАЗОВОГО контроллера, поэтому
+                // работает и после предыдущих подмен (поиск по over.animationClips — нет:
+                // он возвращает уже подменённые клипы). null снимает подмену — способность
+                // без своего клипа играет плейсхолдер, а не клип предыдущей способности.
+                over[SpellPlaceholderClipName] = activeAbility.animClip;
+            }
+            else if (!warnedAboutPlaceholder)
+            {
+                Debug.LogWarning(
+                    $"[SpellCastState] В базовом контроллере '{over.runtimeAnimatorController.name}' " +
+                    $"нет AnimationClip с именем '{SpellPlaceholderClipName}'. " +
+                    "Переименуй .anim-файл, который стоит Motion'ом в стейте SpellPlaceholder, " +
+                    $"чтобы его asset-имя было '{SpellPlaceholderClipName}'.");
+                warnedAboutPlaceholder = true;
             }
         }
         else if (!warnedAboutOverride)
@@ -132,17 +134,17 @@ public class SpellCastState : GroundedStates
         animator.SetTrigger(SpellTriggerHash);
     }
 
-    private static AnimationClip FindPlaceholderKey(AnimatorOverrideController over)
+    private static bool HasPlaceholderInBaseController(AnimatorOverrideController over)
     {
-        AnimationClip[] clips = over.animationClips;
+        AnimationClip[] clips = over.runtimeAnimatorController.animationClips;
         for (int i = 0; i < clips.Length; i++)
         {
             if (clips[i] != null && clips[i].name == SpellPlaceholderClipName)
             {
-                return clips[i];
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     private void CastSpell()

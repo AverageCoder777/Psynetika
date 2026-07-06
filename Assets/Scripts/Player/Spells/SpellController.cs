@@ -14,6 +14,7 @@ public class SpellController : MonoBehaviour
 
     private AbilityRunner abilityRunner;
     private PlayerAttack attackOwner;
+    private PlayerHealth playerHealth;
 
     private void Awake()
     {
@@ -27,6 +28,29 @@ public class SpellController : MonoBehaviour
         if (abilityRunner.Caster == null && attackOwner != null)
         {
             abilityRunner.Initialize(attackOwner, new AbilityServices());
+        }
+
+        playerHealth = GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+        {
+            playerHealth.Died += OnOwnerDied;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (playerHealth != null)
+        {
+            playerHealth.Died -= OnOwnerDied;
+        }
+    }
+
+    // Смерть прерывает активные касты: их cleanup откатит временные бафы (Berserk и т.п.).
+    private void OnOwnerDied(PlayerCharacterType _)
+    {
+        if (abilityRunner != null)
+        {
+            abilityRunner.CancelAll();
         }
     }
 

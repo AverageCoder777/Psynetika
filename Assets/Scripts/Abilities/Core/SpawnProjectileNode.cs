@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 [System.Serializable]
+[AddTypeMenu("Снаряды/Спавн снаряда")]
 public class SpawnProjectileNode : AbilityNode
 {
     public ProjectileDefinition projectile;

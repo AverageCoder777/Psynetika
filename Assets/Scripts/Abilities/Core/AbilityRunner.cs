@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class AbilityRunner : MonoBehaviour
 {
     private readonly Dictionary<AbilityDefinition, AbilityInstance> instances = new();
+    private readonly List<CancellationTokenSource> activeCasts = new();
     private AbilityServices services;
     private IAbilityCaster caster;
 
@@ -56,6 +58,10 @@ public class AbilityRunner : MonoBehaviour
         AbilityInstance inst = GetInstance(def);
         inst.CooldownEndsAt = Time.time + Mathf.Max(0f, def.cooldown);
 
+        CancellationTokenSource castCts =
+            CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+        activeCasts.Add(castCts);
+
         AbilityContext ctx = new()
         {
             Owner = caster,
@@ -65,16 +71,39 @@ public class AbilityRunner : MonoBehaviour
             Definition = def,
             Instance = inst,
             Services = services,
-            Token = this.GetCancellationTokenOnDestroy()
+            Token = castCts.Token
         };
 
-        ExecuteAsync(def, inst, ctx).Forget();
+        ExecuteAsync(def, inst, ctx, castCts).Forget();
         return true;
     }
 
-    private async UniTaskVoid ExecuteAsync(AbilityDefinition def, AbilityInstance inst, AbilityContext ctx)
+    // Прерывает все активные касты (смерть, стан). Cleanup-действия каждого каста
+    // отработают в его finally, так что временные бафы откатятся.
+    public void CancelAll()
+    {
+        if (activeCasts.Count == 0) return;
+
+        CancellationTokenSource[] toCancel = activeCasts.ToArray();
+        for (int i = 0; i < toCancel.Length; i++)
+        {
+            try
+            {
+                toCancel[i].Cancel();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Каст успел завершиться между снимком списка и отменой.
+            }
+        }
+    }
+
+    private async UniTaskVoid ExecuteAsync(AbilityDefinition def, AbilityInstance inst, AbilityContext ctx,
+        CancellationTokenSource castCts)
     {
         inst.IsExecuting = true;
+        int succeeded = 0;
+        NodeResult lastResult = NodeResult.Success;
         try
         {
             if (def.root != null)
@@ -86,12 +115,20 @@ public class AbilityRunner : MonoBehaviour
                         continue;
                     }
 
-                    NodeResult result = await node.Execute(ctx);
-                    if (result != NodeResult.Success)
+                    lastResult = await node.Execute(ctx);
+                    if (lastResult != NodeResult.Success)
                     {
                         break;
                     }
+
+                    succeeded++;
                 }
+            }
+
+            // Каст не состоялся вовсе (первая же нода провалилась) — возвращаем кулдаун.
+            if (lastResult == NodeResult.Failure && succeeded == 0)
+            {
+                inst.CooldownEndsAt = 0f;
             }
         }
         catch (OperationCanceledException) { }
@@ -101,7 +138,10 @@ public class AbilityRunner : MonoBehaviour
         }
         finally
         {
+            ctx.RunCleanups();
             inst.IsExecuting = false;
+            activeCasts.Remove(castCts);
+            castCts.Dispose();
         }
     }
 }

@@ -1,36 +1,28 @@
 using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 [Serializable]
+[AddTypeMenu("Логика/Счётчик (стаки)")]
 public class IncrementCounterNode : AbilityNode
 {
-    public string key = "counter";
+    [BlackboardKeyOutput] public string key = "counter";
     [Min(1)] public int max = 5;
 
     public override UniTask<NodeResult> Execute(AbilityContext ctx)
     {
-        if (ctx?.Instance == null)
+        if (ctx?.Blackboard == null)
         {
             return UniTask.FromResult(NodeResult.Failure);
         }
 
-        Dictionary<string, object> blackboard = ctx.Instance.Blackboard;
-        int current = 0;
-        if (blackboard.TryGetValue(key, out object value))
-        {
-            if (value is int intValue) current = intValue;
-            else if (value is float floatValue) current = Mathf.RoundToInt(floatValue);
-        }
-
-        int safeMax = Mathf.Max(1, max);
-        if (current >= safeMax)
+        int current = ctx.Blackboard.Get(key, 0);
+        if (current >= Mathf.Max(1, max))
         {
             return UniTask.FromResult(NodeResult.Failure);
         }
 
-        blackboard[key] = current + 1;
+        ctx.Blackboard.Set(key, current + 1);
         return UniTask.FromResult(NodeResult.Success);
     }
 }
