@@ -16,11 +16,12 @@ MonoBehaviour:
   moveSpeed: 4
   meleeDamage: 10
   attackDuration: 3
+  attackSpeed: 1
   bulletPrefab: {fileID: 0}
   bulletDamage: 0
   bulletSpawnOffset: {x: 0.65, y: 0.22}
-  coinsToDrop: 0
-  coinPrefab: {fileID: 0}
+  coinsToDrop: 2
+  coinPrefab: {fileID: 3100125784294477904, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
   statusEffects: {fileID: 11400000, guid: aad54200f10b1b942b7a1fe3cb8d024d, type: 2}
   deathDespawnDelay: 2.5
   abilities: []

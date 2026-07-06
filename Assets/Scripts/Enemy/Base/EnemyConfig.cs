@@ -15,6 +15,8 @@ public class EnemyConfig : ScriptableObject
     [Min(0)] public int meleeDamage = 10;
     [Tooltip("Время замаха/перезарядки: урон/выстрел происходит в конце цикла")]
     [Min(0.05f)] public float attackDuration = 2f;
+    [Tooltip("Базовый множитель скорости атаки: 2 = атакует вдвое быстрее, 0.5 = вдвое медленнее")]
+    [Min(0.05f)] public float attackSpeed = 1f;
 
     [Header("Дальний бой (для стрелков)")]
     [Tooltip("Префаб с компонентом Bullet; заполняется только для дальнобойных врагов")]

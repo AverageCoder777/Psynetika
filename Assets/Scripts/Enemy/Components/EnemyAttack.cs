@@ -13,8 +13,10 @@ public class EnemyAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, 
     private float moveSpeedMultiplier = 1f;
 
     public int MeleeDamage => Mathf.RoundToInt((config != null ? config.meleeDamage : 0) * damageMultiplier);
+    // Скорость атаки: базовая из конфига (баланс) * рантайм-множитель (баффы способностей).
     public float AttackDuration =>
-        (config != null ? config.attackDuration : 2f) / Mathf.Max(0.05f, attackSpeedMultiplier);
+        (config != null ? config.attackDuration : 2f)
+        / Mathf.Max(0.05f, (config != null ? config.attackSpeed : 1f) * attackSpeedMultiplier);
 
     private void Awake()
     {

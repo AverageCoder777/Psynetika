@@ -18,6 +18,11 @@ public class EnemySensor : MonoBehaviour
 
     private void Start()
     {
+        TryFindPlayer();
+    }
+
+    private void TryFindPlayer()
+    {
         GameObject playerGo = GameObject.FindWithTag("Player");
         if (playerGo != null)
         {
@@ -29,6 +34,9 @@ public class EnemySensor : MonoBehaviour
 
     private void Update()
     {
+        // Игрок мог быть неактивен на момент Start (интро, поздний спавн) — доискиваем.
+        if (player == null) TryFindPlayer();
+
         bool visible = player != null && player.IsVisibleToEnemies && playerCollider != null;
         PlayerInFollowRange = visible && followTrigger != null && followTrigger.IsTouching(playerCollider);
         PlayerInHitRange = visible && hitTrigger != null && hitTrigger.IsTouching(playerCollider);

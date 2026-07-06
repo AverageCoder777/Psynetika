@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 653055677888168866}
   - component: {fileID: 4869443504445823356}
   - component: {fileID: 6365605136720347164}
+  - component: {fileID: 6365605136720347201}
   m_Layer: 10
   m_Name: SpiderGirl
   m_TagString: Untagged
@@ -365,3 +366,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySensor
   hitTrigger: {fileID: 1082582903096260156}
   followTrigger: {fileID: 7368152271631217361}
+--- !u!114 &6365605136720347201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3158713932220752135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51a7f05b7bdf39c47aaaf93d8d42c0fc, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyLoot

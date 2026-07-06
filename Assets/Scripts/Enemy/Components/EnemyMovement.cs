@@ -27,6 +27,9 @@ public class EnemyMovement : MonoBehaviour
     // Вызывать из PhysicsUpdate: горизонтальный шаг к targetX, вертикаль остаётся физике.
     public void MoveTowardsX(float targetX)
     {
+        // Уснувшее тело игнорирует MovePosition и само от него не просыпается.
+        if (rb.IsSleeping()) rb.WakeUp();
+
         float newX = Mathf.MoveTowards(rb.position.x, targetX, Speed * Time.fixedDeltaTime);
         float dirX = targetX - rb.position.x;
         rb.MovePosition(new Vector2(newX, rb.position.y));

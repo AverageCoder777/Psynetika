@@ -16,6 +16,7 @@ MonoBehaviour:
   moveSpeed: 2
   meleeDamage: 10
   attackDuration: 2
+  attackSpeed: 1
   bulletPrefab: {fileID: 0}
   bulletDamage: 10
   bulletSpawnOffset: {x: 0.65, y: 0.22}
