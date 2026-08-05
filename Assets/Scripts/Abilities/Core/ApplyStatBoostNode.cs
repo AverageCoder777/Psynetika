@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class ApplyStatBoostNode : AbilityNode
 {
-    public StatId stat = StatId.Damage;
+    public StatMultId stat = StatMultId.CurrentDamageMult;
     public float amount = 0.1f;
 
     public override UniTask<NodeResult> Execute(AbilityContext ctx)
@@ -16,7 +16,7 @@ public class ApplyStatBoostNode : AbilityNode
             return UniTask.FromResult(NodeResult.Failure);
         }
 
-        ownerStats.SetStat(stat, ownerStats.GetStat(stat) + amount);
+        ownerStats.SetStatMult(stat, ownerStats.GetStatMult(stat) + amount);
         return UniTask.FromResult(NodeResult.Success);
     }
 }

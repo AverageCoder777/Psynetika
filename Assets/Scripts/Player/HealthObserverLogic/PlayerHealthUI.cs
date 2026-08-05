@@ -3,7 +3,7 @@ using UnityEngine.UI;
 public class PlayerHealthUI : MonoBehaviour
 {
     [SerializeField] private PlayerHealth health;
-    private PlayerController player;
+    private PlayerCharacterManager charManager;
     private Image SatanHPBar;
     private Image DogHPBar;
     private GameObject SatanHPOverlay;
@@ -22,11 +22,11 @@ public class PlayerHealthUI : MonoBehaviour
         SatanHPOverlay = GameObject.Find("SatanHPOverlay");
         DogHPOverlay = GameObject.Find("DogHPOverlay");
 
-        player = FindFirstObjectByType<PlayerController>();
+        charManager = FindFirstObjectByType<PlayerCharacterManager>();
     }
     private void Start()
     {
-        RefreshActiveCharacter(player.GetCurrentCharacterType());
+        RefreshActiveCharacter(charManager.GetCurrentCharacterType());
     }
 
 
@@ -35,8 +35,8 @@ public class PlayerHealthUI : MonoBehaviour
         if (health == null) return;
         health.HpChanged += OnHpChanged;
 
-        if (player == null) return;
-        player.ActiveCharacterChanged += OnActiveCharacterChanged;
+        if (charManager == null) return;
+        charManager.OnCharacterSwitched += OnActiveCharacterChanged;
     }
 
     private void OnDisable()
@@ -44,8 +44,8 @@ public class PlayerHealthUI : MonoBehaviour
         if (health == null) return;
         health.HpChanged -= OnHpChanged;
 
-        if (player == null) return;
-        player.ActiveCharacterChanged -= OnActiveCharacterChanged;
+        if (charManager == null) return;
+        charManager.OnCharacterSwitched -= OnActiveCharacterChanged;
     }
 
     private void OnActiveCharacterChanged(PlayerCharacterType type)

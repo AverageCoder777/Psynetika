@@ -1,5 +1,5 @@
 public interface IAbilityStatOwner
 {
-    float GetStat(StatId stat);
-    void SetStat(StatId stat, float value);
+    float GetStatMult(StatMultId stat);
+    void SetStatMult<T>(StatMultId stat, T value);
 }

@@ -51,8 +51,8 @@ public class BerserkSpellData : SpellData
                     int drained = 0;
                     if (playerHealth != null)
                     {
-                        PlayerController player = caster.GetComponent<PlayerController>();
-                        var type = player.GetCurrentCharacterType();
+                        PlayerCharacterManager charManager = caster.GetComponent<PlayerCharacterManager>();
+                        var type = charManager.GetCurrentCharacterType();
                         int hp = playerHealth.GetCurrentHPOfCharacter(type);
                         if (hp > criticalHp)
                         {
@@ -65,8 +65,8 @@ public class BerserkSpellData : SpellData
                     if (drained > 0)
                     {
                         stacks++;
-                        caster.AttackSpeedMultiplier += boostPerStack;
-                        caster.DamageMultiplier += boostPerStack;
+                        caster.SetStatMult(StatMultId.CurrentAttackSpeedMult, caster.AttackSpeedMultiplier + boostPerStack);
+                        caster.SetStatMult(StatMultId.CurrentDamageMult, caster.DamageMultiplier + boostPerStack);
                     }
 
                     nextDrainAt += hpDrainInterval;

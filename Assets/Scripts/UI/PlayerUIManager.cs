@@ -21,7 +21,7 @@ public class PlayerUIManager : MonoBehaviour
     {
         if (player == null) return;
 
-        bool isSatan = player.GetCurrentCharacterType() == PlayerCharacterType.Satan;
+        bool isSatan = player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Satan;
         SpellController sc = player.SpellController;
 
         UpdateSlot(regularSlotRoot,  regularIcon,  regularCooldownFill,  sc, isSatan, SpellSlot.Regular);

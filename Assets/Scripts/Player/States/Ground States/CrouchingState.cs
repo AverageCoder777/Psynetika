@@ -7,13 +7,12 @@ public class CrouchingState : GroundedStates
     Vector2 originalCapsuleSize;
     Vector2 originalCapsuleOffset;
     private LayerMask obstacleMask = LayerMask.GetMask("Up Walls"); // Слой препятствий
-    private readonly float headCheckDistanceBuffer = 0.1f;
     private bool crouchHeld;
     private bool jumpInput;
     private bool dropCompleted;
     private bool isDropping = false; // Флаг для предотвращения множественных запусков
 
-    public CrouchingState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine) { }
+    public CrouchingState(PlayerController player, StateMachine stateMachine, PlayerStaticSettings settings) : base(player, stateMachine, settings) { }
 
     public override void Enter()
     {
@@ -23,18 +22,18 @@ public class CrouchingState : GroundedStates
         capsule = player.GetComponent<BoxCollider2D>();
         originalCapsuleSize = capsule.size;
         originalCapsuleOffset = capsule.offset;
-        Vector2 newSize = new(originalCapsuleSize.x, originalCapsuleSize.y * Movement.CrouchMult);
+        Vector2 newSize = new(originalCapsuleSize.x, originalCapsuleSize.y * settings.crouch.crouchSpeedMultiplier);
         float delta = originalCapsuleSize.y - newSize.y;
         capsule.size = newSize;
         capsule.offset = new Vector2(originalCapsuleOffset.x, originalCapsuleOffset.y - delta / 2f);
-        Animator.SetBool(CrouchingHash, true);
+        animator.SetBool(CrouchingHash, true);
         player.LastState = this;
     }
     public override void HandleInput()
     {
         base.HandleInput();
-        crouchHeld = Movement.PlayerInput.actions["Crouch"].IsPressed();
-        jumpInput = Movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
+        crouchHeld = movement.PlayerInput.actions["Crouch"].IsPressed();
+        jumpInput = movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
     }
 
     public override void LogicUpdate()
@@ -58,18 +57,18 @@ public class CrouchingState : GroundedStates
     }
     public override void PhysicsUpdate()
     {
-        float targetX = movementInput.x * Movement.GetCharSpeed() * 0.5f;
-        float currentX = Movement.Rb.linearVelocity.x;
+        float targetX = movementInput.x * movement.GetCurrentSpeed() * 0.5f;
+        float currentX = movement.Rb.linearVelocity.x;
 
-        float accel = Mathf.Abs(movementInput.x) > 0.001f ? Movement.AccelerationRate : Movement.FrictionRate;
+        float accel = Mathf.Abs(movementInput.x) > 0.001f ? settings.move.accelerationRate : settings.move.frictionRate;
         float newX = Mathf.Lerp(currentX, targetX, accel * Time.fixedDeltaTime);
 
-        Movement.Rb.linearVelocity = new Vector2(newX, Movement.Rb.linearVelocity.y);
+        movement.Rb.linearVelocity = new Vector2(newX, movement.Rb.linearVelocity.y);
 
         if (movementInput.x > 0.001f)
-            CharManager.ActiveSR.flipX = false;
+            charManager.ActiveSR.flipX = false;
         else if (movementInput.x < -0.001f)
-            CharManager.ActiveSR.flipX = true;
+            charManager.ActiveSR.flipX = true;
     }
     public override void Exit()
     {
@@ -77,7 +76,7 @@ public class CrouchingState : GroundedStates
         capsule.size = originalCapsuleSize;
         capsule.offset = originalCapsuleOffset;
         if (player.debugMessages) Debug.Log("Stood up successfully");
-        Animator.SetBool(CrouchingHash, false);
+        animator.SetBool(CrouchingHash, false);
     }
     private bool CanStandUp()
     {
@@ -87,7 +86,7 @@ public class CrouchingState : GroundedStates
 
         float originalCapsuleTop = capsuleCenter.y + (originalCapsuleSize.y / 1.5f);
 
-        float headroomNeeded = originalCapsuleTop - crouchCapsuleTop + headCheckDistanceBuffer;
+        float headroomNeeded = originalCapsuleTop - crouchCapsuleTop + settings.crouch.headCheckDistanceBuffer;
 
         float halfWidth = capsule.size.x / 2f;
         Vector2 originCenter = new(capsuleCenter.x, crouchCapsuleTop);
@@ -132,7 +131,7 @@ public class CrouchingState : GroundedStates
             Physics2D.IgnoreCollision(playerCollider, platformCollider, true);
         }
         
-        yield return new WaitForSeconds(Movement.DropThroughDuration);
+        yield return new WaitForSeconds(settings.platform.dropThroughDuration);
 
         foreach (var platformCollider in platformColliders)
         {

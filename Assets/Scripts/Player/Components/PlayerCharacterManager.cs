@@ -7,6 +7,20 @@ public class PlayerCharacterManager : MonoBehaviour
     private GameObject satan;
     private GameObject dog;
     private GameObject activeCharacter;
+    public event System.Action<PlayerCharacterType> OnCharacterSwitched;
+    private PlayerCharacterType activePlayerCharacterType;
+    public PlayerCharacterType GetCurrentCharacterType()
+    {
+        return activePlayerCharacterType;
+    }
+    public void SetCurrentCharacterType(PlayerCharacterType type)
+    {
+        if (activePlayerCharacterType == type) return;
+        activePlayerCharacterType = type;
+        activeCharacter = type == PlayerCharacterType.Dog ? dog : satan; 
+        activeAnimator = activeCharacter.GetComponent<Animator>();
+        OnCharacterSwitched?.Invoke(type);
+    }
     public Animator ActiveAnimator { get => activeAnimator; set => activeAnimator = value; }
     public SpriteRenderer ActiveSR { get => activeSR; set => activeSR = value; }
     public GameObject ActiveCharacter { get => activeCharacter; set => activeCharacter = value; }
@@ -23,6 +37,7 @@ public class PlayerCharacterManager : MonoBehaviour
         dog.SetActive(false);
         DogActive = true;
         SatanActive = true;
+        activePlayerCharacterType = PlayerCharacterType.Satan;
         activeAnimator = activeCharacter.GetComponent<Animator>();
         activeSR = activeCharacter.GetComponent<SpriteRenderer>();
     }

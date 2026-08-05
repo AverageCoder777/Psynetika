@@ -7,24 +7,24 @@ public class JumpingState : AirStates
     private bool canDoubleJump;
     private bool doubleJumpInput;
 
-    public JumpingState(PlayerController player, StateMachine stateMachine)
-        : base(player, stateMachine)
+    public JumpingState(PlayerController player, StateMachine stateMachine, PlayerStaticSettings settings)
+        : base(player, stateMachine, settings)
     {
     }
 
     public override void Enter()
     {
-        Jump(Movement.Thrust);
+        Jump(settings.jump.thrust);
         canDoubleJump = true;
-        Animator.SetTrigger(JumpingHash);
-        Movement.Rb.gravityScale = Movement.UpGravityScale;
+        animator.SetTrigger(JumpingHash);
+        movement.Rb.gravityScale = settings.jump.upGravityScale;
         wallContactTime = 0f;
         player.LastState = this;
     }
 
     private void Jump(float jumpForce)
     {
-        Movement.Rb.AddForce(Movement.Rb.transform.up * jumpForce, ForceMode2D.Impulse);
+        movement.Rb.AddForce(movement.Rb.transform.up * jumpForce, ForceMode2D.Impulse);
     }
 
     public override void PhysicsUpdate()
@@ -40,17 +40,17 @@ public class JumpingState : AirStates
     public override void HandleInput()
     {
         base.HandleInput();
-        doubleJumpInput = Movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
+        doubleJumpInput = movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
 
         if (doubleJumpInput && canDoubleJump)
         {
-            Jump(Movement.DoubleJumpThrust);
-            Animator.SetTrigger(DoubleJumpingHash);
+            Jump(settings.jump.doubleJumpThrust);
+            animator.SetTrigger(DoubleJumpingHash);
             canDoubleJump = false;
         }
-        Movement.Rb.gravityScale = Movement.Rb.linearVelocity.y >= 0 ? Movement.UpGravityScale : Movement.DownGravityScale;
+        movement.Rb.gravityScale = movement.Rb.linearVelocity.y >= 0 ? settings.jump.upGravityScale : settings.jump.downGravityScale;
 
-        if (Movement.Rb.linearVelocity.y < -0.001f)
+        if (movement.Rb.linearVelocity.y < -0.001f)
         {
             stateMachine.ChangeState(player.FlyingState);
         }
@@ -59,7 +59,7 @@ public class JumpingState : AirStates
     public override void Exit()
     {
         base.Exit();
-        Animator.ResetTrigger(JumpingHash);
-        Animator.ResetTrigger(DoubleJumpingHash);
+        animator.ResetTrigger(JumpingHash);
+        animator.ResetTrigger(DoubleJumpingHash);
     }
 }

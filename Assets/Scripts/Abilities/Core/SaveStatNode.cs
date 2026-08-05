@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class SaveStatNode : AbilityNode
 {
-    public StatId stat = StatId.AttackSpeed;
+    public StatMultId stat = StatMultId.CurrentAttackSpeedMult;
     public string key = "save.stat";
 
     public override UniTask<NodeResult> Execute(AbilityContext ctx)
@@ -16,7 +16,7 @@ public class SaveStatNode : AbilityNode
             return UniTask.FromResult(NodeResult.Failure);
         }
 
-        ctx.Instance.Blackboard[key] = ownerStats.GetStat(stat);
+        ctx.Instance.Blackboard[key] = ownerStats.GetStatMult(stat);
         return UniTask.FromResult(NodeResult.Success);
     }
 }

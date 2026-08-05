@@ -4,18 +4,19 @@ public class FlyingState : AirStates
 {
     private static readonly int JumpingHash = Animator.StringToHash("Jumping");
 
-    public FlyingState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine) { }
+    public FlyingState(PlayerController player, StateMachine stateMachine, PlayerStaticSettings settings)
+        : base(player, stateMachine, settings) { }
 
     public override void Enter()
     {
-        if (Movement.Rb.linearVelocity.y < 0)
+        if (movement.Rb.linearVelocity.y < 0)
         {
-            Movement.Rb.gravityScale = Movement.DownGravityScale;
+            movement.Rb.gravityScale = settings.jump.downGravityScale;
         }
-        else if (Movement.Rb.linearVelocity.y > 0)
+        else if (movement.Rb.linearVelocity.y > 0)
         {
-            Animator.SetTrigger(JumpingHash);
-            Movement.Rb.gravityScale = Movement.UpGravityScale;
+            animator.SetTrigger(JumpingHash);
+            movement.Rb.gravityScale = settings.jump.upGravityScale;
         }
     }
 
@@ -35,13 +36,13 @@ public class FlyingState : AirStates
         }
         else
         {
-            if (Movement.Rb.linearVelocity.y > 0)
+            if (movement.Rb.linearVelocity.y > 0)
             {
-                Movement.Rb.gravityScale = Movement.UpGravityScale;
+                movement.Rb.gravityScale = settings.jump.upGravityScale;
             }
             else
             {
-                Movement.Rb.gravityScale = Movement.DownGravityScale;
+                movement.Rb.gravityScale = settings.jump.downGravityScale;
             }
         }
     }
@@ -59,7 +60,7 @@ public class FlyingState : AirStates
 
     public override void Exit()
     {
-        Movement.Rb.gravityScale = Movement.Rb.linearVelocity.y >= 0f ? Movement.UpGravityScale : Movement.DownGravityScale;
-        Animator.ResetTrigger(JumpingHash);
+        movement.Rb.gravityScale = movement.Rb.linearVelocity.y >= 0f ? settings.jump.upGravityScale : settings.jump.downGravityScale;
+        animator.ResetTrigger(JumpingHash);
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class RestoreStatNode : AbilityNode
 {
-    public StatId stat = StatId.AttackSpeed;
+    public StatMultId stat = StatMultId.CurrentAttackSpeedMult;
     public string key = "save.stat";
 
     public override UniTask<NodeResult> Execute(AbilityContext ctx)
@@ -18,7 +18,7 @@ public class RestoreStatNode : AbilityNode
 
         if (ctx.Instance.Blackboard.TryGetValue(key, out object savedObj) && savedObj is float saved)
         {
-            ownerStats.SetStat(stat, saved);
+            ownerStats.SetStatMult(stat, saved);
         }
 
         return UniTask.FromResult(NodeResult.Success);
