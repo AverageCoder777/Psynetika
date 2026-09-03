@@ -10,7 +10,7 @@ public class EnemyMovement : MonoBehaviour
 
     // +1 вправо, -1 влево. Спрайты врагов по умолчанию смотрят влево (flipX = движение вправо).
     public float FacingDirection { get; private set; } = -1f;
-    public float Speed => baseSpeed * (attack != null ? attack.GetStat(StatId.MoveSpeed) : 1f);
+    public float Speed => baseSpeed * (attack != null ? attack.GetStat(StatMultId.CurrentMoveSpeedMult) : 1f);
 
     private void Awake()
     {

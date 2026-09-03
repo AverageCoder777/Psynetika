@@ -132,8 +132,8 @@ public class HittingState : GroundedStates
                 );
                 Debug.DrawLine(spawnPos, spawnPos + Vector2.up * 0.1f, Color.blue, 0.1f);
                 Bullet bullet = bulletObj.GetComponent<Bullet>();
-                bullet.damage = Attack.GetHitDamage();
-                bullet.Attacker = Attack;
+                bullet.damage = attack.GetCurrentAttackStat<int>(AttackStatId.CurrentDamage);
+                bullet.Attacker = attack;
                 bullet.SetDirection(hitDir);
                 shooted = true;
                 if (player.debugMessages)
@@ -163,11 +163,11 @@ public class HittingState : GroundedStates
                     {
                         if (player.debugMessages)
                             Debug.Log("Hit " + collider.name);
-                        if (DamageHelper.TryDamage(collider, Attack.GetHitDamage(), DamageType.Physical, Attack)
+                        if (DamageHelper.TryDamage(collider, attack.GetCurrentAttackStat<int>(AttackStatId.CurrentDamage), DamageType.Physical, attack)
                             && player.debugMessages)
                         {
-                            Debug.Log("Player hit " + collider.name + " with " + Attack.GetHitDamage() + " damage points");
-                            enemy.TakeDamage(damage);
+                            Debug.Log("Player hit " + collider.name + " with " + attack.GetCurrentAttackStat<int>(AttackStatId.CurrentDamage) + " damage points");
+                            //enemy.TakeDamage(damage); !!!!!!ПОЧИНИТЬ С УЧЕТОМ НОВОЙ СТРУКТУРЫ РАБОТЫ ENEMY
                             Debug.Log(
                                 "Player hitted enemy with "
                                     + damage

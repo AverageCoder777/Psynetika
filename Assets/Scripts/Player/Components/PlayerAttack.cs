@@ -15,7 +15,6 @@ public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource,
     public float DamageMultiplier { get => status.damageMultiplier; set => status.damageMultiplier = value; }
     private PlayerController player;
     private PlayerHealth health;
-    public float AttackSpeedMultiplier;
     public T GetCurrentAttackStat<T>(AttackStatId id)
     {
         switch (id)
@@ -124,7 +123,7 @@ public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource,
         return baseDistance;
     }
 
-    int IAbilityDamageSource.GetBaseHitDamage() => GetHitDamage();
+    int IAbilityDamageSource.GetBaseHitDamage() => Mathf.RoundToInt(GetStatMult(StatMultId.CurrentAttackSpeedMult));
     int IAbilityHealth.GetMaxHP() => health != null ? health.GetCurrentMaxHP() : 0;
     int IAbilityHealth.TryDrainHP(int amount, int minHp) => health != null ? health.TryDrainHP(amount, minHp) : 0;
 }

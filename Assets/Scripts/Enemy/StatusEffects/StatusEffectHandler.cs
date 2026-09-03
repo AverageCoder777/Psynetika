@@ -280,15 +280,15 @@ public class StatusEffectHandler : MonoBehaviour
             if (handler == null || handler.statOwner == null) return;
             float slow = Mathf.Clamp01(handler.GlitchSlowPerStack);
             float multiplier = Mathf.Pow(1f - slow, stacks);
-            handler.statOwner.SetStat(StatId.MoveSpeed, multiplier);
-            handler.statOwner.SetStat(StatId.AttackSpeed, multiplier);
+            handler.statOwner.SetStatMult(StatMultId.CurrentMoveSpeedMult, multiplier);
+            handler.statOwner.SetStatMult(StatMultId.CurrentAttackSpeedMult, multiplier);
         }
 
         private void ResetMultipliers()
         {
             if (handler == null || handler.statOwner == null) return;
-            handler.statOwner.SetStat(StatId.MoveSpeed, 1f);
-            handler.statOwner.SetStat(StatId.AttackSpeed, 1f);
+            handler.statOwner.SetStatMult(StatMultId.CurrentMoveSpeedMult, 1f);
+            handler.statOwner.SetStatMult(StatMultId.CurrentAttackSpeedMult, 1f);
         }
 
         private async UniTaskVoid Run(CancellationToken token)

@@ -124,7 +124,7 @@ public class PlayerHealth : MonoBehaviour, IDamagable, IAbilityTarget, IDirectDa
 
     // IAbilityTarget / IDirectDamageReceiver — единый путь урона (враги, снаряды, зоны).
     Transform IAbilityTarget.Transform => transform;
-    bool IAbilityTarget.IsAlive => GetCurrentHP() > 0;
+    bool IAbilityTarget.IsAlive => GetCurrentHPOfCharacter(charManager.GetCurrentCharacterType()) > 0;
     Team IAbilityTarget.Team => Team.Player;
     void IAbilityTarget.ReceiveDamage(DamageEvent ev) => TakeDamage(Mathf.RoundToInt(ev.Amount));
     void IDirectDamageReceiver.ApplyDamage(DamageEvent ev) => TakeDamage(Mathf.RoundToInt(ev.Amount));

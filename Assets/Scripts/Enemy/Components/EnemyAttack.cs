@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // Боевые статы врага и вход в систему способностей — зеркало PlayerAttack.
-public class EnemyAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, IAbilityStatOwner, IAbilityHealth
+public class EnemyAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, IAbilityHealth
 {
     private EnemyConfig config;
     private EnemyMovement movement;
@@ -134,28 +134,28 @@ public class EnemyAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, 
         return actual;
     }
 
-    public float GetStat(StatId stat)
+    public float GetStat(StatMultId stat)
     {
         return stat switch
         {
-            StatId.Damage => damageMultiplier,
-            StatId.AttackSpeed => attackSpeedMultiplier,
-            StatId.MoveSpeed => moveSpeedMultiplier,
+            StatMultId.CurrentDamageMult => damageMultiplier,
+            StatMultId.CurrentAttackSpeedMult => attackSpeedMultiplier,
+            StatMultId.CurrentMoveSpeedMult => moveSpeedMultiplier,
             _ => 1f
         };
     }
 
-    public void SetStat(StatId stat, float value)
+    public void SetStat(StatMultId stat, float value)
     {
         switch (stat)
         {
-            case StatId.Damage:
+            case StatMultId.CurrentDamageMult:
                 damageMultiplier = value;
                 break;
-            case StatId.AttackSpeed:
+            case StatMultId.CurrentAttackSpeedMult:
                 attackSpeedMultiplier = value;
                 break;
-            case StatId.MoveSpeed:
+            case StatMultId.CurrentMoveSpeedMult:
                 moveSpeedMultiplier = value;
                 break;
             default:
