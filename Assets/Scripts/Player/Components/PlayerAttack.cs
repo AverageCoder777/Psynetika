@@ -1,56 +1,86 @@
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]
-public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, IAbilityStatOwner, IAbilityHealth
+public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, IAbilityStatOwner, IAttackable, IAbilityHealth
 {
-    [Header("Удары Собаки")]
-    [Tooltip("Скорость удара задает время на один удар")]
-    [SerializeField] private float dogHitTime = 1f;
-    [SerializeField] private float dogHitDistance = 1f;
-    [SerializeField] private int dogHitDamage = 10;
-
-    [Header("Стрельба Сатаны")]
+    private PlayerStaticSettings settings;
+    private PlayerDynSettings status;
     public GameObject bulletPrefab;
-    [Tooltip("Скорость удара задает время на один выстрел")]
-    [SerializeField] private float satanHitTime = 2f;
-    [SerializeField] private float satanHitDistance = 2f;
-    [SerializeField] private int satanHitDamage = 22;
-
-    [Header("Множители")]
-    [SerializeField] private float attackSpeedMultiplier = 1f;
-    [SerializeField] private float damageMultiplier = 1f;
     Transform IAbilityCaster.Transform => transform;
     Vector2 IAbilityCaster.Center => TryGetComponent(out BoxCollider2D box) ? (Vector2)box.bounds.center : (Vector2)transform.position;
     float IAbilityCaster.FacingDirection => (player.PlayerCharManager.ActiveSR != null && player.PlayerCharManager.ActiveSR.flipX) ? -1f : 1f;
     Team IAbilityCaster.Team => Team.Player;
     MonoBehaviour IAbilityCaster.CoroutineHost => this;
-
+    public float AttackSpeedMultiplier { get => status.attackSpeedMultiplier; set => status.attackSpeedMultiplier = value; }
+    public float DamageMultiplier { get => status.damageMultiplier; set => status.damageMultiplier = value; }
     private PlayerController player;
     private PlayerHealth health;
-
-    public float AttackSpeedMultiplier
+    public float AttackSpeedMultiplier;
+    public T GetCurrentAttackStat<T>(AttackStatId id)
     {
-        get => attackSpeedMultiplier;
-        set => attackSpeedMultiplier = value;
+        switch (id)
+        {
+            case AttackStatId.CurrentDamage:
+                return (T)(object)GetCurrentDamage();
+            case AttackStatId.AttackSpeed:
+                return (T)(object)GetAttackSpeed();
+            case AttackStatId.AttackRange:
+                return (T)(object)GetAttackRange();
+            default:
+                Debug.LogWarning($"[PlayerAttack.GetCurrentAttackStat] StatId {id} is not supported.");
+                return default;
+        }
+    }
+    public void SetCurrentAttackStat(AttackStatId id, float value)
+    {
+        switch (id)
+        {
+            case AttackStatId.AttackSpeed:
+                if (player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Dog)
+                {
+                    status.dogAttackSpeedBoost = Mathf.RoundToInt(value);
+                }
+                else
+                {
+                    status.satanAttackSpeedBoost = Mathf.RoundToInt(value);
+                }
+                return;
+            case AttackStatId.CurrentDamage:
+                if (player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Dog)
+                {
+                    status.dogDamageBoost = Mathf.RoundToInt(value);
+                }
+                else
+                {
+                    status.satanDamageBoost = Mathf.RoundToInt(value);
+                }
+                return;
+            case AttackStatId.AttackRange:
+                if (player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Dog)
+                {
+                    status.dogAttackRangeBoost = Mathf.RoundToInt(value);
+                }
+                else
+                {
+                    status.satanAttackRangeBoost = Mathf.RoundToInt(value);
+                }
+                return;
+            default:
+                return;
+        }
     }
 
-    public float DamageMultiplier
-    {
-        get => damageMultiplier;
-        set => damageMultiplier = value;
-    }
-
-    public void SetStat(StatId stat, float value)
+    public void SetStatMult<T>(StatMultId stat, T value)
     {
         switch (stat)
         {
-            case StatId.AttackSpeed:
-                AttackSpeedMultiplier = value;
+            case StatMultId.CurrentAttackSpeedMult:
+                status.attackSpeedMultiplier = (float)(object)value;
                 break;
-            case StatId.Damage:
-                DamageMultiplier = value;
+            case StatMultId.CurrentDamageMult:
+                status.damageMultiplier = (float)(object)value;
                 break;
-            case StatId.MoveSpeed:
+            case StatMultId.CurrentMoveSpeedMult:
                 Debug.LogWarning($"[PlayerAttack.SetStat] StatId {stat} is not supported here.");
                 break;
             default:
@@ -59,13 +89,13 @@ public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource,
         }
     }
 
-    public float GetStat(StatId stat)
+    public float GetStatMult (StatMultId stat)
     {
         return stat switch
         {
-            StatId.AttackSpeed => AttackSpeedMultiplier,
-            StatId.Damage => DamageMultiplier,
-            StatId.MoveSpeed => 1f,
+            StatMultId.CurrentAttackSpeedMult => status.attackSpeedMultiplier,
+            StatMultId.CurrentDamageMult => status.damageMultiplier,
+            StatMultId.CurrentMoveSpeedMult => status.speedMultiplier,
             _ => 1f
         };
     }
@@ -74,40 +104,27 @@ public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource,
     {
         player = GetComponent<PlayerController>();
         health = GetComponent<PlayerHealth>();
+        settings = Resources.Load<PlayerStaticSettings>("PlayerDefaultSettings");
+        status = GetComponent<PlayerDynSettings>();
     }
-
-    public float GetHitTime()
+    private float GetAttackSpeed()
     {
-        float baseHitTime = player != null && player.GetCurrentCharacterType() == PlayerCharacterType.Satan
-            ? satanHitTime
-            : dogHitTime;
-
-        float safeAttackSpeedMultiplier = Mathf.Max(0.05f, AttackSpeedMultiplier);
-        return baseHitTime / safeAttackSpeedMultiplier;
+        float baseSpeed = player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Dog ? settings.combat.dogBaseHitTime : settings.combat.satanBaseHitTime;
+        return baseSpeed / status.attackSpeedMultiplier;
     }
-
-    public float GetHitDistance()
+    private int GetCurrentDamage()
     {
-        if (player != null && player.GetCurrentCharacterType() == PlayerCharacterType.Satan)
-        {
-            return satanHitDistance;
-        }
-
-        return dogHitDistance;
+        int baseDamage = player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Dog ? settings.combat.dogBaseDamage : settings.combat.satanBaseDamage;
+        int damageBoost = player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Dog ? status.dogDamageBoost : status.satanDamageBoost;
+        return Mathf.RoundToInt((baseDamage + damageBoost) * status.damageMultiplier);
     }
-
-    public int GetHitDamage()
+    private float GetAttackRange()
     {
-        int baseDamage = player != null && player.GetCurrentCharacterType() == PlayerCharacterType.Satan
-            ? satanHitDamage
-            : dogHitDamage;
-
-        return Mathf.RoundToInt(baseDamage * DamageMultiplier);
+        float baseDistance = player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Dog ? settings.combat.dogBaseHitDistance : settings.combat.satanBaseHitDistance;
+        return baseDistance;
     }
 
     int IAbilityDamageSource.GetBaseHitDamage() => GetHitDamage();
-
     int IAbilityHealth.GetMaxHP() => health != null ? health.GetCurrentMaxHP() : 0;
     int IAbilityHealth.TryDrainHP(int amount, int minHp) => health != null ? health.TryDrainHP(amount, minHp) : 0;
 }
-

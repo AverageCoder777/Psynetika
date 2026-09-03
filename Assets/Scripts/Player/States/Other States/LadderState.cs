@@ -4,14 +4,11 @@ public class LadderState : State
 {
     private static readonly int GroundedHash = Animator.StringToHash("Grounded");
     private static readonly int ClimbingHash = Animator.StringToHash("Climbing");
-    private readonly float climbSpeed = 5f;
     private Ladder currentLadder;
     private float enterTime = 0f;
-    private readonly float exitDelay = 0.25f; // Задержка перед возможностью выхода
 
-    public LadderState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine)
-    {
-    }
+    public LadderState(PlayerController player, StateMachine stateMachine, PlayerStaticSettings settings)
+         : base(player, stateMachine, settings) { }
 
     public void SetLadder(Ladder ladder)
     {
@@ -22,33 +19,32 @@ public class LadderState : State
     {
         base.Enter();
     
-        Movement.Rb.gravityScale = 0f;
-        Movement.Rb.linearVelocity = Vector2.zero;
+        movement.Rb.gravityScale = 0f;
+        movement.Rb.linearVelocity = Vector2.zero;
         
-        Animator.SetBool(ClimbingHash, true);
-        Animator.SetBool(GroundedHash, false);
+        animator.SetBool(ClimbingHash, true);
+        animator.SetBool(GroundedHash, false);
         
         enterTime = Time.time;
-        
         player.LastState = this;
     }
 
     public override void HandleInput()
     {
         base.HandleInput();
-        Movement.MovementInput = Movement.PlayerInput.actions["Move"].ReadValue<Vector2>();
+        movement.MovementInput = movement.PlayerInput.actions["Move"].ReadValue<Vector2>();
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        if (Time.time - enterTime > exitDelay && Movement.PlayerInput.actions["Interact"].WasPressedThisFrame())
+        if (Time.time - enterTime > settings.ladder.exitDelay && movement.PlayerInput.actions["Interact"].WasPressedThisFrame())
         {
             stateMachine.ChangeState(player.FlyingState);
             return;
         }
         
-        if (Movement.MovementInput.x != 0)
+        if (movement.MovementInput.x != 0)
         {
             stateMachine.ChangeState(player.FlyingState);
             return;
@@ -67,23 +63,23 @@ public class LadderState : State
 
         float verticalMovement = 0f;
         
-        if (Movement.MovementInput.y > 0)
+        if (movement.MovementInput.y > 0)
         {
-            verticalMovement = climbSpeed;
+            verticalMovement = settings.ladder.climbSpeed;
         }
-        else if (Movement.MovementInput.y < 0)
+        else if (movement.MovementInput.y < 0)
         {
-            verticalMovement = -climbSpeed;
+            verticalMovement = -settings.ladder.climbSpeed;
         }
-        Movement.Rb.linearVelocity = new Vector2(0f, verticalMovement);
+        movement.Rb.linearVelocity = new Vector2(0f, verticalMovement);
     }
 
     public override void Exit()
     {
         base.Exit();
 
-        Movement.Rb.gravityScale = Movement.DownGravityScale;
-        Animator.SetBool(ClimbingHash, false);
-        Animator.SetBool(GroundedHash, true);
+        movement.Rb.gravityScale = settings.jump.downGravityScale;
+        animator.SetBool(ClimbingHash, false);
+        animator.SetBool(GroundedHash, true);
     }
 }

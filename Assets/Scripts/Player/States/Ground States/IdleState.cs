@@ -11,27 +11,26 @@ public class IdleState : GroundedStates
     private bool hit;
     private bool spell;
     private bool spellUltimate;
-    public IdleState(PlayerController player, StateMachine stateMachine)
-        : base(player, stateMachine)
-    {
-    }
+    public IdleState(PlayerController player, StateMachine stateMachine, PlayerStaticSettings settings)
+        : base(player, stateMachine, settings) { }
+    
     public override void Enter()
     {
         base.Enter();
-        Animator.SetBool(MovingHash, false);
+        animator.SetBool(MovingHash, false);
         grounded = true;
-        Movement.Rb.linearVelocity = new Vector2(0, Movement.Rb.linearVelocity.y);
+        movement.Rb.linearVelocity = new Vector2(0, movement.Rb.linearVelocity.y);
     }
     public override void HandleInput()
     {
         base.HandleInput();
-        crouch = Movement.PlayerInput.actions["Crouch"].IsPressed();
-        jump = Movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
-        roll = Movement.PlayerInput.actions["Roll"].WasPressedThisFrame();
-        @switch = Movement.PlayerInput.actions["Switch"].WasPressedThisFrame();
-        hit = Movement.PlayerInput.actions["Attack"].WasPressedThisFrame();
-        spell = Movement.PlayerInput.actions["Spell"].WasPressedThisFrame();
-        spellUltimate = Movement.PlayerInput.actions["SpellUltimate"].WasPressedThisFrame();
+        crouch = movement.PlayerInput.actions["Crouch"].IsPressed();
+        jump = movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
+        roll = movement.PlayerInput.actions["Roll"].WasPressedThisFrame();
+        @switch = movement.PlayerInput.actions["Switch"].WasPressedThisFrame();
+        hit = movement.PlayerInput.actions["Attack"].WasPressedThisFrame();
+        spell = movement.PlayerInput.actions["Spell"].WasPressedThisFrame();
+        spellUltimate = movement.PlayerInput.actions["SpellUltimate"].WasPressedThisFrame();
     }
     public override void LogicUpdate()
     {
@@ -49,12 +48,12 @@ public class IdleState : GroundedStates
         {
             stateMachine.ChangeState(player.RollingState);
         }
-        else if (Mathf.Abs(Movement.Rb.linearVelocityY) > 0.1f && !DetectPlatform())
+        else if (Mathf.Abs(movement.Rb.linearVelocityY) > 0.1f && !DetectPlatform())
         {
             grounded = false;
             stateMachine.ChangeState(player.FlyingState);
         }
-        else if (@switch && CharManager.DogActive != false && CharManager.SatanActive != false)
+        else if (@switch && charManager.DogActive != false && charManager.SatanActive != false)
         {
             stateMachine.ChangeState(player.SwitchState);
         }
@@ -92,18 +91,16 @@ public class IdleState : GroundedStates
         // Смещаем raycast origin вниз от центра игрока, чтобы избежать его собственного коллайдера
         Vector2 raycastOrigin = (Vector2)player.transform.position - Vector2.up * 0.5f;
 
-        float detectionDistance = 1f;
-
         // Проверяем столкновение только вниз
         RaycastHit2D hit = Physics2D.Raycast(
             raycastOrigin,
             platformDetectionDirection,
-            detectionDistance,
+            settings.detection.platformDetectionDistance,
             LayerMask.GetMask("Platform")
         );
         if (player.debugMessages)
         {
-            Debug.DrawRay(raycastOrigin, platformDetectionDirection * detectionDistance,
+            Debug.DrawRay(raycastOrigin, platformDetectionDirection * settings.detection.platformDetectionDistance,
                 hit.collider != null ? Color.blue : Color.yellow);
         }
 

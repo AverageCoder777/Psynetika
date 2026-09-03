@@ -3,33 +3,32 @@ using System.Collections;
 
 public class DyingState : State
 {
-    public DyingState(PlayerController player, StateMachine stateMachine) : base(player, stateMachine)
-    {
-    }
+    public DyingState(PlayerController player, StateMachine stateMachine, PlayerStaticSettings settings)
+         : base(player, stateMachine, settings){ }
+    
     private static readonly int DieHash = Animator.StringToHash("Die");
     private static readonly int IsSwitchingHash = Animator.StringToHash("isSwitching");
     private float deathTimer = 0f;
-    private const float resurrectionDelay = 5.5f;
     private PlayerCharacterType _type;
     public override void Enter()
     {
-        Animator.SetTrigger(DieHash);
+        animator.SetTrigger(DieHash);
         player.DisableEnemyVisibility();
         deathTimer = 0f;
-        _type = player.GetCurrentCharacterType();
+        _type = charManager.GetCurrentCharacterType();
     }
     public override void LogicUpdate()
     {
         deathTimer += Time.deltaTime;
-        if (deathTimer >= resurrectionDelay)
+        if (deathTimer >= settings.health.resurrectionDelay)
         {
             if (_type == PlayerCharacterType.Dog)
             {
-                CharManager.DogActive = false;
+                charManager.DogActive = false;
             }
             else if (_type == PlayerCharacterType.Satan)
             {
-                CharManager.SatanActive = false;
+                charManager.SatanActive = false;
             }
             player.StartCoroutine(SwitchCharacter());
             stateMachine.ChangeState(player.IdleState);
@@ -37,7 +36,7 @@ public class DyingState : State
     }
     public override void PhysicsUpdate()
     {
-        Movement.Rb.linearVelocity = Vector2.zero;
+        movement.Rb.linearVelocity = Vector2.zero;
     }
     public override void Exit()
     {
@@ -47,35 +46,35 @@ public class DyingState : State
     
     private IEnumerator SwitchCharacter()
     {
-        CharManager.ActiveAnimator.SetTrigger(IsSwitchingHash);
-        yield return new WaitForSeconds(player.SwitchDelay);
+        charManager.ActiveAnimator.SetTrigger(IsSwitchingHash);
+        yield return new WaitForSeconds(settings.switching.switchDelay);
 
-        if (player.GetCurrentCharacterType() == PlayerCharacterType.Satan)
+        if (charManager.GetCurrentCharacterType() == PlayerCharacterType.Satan)
         {
-            CharManager.Satan.SetActive(false);
-            CharManager.ActiveCharacter = CharManager.Dog;
-            CharManager.Dog.SetActive(true);
+            charManager.Satan.SetActive(false);
+            charManager.ActiveCharacter = charManager.Dog;
+            charManager.Dog.SetActive(true);
             if (player.debugMessages) Debug.Log("Switched to Sobaka");
-            player.SetCurrentCharacterType(PlayerCharacterType.Dog);
+            charManager.SetCurrentCharacterType(PlayerCharacterType.Dog);
 
         }
         else
         {
-            CharManager.Dog.SetActive(false);
-            CharManager.ActiveCharacter = CharManager.Satan;
-            CharManager.Satan.SetActive(true);
+            charManager.Dog.SetActive(false);
+            charManager.ActiveCharacter = charManager.Satan;
+            charManager.Satan.SetActive(true);
             if (player.debugMessages) Debug.Log("Switched to Satan");
-            player.SetCurrentCharacterType(PlayerCharacterType.Satan);
+            charManager.SetCurrentCharacterType(PlayerCharacterType.Satan);
 
         }
-        CharManager.ActiveAnimator.SetBool(IsSwitchingHash, false);
+        charManager.ActiveAnimator.SetBool(IsSwitchingHash, false);
         CacheActiveVisuals();
         stateMachine.ChangeState(player.IdleState);
     }
 
     void CacheActiveVisuals()
     {
-        CharManager.ActiveAnimator = CharManager.ActiveCharacter.GetComponent<Animator>();
-        CharManager.ActiveSR = CharManager.ActiveCharacter.GetComponent<SpriteRenderer>();
+        charManager.ActiveAnimator = charManager.ActiveCharacter.GetComponent<Animator>();
+        charManager.ActiveSR = charManager.ActiveCharacter.GetComponent<SpriteRenderer>();
     }
 }

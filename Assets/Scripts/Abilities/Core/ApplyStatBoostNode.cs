@@ -6,7 +6,7 @@ using UnityEngine;
 [AddTypeMenu("Бафы/Бафф стата")]
 public class ApplyStatBoostNode : AbilityNode
 {
-    public StatId stat = StatId.Damage;
+    public StatMultId stat = StatMultId.CurrentDamageMult;
     public float amount = 0.1f;
 
     [Tooltip("Снять бафф при завершении или отмене каста (иначе изменение остаётся навсегда)")]
@@ -20,11 +20,11 @@ public class ApplyStatBoostNode : AbilityNode
             return UniTask.FromResult(NodeResult.Failure);
         }
 
-        ownerStats.SetStat(stat, ownerStats.GetStat(stat) + amount);
+        ownerStats.SetStatMult(stat, ownerStats.GetStatMult(stat) + amount);
 
         if (revertOnEnd)
         {
-            ctx.RegisterCleanup(() => ownerStats.SetStat(stat, ownerStats.GetStat(stat) - amount));
+            ctx.RegisterCleanup(() => ownerStats.SetStatMult(stat, ownerStats.GetStatMult(stat) - amount));
         }
 
         return UniTask.FromResult(NodeResult.Success);

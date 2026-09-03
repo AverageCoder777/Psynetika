@@ -2,83 +2,80 @@ using UnityEngine;
 using System;
 
 [RequireComponent(typeof(PlayerController))]
+[RequireComponent(typeof(PlayerDynSettings))]
+[RequireComponent(typeof(PlayerCharacterManager))]
 public class PlayerHealth : MonoBehaviour, IDamagable, IAbilityTarget, IDirectDamageReceiver
 {
-    [Header("Dog HP")]
-    [SerializeField] private int dogMaxHP = 100;
-    [SerializeField] private int dogHP = 100;
-
-    [Header("Satan HP")]
-    [SerializeField] private int satanMaxHP = 100;
-    [SerializeField] private int satanHP = 100;
-    private PlayerController player;
+    private PlayerStaticSettings settings;
+    private PlayerDynSettings status;
+    private PlayerCharacterManager charManager;
     public event Action<PlayerCharacterType, int, int> HpChanged;
     public event Action<PlayerCharacterType> Died;
 
     public void Awake()
     {
+        settings = Resources.Load<PlayerStaticSettings>("PlayerDefaultSettings");
+        status = GetComponent<PlayerDynSettings>();
+        status.satanHP = settings.health.satanMaxHP;
+        status.dogHP = settings.health.dogMaxHP;
+        charManager = GetComponent<PlayerCharacterManager>();
         RaiseAll();
-        player = GetComponent<PlayerController>();
     }
+    
     public int TryDrainHP(int amount, int minHp)
     {
         if (amount <= 0) return 0;
 
-        var type = player.GetCurrentCharacterType();
+        var type = charManager.GetCurrentCharacterType();
         if (type == PlayerCharacterType.Satan)
         {
-            int drainable = Mathf.Max(0, satanHP - minHp);
+            int drainable = Mathf.Max(0, status.satanHP - minHp);
             int actualDrain = Mathf.Min(amount, drainable);
             if (actualDrain > 0)
             {
-                satanHP -= actualDrain;
+                status.satanHP -= actualDrain;
                 RaiseHp(type);
-                if (satanHP <= 0) Died?.Invoke(type);
+                if (status.satanHP <= 0) Died?.Invoke(type);
             }
             return actualDrain;
         }
         else
         {
-            int drainable = Mathf.Max(0, dogHP - minHp);
+            int drainable = Mathf.Max(0, status.dogHP - minHp);
             int actualDrain = Mathf.Min(amount, drainable);
             if (actualDrain > 0)
             {
-                dogHP -= actualDrain;
+                status.dogHP -= actualDrain;
                 RaiseHp(type);
-                if (dogHP <= 0) Died?.Invoke(type);
+                if (status.dogHP <= 0) Died?.Invoke(type);
             }
             return actualDrain;
         }
     }
     public int GetCurrentHPOfCharacter(PlayerCharacterType type)
-        => type == PlayerCharacterType.Satan ? satanHP : dogHP;
+        => type == PlayerCharacterType.Satan ? status.satanHP : status.dogHP;
 
     public int GetMaxHPOfCharacter(PlayerCharacterType type)
-        => type == PlayerCharacterType.Satan ? satanMaxHP : dogMaxHP;
-    public int GetCurrentHP()
-    {
-        return GetCurrentHPOfCharacter(player.GetCurrentCharacterType());
-    }
+        => type == PlayerCharacterType.Satan ? settings.health.satanMaxHP : settings.health.dogMaxHP;
     public int GetCurrentMaxHP()
-    {
-        return GetMaxHPOfCharacter(player.GetCurrentCharacterType());
-    }
+        => charManager.GetCurrentCharacterType() == PlayerCharacterType.Satan ? 
+        settings.health.satanMaxHP : settings.health.dogMaxHP;
 
     public void TakeDamage(int amount)
     {
         if (amount <= 0) return;
-        var type = player.GetCurrentCharacterType();
+        var type = charManager.GetCurrentCharacterType();
         if (type == PlayerCharacterType.Satan)
         {
-            satanHP = Mathf.Max(0, satanHP - amount);
+            status.satanHP = Mathf.Max(0, status.satanHP - amount);
             RaiseHp(type);
-            if (satanHP <= 0) Died?.Invoke(type);
+            if (status.satanHP <= 0) Died?.Invoke(type);
         }
         else
         {
-            dogHP = Mathf.Max(0, dogHP - amount);
+            status.dogHP = Mathf.Max(0, status.dogHP - amount);
             RaiseHp(type);
-            if (dogHP <= 0) Died?.Invoke(type);
+            if (status.dogHP <= 0) Died?.Invoke(type);
         }
     }
 
@@ -86,30 +83,30 @@ public class PlayerHealth : MonoBehaviour, IDamagable, IAbilityTarget, IDirectDa
     {
         if (amount <= 0) return;
 
-        var type = player.GetCurrentCharacterType();
+        var type = charManager.GetCurrentCharacterType();
         if (type == PlayerCharacterType.Satan)
         {
-            satanHP = Mathf.Min(satanMaxHP, satanHP + amount);
+            status.satanHP = Mathf.Min(settings.health.satanMaxHP, status.satanHP + amount);
             RaiseHp(type);
         }
         else
         {
-            dogHP = Mathf.Min(dogMaxHP, dogHP + amount);
+            status.dogHP = Mathf.Min(settings.health.dogMaxHP, status.dogHP + amount);
             RaiseHp(type);
         }
     }
 
     public void ResetHealth()
     {
-        var type = player.GetCurrentCharacterType();
+        var type = charManager.GetCurrentCharacterType();
         if (type == PlayerCharacterType.Satan)
         {
-            satanHP = satanMaxHP;
+            status.satanHP = settings.health.satanMaxHP;
             RaiseHp(type);
         }
         else
         {
-            dogHP = dogMaxHP;
+            status.dogHP = settings.health.dogMaxHP;
             RaiseHp(type);
         }
     }
