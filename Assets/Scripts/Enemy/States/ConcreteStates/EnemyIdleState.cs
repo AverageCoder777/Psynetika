@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Покой: враг стоит на месте, пока не заметит игрока. Если включён патруль — сразу уходит в него.
 public class EnemyIdleState : EnemyStates
 {
     private static readonly int IdleHash = Animator.StringToHash("Idle");
@@ -11,24 +12,22 @@ public class EnemyIdleState : EnemyStates
 
     public override void Enter()
     {
-        Animator.SetBool(IdleHash, true);
+        SetFlag(IdleHash, true);
     }
 
     public override void LogicUpdate()
     {
         // Один переход за кадр, приоритет атаке.
-        if (Sensor.PlayerInHitRange)
+        if (TryReactToPlayer()) return;
+
+        if (RestStateId == EnemyStateId.Patrol)
         {
-            stateMachine.ChangeState(controller.AttackState);
-        }
-        else if (Sensor.PlayerInFollowRange)
-        {
-            stateMachine.ChangeState(controller.FollowState);
+            ChangeState(EnemyStateId.Patrol);
         }
     }
 
     public override void Exit()
     {
-        Animator.SetBool(IdleHash, false);
+        SetFlag(IdleHash, false);
     }
 }

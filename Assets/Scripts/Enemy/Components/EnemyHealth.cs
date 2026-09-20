@@ -24,6 +24,8 @@ public class EnemyHealth : MonoBehaviour, IAbilityTarget, IDirectDamageReceiver
     {
         maxHp = Mathf.Max(1, config.maxHp);
         currentHp = maxHp;
+        // Пере-ищем обработчик статусов: EnemyController мог доставить его уже после нашего Awake.
+        statusHandler = GetComponent<StatusEffectHandler>();
     }
 
     Transform IAbilityTarget.Transform => transform;

@@ -21,6 +21,7 @@ public class StatusEffectHandler : MonoBehaviour
 
     private IDirectDamageReceiver damageSink;
     private IAbilityStatOwner statOwner;
+    private bool dependenciesResolved;
     private BurnRuntime burn;
     private GlitchRuntime glitch;
     private bool reactionConsumedThisHit;
@@ -40,8 +41,17 @@ public class StatusEffectHandler : MonoBehaviour
 
     private void Awake()
     {
+        ResolveDependencies();
+    }
+
+    // Носителя урона и статов ищем лениво: EnemyController может доставить их уже после нашего Awake.
+    private void ResolveDependencies()
+    {
+        if (dependenciesResolved) return;
+
         damageSink = GetComponent<IDirectDamageReceiver>();
         statOwner = GetComponent<IAbilityStatOwner>();
+        dependenciesResolved = damageSink != null && statOwner != null;
     }
 
     // Инъекция конфига из EnemyConfig; ссылка, заданная на префабе вручную, имеет приоритет.
@@ -63,6 +73,7 @@ public class StatusEffectHandler : MonoBehaviour
     public float ProcessIncomingDamage(DamageEvent ev)
     {
         reactionConsumedThisHit = false;
+        ResolveDependencies();
         WarnIfConfigMissing();
 
         if (ev.Type == DamageType.Fire && glitch != null)

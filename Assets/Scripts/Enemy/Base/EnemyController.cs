@@ -1,7 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 //Скрипты
-[RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(EnemyHealth))]
 [RequireComponent(typeof(EnemyMovement))]
 [RequireComponent(typeof(EnemyAttack))]
@@ -11,7 +11,11 @@ using UnityEngine;
 /*
 Тонкий координатор врага (зеркало PlayerController): владеет ссылками на компоненты
 и стейт-машиной, логика живёт в компонентах и состояниях.
-Новый архетип врага = подкласс с override CreateStates()/InitialState + свой EnemyConfig.
+
+Минимальный враг = GameObject + EnemyController + ссылка на EnemyConfig: недостающие
+компоненты контроллер доставляет сам. Архетип (ближник, стрелок, патрульный, кастер)
+задаётся данными в конфиге, наследник нужен только ради нестандартных состояний —
+тогда переопредели CreateStates()/InitialStateId.
 */
 public class EnemyController : MonoBehaviour
 {
@@ -28,19 +32,29 @@ public class EnemyController : MonoBehaviour
 
     #region State Machine
     public EnemyStateMachine StateMachine { get; private set; }
-    public EnemyStates IdleState { get; protected set; }
-    public EnemyStates FollowState { get; protected set; }
-    public EnemyStates AttackState { get; protected set; }
-    protected virtual EnemyStates InitialState => IdleState;
+
+    private readonly Dictionary<EnemyStateId, EnemyStates> states = new();
+
+    public EnemyStateId CurrentStateId { get; private set; } = EnemyStateId.Idle;
+
+    protected virtual EnemyStateId InitialStateId =>
+        config != null && config.patrol != null && config.patrol.enabled ? EnemyStateId.Patrol : EnemyStateId.Idle;
     #endregion
+
+    private HashSet<int> animatorParameters;
 
     protected virtual void Awake()
     {
         Animator = GetComponent<Animator>();
-        Health = GetComponent<EnemyHealth>();
-        Movement = GetComponent<EnemyMovement>();
-        Attack = GetComponent<EnemyAttack>();
-        Sensor = GetComponent<EnemySensor>();
+        CacheAnimatorParameters();
+
+        // Порядок важен: каждый компонент доискивает соседей в своём Initialize,
+        // поэтому здесь достаточно, чтобы к моменту добавления StatusEffectHandler всё уже существовало.
+        Health = GetOrAddComponent<EnemyHealth>();
+        Movement = GetOrAddComponent<EnemyMovement>();
+        Attack = GetOrAddComponent<EnemyAttack>();
+        Sensor = GetOrAddComponent<EnemySensor>();
+        StatusEffectHandler statusHandler = GetOrAddComponent<StatusEffectHandler>();
 
         if (config == null)
         {
@@ -52,13 +66,11 @@ public class EnemyController : MonoBehaviour
         Health.Initialize(config);
         Movement.Initialize(config);
         Attack.Initialize(config);
+        Sensor.Initialize(config);
+        statusHandler.SetConfigIfEmpty(config.statusEffects);
         if (TryGetComponent(out EnemyLoot loot))
         {
             loot.Initialize(config);
-        }
-        if (TryGetComponent(out StatusEffectHandler statusHandler))
-        {
-            statusHandler.SetConfigIfEmpty(config.statusEffects);
         }
 
         StateMachine = new EnemyStateMachine();
@@ -68,20 +80,30 @@ public class EnemyController : MonoBehaviour
 
     protected virtual void Start()
     {
-        StateMachine.Initialize(InitialState);
+        EnemyStates initial = GetState(InitialStateId) ?? GetState(EnemyStateId.Idle);
+        if (initial == null)
+        {
+            Debug.LogError($"[EnemyController] {name}: не зарегистрировано ни одного состояния.");
+            enabled = false;
+            return;
+        }
+
+        CurrentStateId = InitialStateId;
+        StateMachine.Initialize(initial);
     }
 
     protected virtual void Update()
     {
-        if (!Health.IsAlive) return;
-        StateMachine.CurrentEnemyState.HandleInput();
-        StateMachine.CurrentEnemyState.LogicUpdate();
+        EnemyStates state = StateMachine?.CurrentEnemyState;
+        if (state == null) return;
+
+        state.HandleInput();
+        state.LogicUpdate();
     }
 
     protected virtual void FixedUpdate()
     {
-        if (!Health.IsAlive) return;
-        StateMachine.CurrentEnemyState.PhysicsUpdate();
+        StateMachine?.CurrentEnemyState?.PhysicsUpdate();
     }
 
     private void OnDestroy()
@@ -92,18 +114,91 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    #region States
+    // Реестр состояний по ролям: новое поведение = зарегистрировать состояние на роль,
+    // переходы в остальных состояниях менять не нужно.
     protected virtual void CreateStates()
     {
-        IdleState = new EnemyIdleState(this, StateMachine);
-        FollowState = new EnemyFollowState(this, StateMachine);
-        AttackState = new EnemyAttackState(this, StateMachine);
+        RegisterState(EnemyStateId.Idle, new EnemyIdleState(this, StateMachine));
+        RegisterState(EnemyStateId.Patrol, new EnemyPatrolState(this, StateMachine));
+        RegisterState(EnemyStateId.Follow, new EnemyFollowState(this, StateMachine));
+        RegisterState(EnemyStateId.Attack, new EnemyAttackState(this, StateMachine));
+        RegisterState(EnemyStateId.Dead, new EnemyDeadState(this, StateMachine));
     }
+
+    public void RegisterState(EnemyStateId id, EnemyStates state)
+    {
+        if (state == null) return;
+        states[id] = state;
+    }
+
+    public EnemyStates GetState(EnemyStateId id) => states.TryGetValue(id, out EnemyStates state) ? state : null;
+
+    public bool HasState(EnemyStateId id) => states.ContainsKey(id);
+
+    // Переход по роли. Возвращает false, если роль не зарегистрирована — вызывающее состояние остаётся текущим.
+    public bool ChangeState(EnemyStateId id)
+    {
+        EnemyStates next = GetState(id);
+        if (next == null)
+        {
+            Debug.LogWarning($"[EnemyController] {name}: состояние '{id}' не зарегистрировано.");
+            return false;
+        }
+
+        CurrentStateId = id;
+        StateMachine.ChangeState(next);
+        return true;
+    }
+    #endregion
+
+    #region Animator
+    // Аниматор врага может быть неполным (новый префаб, временные ассеты) — обращения к
+    // отсутствующим параметрам молча игнорируются вместо спама предупреждений Unity.
+    public void SetAnimatorTrigger(int hash)
+    {
+        if (HasAnimatorParameter(hash)) Animator.SetTrigger(hash);
+    }
+
+    public void SetAnimatorBool(int hash, bool value)
+    {
+        if (HasAnimatorParameter(hash)) Animator.SetBool(hash, value);
+    }
+
+    public bool HasAnimatorParameter(int hash) =>
+        Animator != null && animatorParameters != null && animatorParameters.Contains(hash);
+
+    private void CacheAnimatorParameters()
+    {
+        animatorParameters = new HashSet<int>();
+        if (Animator == null || Animator.runtimeAnimatorController == null) return;
+
+        foreach (AnimatorControllerParameter parameter in Animator.parameters)
+        {
+            animatorParameters.Add(parameter.nameHash);
+        }
+    }
+    #endregion
 
     protected virtual void OnDied()
     {
-        Animator?.SetTrigger(DieHash);
-        Sensor.DisableSensing();
-        enabled = false;
-        Destroy(gameObject, config.deathDespawnDelay);
+        Health.Died -= OnDied;
+
+        if (StateMachine == null || StateMachine.CurrentEnemyState == null)
+        {
+            // Смерть до инициализации стейт-машины: минимальная развязка без состояний.
+            SetAnimatorTrigger(DieHash);
+            Sensor.DisableSensing();
+            enabled = false;
+            Destroy(gameObject, config != null ? config.deathDespawnDelay : 0f);
+            return;
+        }
+
+        ChangeState(EnemyStateId.Dead);
+    }
+
+    private T GetOrAddComponent<T>() where T : Component
+    {
+        return TryGetComponent(out T component) ? component : gameObject.AddComponent<T>();
     }
 }
