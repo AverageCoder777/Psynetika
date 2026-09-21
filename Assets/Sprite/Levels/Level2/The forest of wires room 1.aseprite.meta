@@ -1,0 +1,2567 @@
+fileFormatVersion: 2
+guid: 44e1d947bea4cdf4c93267a13ca82088
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 62a9f0aa5b59740cfbadc7e5f9823bb0, type: 3}
+  importerVersion: 2
+  textureImporterSettings:
+    alphaSource: 1
+    mipMapMode: 0
+    enableMipMap: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+    convertToNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+    swizzle: 50462976
+    isReadable: 0
+    streamingMipmaps: 0
+    streamingMipmapsPriority: 0
+    vTOnly: 0
+    ignoreMipmapLimit: 0
+    nPOTScale: 1
+    sRGBTexture: 1
+    spriteMode: 2
+    spriteExtrude: 1
+    spriteMeshType: 1
+    alignment: 0
+    spritePivot: {x: 0.5, y: 0.5}
+    spritePixelsToUnits: 100
+    spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+    spriteGenerateFallbackPhysicsShape: 0
+    generateCubemap: 6
+    cubemapConvolution: 0
+    seamlessCubemap: 0
+    alphaIsTransparency: 1
+    spriteTessellationDetail: -1
+    textureType: 8
+    textureShape: 1
+    singleChannelComponent: 0
+    flipbookRows: 0
+    flipbookColumns: 0
+    ignorePngGamma: 0
+    cookieMode: 0
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+    normalMap: 0
+    textureFormat: 0
+    maxTextureSize: 0
+    lightmap: 0
+    compressionQuality: 0
+    linearTexture: 0
+    grayScaleToAlpha: 0
+    rGBM: 0
+    cubemapConvolutionSteps: 0
+    cubemapConvolutionExponent: 0
+    maxTextureSizeSet: 0
+    compressionQualitySet: 0
+    textureFormatSet: 0
+    applyGammaDecoding: 0
+  previousAsepriteImporterSettings:
+    fileImportMode: 1
+    importHiddenLayers: 0
+    layerImportMode: 0
+    defaultPivotSpace: 0
+    defaultPivotAlignment: 7
+    customPivotPosition: {x: 0.5, y: 0.5}
+    mosaicPadding: 4
+    spritePadding: 0
+    generateModelPrefab: 1
+    generateAnimationClips: 1
+    addSortingGroup: 1
+    addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
+  asepriteImporterSettings:
+    fileImportMode: 1
+    importHiddenLayers: 0
+    layerImportMode: 0
+    defaultPivotSpace: 0
+    defaultPivotAlignment: 7
+    customPivotPosition: {x: 0.5, y: 0.5}
+    mosaicPadding: 4
+    spritePadding: 0
+    generateModelPrefab: 1
+    generateAnimationClips: 1
+    addSortingGroup: 1
+    addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
+  importFileNodeState: 1
+  platformSettingsDirtyTick: 0
+  textureAssetName: 
+  singleSpriteImportData:
+  - name: 
+    originalName: 
+    pivot: {x: 0, y: 0}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    spriteID: 
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  animatedSpriteImportData:
+  - name: "\xD1\x84\xD0\xBE\xD0\xBD"
+    originalName: 
+    pivot: {x: 0.4966967, y: 0}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1668
+      y: 4
+      width: 1665
+      height: 657
+    spriteID: c089dc3b55df4ec4cb9d044c338ffd68
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1668, y: 4}
+  - name: "\xD1\x87\xD0\xB5\xD1\x80\xD0\xBD\xD0\xB8"
+    originalName: 
+    pivot: {x: 0.5, y: 0}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 692
+      width: 1654
+      height: 657
+    spriteID: 0785c8a9cbf603f4ca06e8ac0c55de87
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 692}
+  - name: soil (pochva)
+    originalName: 
+    pivot: {x: 0.5, y: 0}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1666
+      y: 692
+      width: 1654
+      height: 657
+    spriteID: 91d159e1e6df0614b847e88e64ca805e
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1666, y: 692}
+  - name: riverbank 1pl
+    originalName: 
+    pivot: {x: 0.6277174, y: 0}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3217
+      y: 1680
+      width: 368
+      height: 147
+    spriteID: 725f6766f92fe394e8837e23062aec36
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3217, y: 1680}
+  - name: 4 plan start
+    originalName: 
+    pivot: {x: 1.176387, y: -0.35384616}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3341
+      y: 4
+      width: 703
+      height: 195
+    spriteID: ba40f8fc1e5340342bfc70bd2b904ed2
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3341, y: 4}
+  - name: 4plan after hole
+    originalName: 
+    pivot: {x: -0.19264446, y: -0.43491122}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3328
+      y: 692
+      width: 571
+      height: 338
+    spriteID: f6cc945c86f13514986f95a53f100757
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3328, y: 692}
+  - name: 4 pl behind wf
+    originalName: 
+    pivot: {x: 0.5270759, y: -0.29761904}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 769
+      y: 1959
+      width: 277
+      height: 336
+    spriteID: 59cb0141f7e91a44b8ce74b890555a16
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 769, y: 1959}
+  - name: big fog
+    originalName: 
+    pivot: {x: 0.525747, y: -0.015873017}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 1357
+      width: 1573
+      height: 315
+    spriteID: 37254f57444439d4a9b01b5c148add70
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 1357}
+  - name: 3plan rock
+    originalName: 
+    pivot: {x: 0.7029974, y: -0.2071006}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 394
+      y: 1959
+      width: 367
+      height: 338
+    spriteID: 65bd5d379bae75647ac2ec8deab71493
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 394, y: 1959}
+  - name: waterfall
+    originalName: 
+    pivot: {x: 1.181818, y: -0.3412969}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1054
+      y: 1959
+      width: 88
+      height: 293
+    spriteID: 4b2d3923ae43de34bbc9f4319629ae3e
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1054, y: 1959}
+  - name: river
+    originalName: 
+    pivot: {x: 0.6284153, y: 0}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3593
+      y: 1680
+      width: 366
+      height: 121
+    spriteID: ab65a4fd19909b940adb8b47044f6fe3
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3593, y: 1680}
+  - name: reflection
+    originalName: 
+    pivot: {x: 0.99999976, y: -4.7}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1150
+      y: 2240
+      width: 97
+      height: 20
+    spriteID: 48360a87a563d06418a2137a43392db9
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1150, y: 2240}
+  - name: shadow wf
+    originalName: 
+    pivot: {x: 0.5775401, y: -0.49700594}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 2648
+      y: 1680
+      width: 561
+      height: 167
+    spriteID: fd09e4f475352d24abb0415ddf81192e
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 2648, y: 1680}
+  - name: ' circle on water'
+    originalName: 
+    pivot: {x: 1.4705883, y: -6.4999995}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1150
+      y: 2268
+      width: 51
+      height: 14
+    spriteID: 1c14a1eff90157642b8b1c26bc882afe
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1150, y: 2268}
+  - name: light fog wf
+    originalName: 
+    pivot: {x: 0.78125, y: -1.676923}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 2077
+      y: 1884
+      width: 320
+      height: 65
+    spriteID: 0d44f67d4cb4fd6449302839e5b48790
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 2077, y: 1884}
+  - name: fog under wf
+    originalName: 
+    pivot: {x: 0.78125, y: -1.1219513}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3217
+      y: 1835
+      width: 320
+      height: 82
+    spriteID: f8274452626857842bafac30410295f8
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3217, y: 1835}
+  - name: riverbank 3pl
+    originalName: 
+    pivot: {x: 0.5265018, y: -1.2769231}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3341
+      y: 596
+      width: 283
+      height: 65
+    spriteID: a16a6d680a3412c459a085154fee9e4f
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3341, y: 596}
+  - name: steam
+    originalName: 
+    pivot: {x: 0.731405, y: -0.9444445}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3831
+      y: 1576
+      width: 242
+      height: 90
+    spriteID: 78543b2f08cfd3040a433288519920dd
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3831, y: 1576}
+  - name: steam light
+    originalName: 
+    pivot: {x: 0.728205, y: -1.1688312}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3611
+      y: 1592
+      width: 195
+      height: 77
+    spriteID: b9cc88459e5326640bf77fcab2f1ae9e
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3611, y: 1592}
+  - name: 'steam ultralight '
+    originalName: 
+    pivot: {x: 0.7277488, y: -1.5967742}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1861
+      y: 1959
+      width: 191
+      height: 62
+    spriteID: d5368e96ba21fcb498b90b5f232c43f6
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1861, y: 1959}
+  - name: 2 plan start
+    originalName: 
+    pivot: {x: 1.1797432, y: -0.359375}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3341
+      y: 207
+      width: 701
+      height: 192
+    spriteID: eb4b1b71e931f7141b686f28002e1553
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3341, y: 207}
+  - name: 2 plan after hole
+    originalName: 
+    pivot: {x: -0.1481481, y: -0.52422905}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3094
+      y: 1357
+      width: 729
+      height: 227
+    spriteID: d75b63421c6104140a10cb7885890beb
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3094, y: 1357}
+  - name: 2.5 plan micro wires
+    originalName: 
+    pivot: {x: 1.2845787, y: -0.4010989}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1440
+      y: 1680
+      width: 629
+      height: 182
+    spriteID: 1a2a0a14bbfd14b42b779267ad7af6eb
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1440, y: 1680}
+  - name: 2.5 plan microhole
+    originalName: 
+    pivot: {x: 0.5383078, y: -0.28076926}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1585
+      y: 1357
+      width: 1501
+      height: 260
+    spriteID: 3f9156e898a9d274382139a0a4b75ca9
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1585, y: 1357}
+  - name: riverbank 2pl
+    originalName: 
+    pivot: {x: 0.5719299, y: -0.5862069}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3593
+      y: 1809
+      width: 285
+      height: 87
+    spriteID: 1da4495892791ca46a70349d506b37fe
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3593, y: 1809}
+  - name: overlay rb 2pl
+    originalName: 
+    pivot: {x: 0.5719299, y: -0.5862069}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 2648
+      y: 1855
+      width: 285
+      height: 87
+    spriteID: 3e4aa5bde0f28ad499678cafd6f3872f
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 2648, y: 1855}
+  - name: shadow rb 2pl
+    originalName: 
+    pivot: {x: 0.544747, y: -0.9384616}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 2941
+      y: 1855
+      width: 257
+      height: 65
+    spriteID: 8eaeb1570e96a854185088302f5fd410
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 2941, y: 1855}
+  - name: wall above wf
+    originalName: 
+    pivot: {x: 6.7619042, y: -2.4423075}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3545
+      y: 1835
+      width: 21
+      height: 104
+    spriteID: 6137aeea81aafd64ca905734784dcab2
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3545, y: 1835}
+  - name: 1 plan start
+    originalName: 
+    pivot: {x: 0.57913166, y: -0.25092253}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 1680
+      width: 1428
+      height: 271
+    spriteID: ae4d88597e8686e48b9d1be7d8bf8295
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 1680}
+  - name: 1 plan after hole
+    originalName: 
+    pivot: {x: -0.19538186, y: -0.72959185}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 2077
+      y: 1680
+      width: 563
+      height: 196
+    spriteID: 6a56362a9b6053b48b76369f5d65a817
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 2077, y: 1680}
+  - name: floor trava start
+    originalName: 
+    pivot: {x: 1.2872807, y: -2.148148}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3632
+      y: 640
+      width: 456
+      height: 27
+    spriteID: bbe99d61b8206a747a1737665eeb6b81
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3632, y: 640}
+  - name: ' bridge'
+    originalName: 
+    pivot: {x: 0.5890053, y: -0.3255814}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 1959
+      width: 382
+      height: 344
+    spriteID: 8d63771ffd985504f8d8f6cc6848acd5
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 1959}
+  - name: tree after bridge
+    originalName: 
+    pivot: {x: -0.71140903, y: -0.70500004}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3907
+      y: 692
+      width: 149
+      height: 200
+    spriteID: e6f9b8f6fd14e36489e21ca8f2612a2f
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3907, y: 692}
+  - name: floor trava hole
+    originalName: 
+    pivot: {x: -0.22363643, y: -5.0000005}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3328
+      y: 1295
+      width: 550
+      height: 27
+    spriteID: 68cf46e3035560a4db38b46ab46739d7
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3328, y: 1295}
+  - name: 1 wall jump
+    originalName: 
+    pivot: {x: -7.717949, y: -0.9650655}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1277
+      y: 2068
+      width: 78
+      height: 229
+    spriteID: 5e3615b6779beab438118d619b5164e3
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1277, y: 2068}
+  - name: dark
+    originalName: 
+    pivot: {x: 0.50060385, y: 0.033823527}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 4
+      width: 1656
+      height: 680
+    spriteID: ebacfd76136d124479ade5e914dd4ab6
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 4}
+  - name: roots trava st d
+    originalName: 
+    pivot: {x: 1.3559719, y: -1.111111}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3632
+      y: 596
+      width: 427
+      height: 36
+    spriteID: f0a9f7c094b9fb74d93e1fcace7f7c6b
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3632, y: 596}
+  - name: roots st up
+    originalName: 
+    pivot: {x: 1.1566434, y: -0.6787149}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3328
+      y: 1038
+      width: 715
+      height: 249
+    spriteID: c4d17b03853e47e48a9af78561013206
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3328, y: 1038}
+  - name: 'roots trava hole d '
+    originalName: 
+    pivot: {x: -0.27308443, y: -3}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3094
+      y: 1592
+      width: 509
+      height: 38
+    spriteID: 70e8f50f89b8a7c4ba02b9238072544b
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3094, y: 1592}
+  - name: roots st d
+    originalName: 
+    pivot: {x: 3.2687747, y: -0.23214287}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1392
+      y: 1959
+      width: 253
+      height: 56
+    spriteID: 98cf5cffbb35cd348845234e4f2c177f
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1392, y: 1959}
+  - name: 'roots after hole up '
+    originalName: 
+    pivot: {x: 0.10339736, y: -1.834254}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3341
+      y: 407
+      width: 677
+      height: 181
+    spriteID: 506f3227a500c544190281edcf7b9057
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3341, y: 407}
+  - name: roots hole up
+    originalName: 
+    pivot: {x: 0.5683761, y: -4.079208}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1150
+      y: 1959
+      width: 234
+      height: 101
+    spriteID: d332618fa11fc3f4ba9b0f202dce7f77
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1150, y: 1959}
+  - name: roots jump right
+    originalName: 
+    pivot: {x: -5.6806726, y: -1.445122}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1150
+      y: 2068
+      width: 119
+      height: 164
+    spriteID: abba358856795f84bb758f094da0aa1c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1150, y: 2068}
+  - name: 'roots right rb d '
+    originalName: 
+    pivot: {x: -0.038251396, y: -0.6666666}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3907
+      y: 900
+      width: 183
+      height: 87
+    spriteID: e2ed928e868e2fb448825f4b15b07847
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3907, y: 900}
+  - name: roots left rb d
+    originalName: 
+    pivot: {x: 0.95391715, y: -0.29850745}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 2405
+      y: 1884
+      width: 217
+      height: 67
+    spriteID: 96ccb17168f6b154f9c0b03c20bae9b2
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 2405, y: 1884}
+  - name: shadow under tunnel
+    originalName: 
+    pivot: {x: 16.222221, y: -2.888889}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1054
+      y: 2260
+      width: 45
+      height: 36
+    spriteID: f9f9498ebbacfdd448cbaf3fde2b19c3
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1054, y: 2260}
+  - name: wires top
+    originalName: 
+    pivot: {x: 1.3535188, y: -4.117647}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1440
+      y: 1870
+      width: 611
+      height: 51
+    spriteID: e25f5d082e2e89647a3d99d928c82129
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1440, y: 1870}
+  - name: tunnel start
+    originalName: 
+    pivot: {x: 4.135, y: -1.8857143}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 1653
+      y: 1959
+      width: 200
+      height: 70
+    spriteID: d65671d3f2f92d44fb0b5e9c195a07b7
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1653, y: 1959}
+  - name: 'shadows from wires '
+    originalName: 
+    pivot: {x: 4.42246, y: -1.6794871}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3886
+      y: 1809
+      width: 187
+      height: 78
+    spriteID: 6b4bcd13493532443ae92f18c495e030
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3886, y: 1809}
+  - name: wires start tunnel
+    originalName: 
+    pivot: {x: 4.42246, y: -0.30331755}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 3831
+      y: 1357
+      width: 187
+      height: 211
+    spriteID: fa709bd76d22bc949b276f20e561fc6d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 3831, y: 1357}
+  spriteSheetImportData: []
+  tileSetImportData: []
+  asepriteLayers:
+  - layerIndex: 0
+    uuid:
+      value0: 3922624798
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: "\xD1\x84\xD0\xBE\xD0\xBD"
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: "\xD1\x84\xD0\xBE\xD0\xBD"
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 0
+        width: 1665
+        height: 657
+      spriteId: c089dc3b55df4ec4cb9d044c338ffd68
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 1
+    uuid:
+      value0: 259851791
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: "\xD1\x87\xD0\xB5\xD1\x80\xD0\xBD\xD0\xB8"
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: "\xD1\x87\xD0\xB5\xD1\x80\xD0\xBD\xD0\xB8"
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 0
+        width: 1654
+        height: 657
+      spriteId: 0785c8a9cbf603f4ca06e8ac0c55de87
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 2
+    uuid:
+      value0: 130596795
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: soil (pochva)
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: soil (pochva)
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 0
+        width: 1654
+        height: 657
+      spriteId: 91d159e1e6df0614b847e88e64ca805e
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 3
+    uuid:
+      value0: 2645529453
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: riverbank 1pl
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: riverbank 1pl
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 596
+        y: 0
+        width: 368
+        height: 147
+      spriteId: 725f6766f92fe394e8837e23062aec36
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 4
+    uuid:
+      value0: 3922887787
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 4 plan start
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 4 plan start
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 69
+        width: 703
+        height: 195
+      spriteId: ba40f8fc1e5340342bfc70bd2b904ed2
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 5
+    uuid:
+      value0: 1450380225
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 4plan after hole
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 4plan after hole
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 937
+        y: 147
+        width: 571
+        height: 338
+      spriteId: f6cc945c86f13514986f95a53f100757
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 6
+    uuid:
+      value0: 4246170005
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 4 pl behind wf
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 4 pl behind wf
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 681
+        y: 100
+        width: 277
+        height: 336
+      spriteId: 59cb0141f7e91a44b8ce74b890555a16
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 7
+    uuid:
+      value0: 3961174960
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: big fog
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: big fog
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 5
+        width: 1573
+        height: 315
+      spriteId: 37254f57444439d4a9b01b5c148add70
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 8
+    uuid:
+      value0: 2116768880
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: waterfall
+    layerFlags: 35
+    layerType: 1
+    blendMode: 0
+    cells: []
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 9
+    uuid:
+      value0: 4008467822
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 3plan rock
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 3plan rock
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 569
+        y: 70
+        width: 367
+        height: 338
+      spriteId: 65bd5d379bae75647ac2ec8deab71493
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 8
+  - layerIndex: 10
+    uuid:
+      value0: 622551927
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: waterfall
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: waterfall
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 723
+        y: 100
+        width: 88
+        height: 293
+      spriteId: 4b2d3923ae43de34bbc9f4319629ae3e
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 8
+  - layerIndex: 11
+    uuid:
+      value0: 2590718935
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: river
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: river
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 597
+        y: 0
+        width: 366
+        height: 121
+      spriteId: ab65a4fd19909b940adb8b47044f6fe3
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 8
+  - layerIndex: 12
+    uuid:
+      value0: 682027744
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: reflection
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: reflection
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 730
+        y: 94
+        width: 97
+        height: 20
+      spriteId: 48360a87a563d06418a2137a43392db9
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 8
+  - layerIndex: 13
+    uuid:
+      value0: 3428866666
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: shadow wf
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: shadow wf
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 503
+        y: 83
+        width: 561
+        height: 167
+      spriteId: fd09e4f475352d24abb0415ddf81192e
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 8
+  - layerIndex: 14
+    uuid:
+      value0: 2373982203
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: ' circle on water'
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: ' circle on water'
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 752
+        y: 91
+        width: 51
+        height: 14
+      spriteId: 1c14a1eff90157642b8b1c26bc882afe
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 8
+  - layerIndex: 15
+    uuid:
+      value0: 350416847
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: fog
+    layerFlags: 35
+    layerType: 1
+    blendMode: 0
+    cells: []
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 8
+  - layerIndex: 16
+    uuid:
+      value0: 4066173229
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: light fog wf
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: light fog wf
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 577
+        y: 109
+        width: 320
+        height: 65
+      spriteId: 0d44f67d4cb4fd6449302839e5b48790
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 15
+  - layerIndex: 17
+    uuid:
+      value0: 1697639819
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: fog under wf
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: fog under wf
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 577
+        y: 92
+        width: 320
+        height: 82
+      spriteId: f8274452626857842bafac30410295f8
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 15
+  - layerIndex: 22
+    uuid:
+      value0: 2645529647
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: riverbank 3pl
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: riverbank 3pl
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 678
+        y: 83
+        width: 283
+        height: 65
+      spriteId: a16a6d680a3412c459a085154fee9e4f
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 23
+    uuid:
+      value0: 1742979854
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: steam
+    layerFlags: 35
+    layerType: 1
+    blendMode: 0
+    cells: []
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 24
+    uuid:
+      value0: 1560806071
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: steam
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: steam
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 650
+        y: 85
+        width: 242
+        height: 90
+      spriteId: 78543b2f08cfd3040a433288519920dd
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 23
+  - layerIndex: 25
+    uuid:
+      value0: 418362385
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: steam light
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: steam light
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 685
+        y: 90
+        width: 195
+        height: 77
+      spriteId: b9cc88459e5326640bf77fcab2f1ae9e
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 23
+  - layerIndex: 26
+    uuid:
+      value0: 3304107387
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 'steam ultralight '
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 'steam ultralight '
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 688
+        y: 99
+        width: 191
+        height: 62
+      spriteId: d5368e96ba21fcb498b90b5f232c43f6
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 23
+  - layerIndex: 27
+    uuid:
+      value0: 4005902117
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 2 plan start
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 2 plan start
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 69
+        width: 701
+        height: 192
+      spriteId: eb4b1b71e931f7141b686f28002e1553
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 28
+    uuid:
+      value0: 1223539171
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 2 plan after hole
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 2 plan after hole
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 935
+        y: 119
+        width: 729
+        height: 227
+      spriteId: d75b63421c6104140a10cb7885890beb
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 29
+    uuid:
+      value0: 2111551802
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 2.5 plan micro wires
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 2.5 plan micro wires
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 19
+        y: 73
+        width: 629
+        height: 182
+      spriteId: 1a2a0a14bbfd14b42b779267ad7af6eb
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 30
+    uuid:
+      value0: 1652162358
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 2.5 plan microhole
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 2.5 plan microhole
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 19
+        y: 73
+        width: 1501
+        height: 260
+      spriteId: 3f9156e898a9d274382139a0a4b75ca9
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 31
+    uuid:
+      value0: 2645529616
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: riverbank 2pl
+    layerFlags: 35
+    layerType: 1
+    blendMode: 0
+    cells: []
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 32
+    uuid:
+      value0: 3853921015
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: riverbank 2pl
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: riverbank 2pl
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 664
+        y: 51
+        width: 285
+        height: 87
+      spriteId: 1da4495892791ca46a70349d506b37fe
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 31
+  - layerIndex: 33
+    uuid:
+      value0: 4027387049
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: overlay rb 2pl
+    layerFlags: 3
+    layerType: 0
+    blendMode: 3
+    cells:
+    - name: overlay rb 2pl
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 664
+        y: 51
+        width: 285
+        height: 87
+      spriteId: 3e4aa5bde0f28ad499678cafd6f3872f
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 31
+  - layerIndex: 34
+    uuid:
+      value0: 2902206453
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: shadow rb 2pl
+    layerFlags: 3
+    layerType: 0
+    blendMode: 8
+    cells:
+    - name: shadow rb 2pl
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 687
+        y: 61
+        width: 257
+        height: 65
+      spriteId: 8eaeb1570e96a854185088302f5fd410
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 31
+  - layerIndex: 35
+    uuid:
+      value0: 3601332304
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: wall above wf
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: wall above wf
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 685
+        y: 254
+        width: 21
+        height: 104
+      spriteId: 6137aeea81aafd64ca905734784dcab2
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 36
+    uuid:
+      value0: 4116194760
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 1 plan start
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 1 plan start
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 68
+        width: 1428
+        height: 271
+      spriteId: ae4d88597e8686e48b9d1be7d8bf8295
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 37
+    uuid:
+      value0: 569157984
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 1 plan after hole
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 1 plan after hole
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 937
+        y: 143
+        width: 563
+        height: 196
+      spriteId: 6a56362a9b6053b48b76369f5d65a817
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 38
+    uuid:
+      value0: 4150485568
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: floor trava start
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: floor trava start
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 240
+        y: 58
+        width: 456
+        height: 27
+      spriteId: bbe99d61b8206a747a1737665eeb6b81
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 39
+    uuid:
+      value0: 1413018583
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: bridge
+    layerFlags: 35
+    layerType: 1
+    blendMode: 0
+    cells: []
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 40
+    uuid:
+      value0: 2014961507
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: ' bridge'
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: ' bridge'
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 602
+        y: 112
+        width: 382
+        height: 344
+      spriteId: 8d63771ffd985504f8d8f6cc6848acd5
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 39
+  - layerIndex: 41
+    uuid:
+      value0: 1168273346
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: bridge Copy
+    layerFlags: 35
+    layerType: 1
+    blendMode: 0
+    cells: []
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 39
+  - layerIndex: 45
+    uuid:
+      value0: 2420271745
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: tree after bridge
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: tree after bridge
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 933
+        y: 141
+        width: 149
+        height: 200
+      spriteId: e6f9b8f6fd14e36489e21ca8f2612a2f
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 46
+    uuid:
+      value0: 3974353398
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: floor trava hole
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: floor trava hole
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 950
+        y: 135
+        width: 550
+        height: 27
+      spriteId: 68cf46e3035560a4db38b46ab46739d7
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 47
+    uuid:
+      value0: 1344789781
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 1 wall jump
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 1 wall jump
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 1429
+        y: 221
+        width: 78
+        height: 229
+      spriteId: 5e3615b6779beab438118d619b5164e3
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 48
+    uuid:
+      value0: 2778557214
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: dark
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: dark
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: -2
+        y: -23
+        width: 1656
+        height: 680
+      spriteId: ebacfd76136d124479ade5e914dd4ab6
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 49
+    uuid:
+      value0: 3618239073
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: roots
+    layerFlags: 35
+    layerType: 1
+    blendMode: 0
+    cells: []
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 50
+    uuid:
+      value0: 2496293304
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: roots trava st d
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: roots trava st d
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 248
+        y: 40
+        width: 427
+        height: 36
+      spriteId: f0a9f7c094b9fb74d93e1fcace7f7c6b
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 49
+  - layerIndex: 51
+    uuid:
+      value0: 3451991581
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: roots st up
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: roots st up
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 169
+        width: 715
+        height: 249
+      spriteId: c4d17b03853e47e48a9af78561013206
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 49
+  - layerIndex: 52
+    uuid:
+      value0: 2984847317
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 'roots trava hole d '
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 'roots trava hole d '
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 966
+        y: 114
+        width: 509
+        height: 38
+      spriteId: 70e8f50f89b8a7c4ba02b9238072544b
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 49
+  - layerIndex: 53
+    uuid:
+      value0: 3416785464
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: roots st d
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: roots st d
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 13
+        width: 253
+        height: 56
+      spriteId: 98cf5cffbb35cd348845234e4f2c177f
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 49
+  - layerIndex: 54
+    uuid:
+      value0: 3581916932
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 'roots after hole up '
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 'roots after hole up '
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 757
+        y: 332
+        width: 677
+        height: 181
+      spriteId: 506f3227a500c544190281edcf7b9057
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 49
+  - layerIndex: 55
+    uuid:
+      value0: 1275131418
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: roots hole up
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: roots hole up
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 694
+        y: 412
+        width: 234
+        height: 101
+      spriteId: d332618fa11fc3f4ba9b0f202dce7f77
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 49
+  - layerIndex: 56
+    uuid:
+      value0: 3050168137
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: roots jump right
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: roots jump right
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 1503
+        y: 237
+        width: 119
+        height: 164
+      spriteId: abba358856795f84bb758f094da0aa1c
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 49
+  - layerIndex: 57
+    uuid:
+      value0: 2901781335
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 'roots right rb d '
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 'roots right rb d '
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 834
+        y: 58
+        width: 183
+        height: 87
+      spriteId: e2ed928e868e2fb448825f4b15b07847
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 49
+  - layerIndex: 58
+    uuid:
+      value0: 1154822326
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: roots left rb d
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: roots left rb d
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 620
+        y: 20
+        width: 217
+        height: 67
+      spriteId: 96ccb17168f6b154f9c0b03c20bae9b2
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: 49
+  - layerIndex: 59
+    uuid:
+      value0: 3239157806
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: shadow under tunnel
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: shadow under tunnel
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 97
+        y: 104
+        width: 45
+        height: 36
+      spriteId: f9f9498ebbacfdd448cbaf3fde2b19c3
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 60
+    uuid:
+      value0: 788316245
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: wires top
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: wires top
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 210
+        width: 611
+        height: 51
+      spriteId: e25f5d082e2e89647a3d99d928c82129
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 61
+    uuid:
+      value0: 3645227552
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: tunnel start
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: tunnel start
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 132
+        width: 200
+        height: 70
+      spriteId: d65671d3f2f92d44fb0b5e9c195a07b7
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 62
+    uuid:
+      value0: 2891819361
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: 'shadows from wires '
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: 'shadows from wires '
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 131
+        width: 187
+        height: 78
+      spriteId: 6b4bcd13493532443ae92f18c495e030
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 64
+    uuid:
+      value0: 3884854914
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: wires start tunnel
+    layerFlags: 3
+    layerType: 0
+    blendMode: 0
+    cells:
+    - name: wires start tunnel
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 64
+        width: 187
+        height: 211
+      spriteId: fa709bd76d22bc949b276f20e561fc6d
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  - layerIndex: 65
+    uuid:
+      value0: 3363581901
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 0
+    name: "\xD0\xBC\xD1\x83\xD1\x81\xD0\xBE\xD1\x80"
+    layerFlags: 35
+    layerType: 1
+    blendMode: 0
+    cells: []
+    linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
+    parentIndex: -1
+  tileSets: []
+  platformSettings: []
+  generatePhysicsShape: 0
+  secondarySpriteTextures: []
+  spritePackingTag: 
+  canvasSize: {x: 1654, y: 657}
+  previousTextureSize: {x: 4096, y: 4096}

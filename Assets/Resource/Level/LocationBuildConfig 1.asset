@@ -1,0 +1,132 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07f96e1a27ff0c84a97c238d3bbdee59, type: 3}
+  m_Name: LocationBuildConfig 1
+  m_EditorClassIdentifier: Assembly-CSharp::LocationBuildConfig
+  worldScale: 6
+  alphaThreshold: 0.5
+  simplifyTolerance: 1.5
+  minPathPoints: 3
+  minContourArea: 8
+  minRectArea: 4
+  rules:
+  - namePattern: bg_*
+    action:
+      rid: 6051856499987972203
+  - namePattern: art_*
+    action:
+      rid: 6051856499987972204
+  - namePattern: col_*
+    action:
+      rid: 6051856499987972205
+  - namePattern: wall_*
+    action:
+      rid: 6051856499987972206
+  - namePattern: plat_*
+    action:
+      rid: 6051856499987972207
+  - namePattern: cam_*
+    action:
+      rid: 6051856499987972208
+  - namePattern: dead_*
+    action:
+      rid: 6051856499987972209
+  - namePattern: skip_*
+    action:
+      rid: 6051856499987972210
+  defaultAction:
+    rid: 6051856499987972211
+  references:
+    version: 2
+    RefIds:
+    - rid: 6051856499987972203
+      type: {class: DecorationAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 1
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
+    - rid: 6051856499987972204
+      type: {class: DecorationAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 1
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
+    - rid: 6051856499987972205
+      type: {class: SolidColliderAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 0
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
+        shape: 0
+        physicsLayer: Floor
+        tag: Floor
+        physicsMaterial: {fileID: 0}
+    - rid: 6051856499987972206
+      type: {class: SolidColliderAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 0
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
+        shape: 0
+        physicsLayer: Walls
+        tag: Wall
+        physicsMaterial: {fileID: 0}
+    - rid: 6051856499987972207
+      type: {class: OneWayPlatformAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 0
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
+        physicsLayer: Platform
+        tag: Platform
+        surfaceArc: 170
+        rotationalOffset: 0
+        physicsMaterial: {fileID: 0}
+    - rid: 6051856499987972208
+      type: {class: CameraBoundsAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 0
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
+        shape: 2
+        padding: 0
+        physicsLayer: Ignore Raycast
+    - rid: 6051856499987972209
+      type: {class: DeadZoneAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 0
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
+        shape: 1
+        physicsLayer: 
+        tag: 
+    - rid: 6051856499987972210
+      type: {class: IgnoreLayerAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 0
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
+    - rid: 6051856499987972211
+      type: {class: DecorationAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 1
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
