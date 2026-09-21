@@ -40,6 +40,21 @@ public class PlayerController : MonoBehaviour
     public PlayerDynSettings Status => status;
     public PlayerCharacterManager PlayerCharManager { get => playerCharManager; set => playerCharManager = value; }
     #endregion
+    #region State Machine Variables
+    public StateMachine PlayerSM { get; set; }
+    public IdleState IdleState { get; set; }
+    public JumpingState JumpingState { get; set; }
+    public CrouchingState CrouchingState { get; set; }
+    public RollingState RollingState { get; set; }
+    public FlyingState FlyingState { get; set; }
+    public SwitchState SwitchState { get; set; }
+    public HittingState HittingState { get; set; }
+    public SpellCastState SpellCastState { get; set; }
+    public SpellSlot PendingSpellSlot { get; set; }
+    public WallState WallState { get; set; }
+    public LadderState LadderState { get; set; }
+    public DyingState DyingState { get; set; }
+    #endregion
     #region Unity MonoBehaviour Callbacks
     void Awake()
     {
@@ -52,7 +67,10 @@ public class PlayerController : MonoBehaviour
         spellController = GetComponent<SpellController>();
         interactionDetector = GetComponentInChildren<InteractionDetector>();
         playerCharManager = GetComponent<PlayerCharacterManager>();
+    }
 
+    private void Start()
+    {
         PlayerSM = new StateMachine();
         new PlayerStateFactory().InitializeAllStates(this, PlayerSM, settings);
         PlayerSM.Initialize(IdleState);
@@ -126,20 +144,5 @@ public class PlayerController : MonoBehaviour
     {
         isVisibleToEnemies = true;
     }
-    #endregion
-    #region State Machine Variables
-    public StateMachine PlayerSM { get; set; }
-    public IdleState IdleState { get; set; }
-    public JumpingState JumpingState { get; set; }
-    public CrouchingState CrouchingState { get; set; }
-    public RollingState RollingState { get; set; }
-    public FlyingState FlyingState { get; set; }
-    public SwitchState SwitchState { get; set; }
-    public HittingState HittingState { get; set; }
-    public SpellCastState SpellCastState { get; set; }
-    public SpellSlot PendingSpellSlot { get; set; }
-    public WallState WallState { get; set; }
-    public LadderState LadderState { get; set; }
-    public DyingState DyingState { get; set; }
     #endregion
 }

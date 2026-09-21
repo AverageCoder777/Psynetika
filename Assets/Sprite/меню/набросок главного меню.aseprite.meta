@@ -43,7 +43,9 @@ ScriptedImporter:
     cubemapConvolution: 0
     seamlessCubemap: 0
     alphaIsTransparency: 1
+    spriteTessellationMethod: 0
     spriteTessellationDetail: -1
+    spriteGeometrySubdivision: 0
     textureType: 8
     textureShape: 1
     singleChannelComponent: 0
@@ -101,9 +103,7 @@ ScriptedImporter:
     addShadowCasters: 0
     generateIndividualEvents: 1
     generateSpriteAtlas: 1
-  importFileNodeState: 1
   platformSettingsDirtyTick: 0
-  textureAssetName: 
   singleSpriteImportData:
   - name: 
     originalName: 
@@ -389,8 +389,7 @@ ScriptedImporter:
       value2: 0
       value3: 0
     guid: 0
-    name: "\u043D\u0430\u0431\u0440\u043E\u0441\u043E\u043A \u0433\u043B\u0430\u0432\u043D\u043E\u0433\u043E
-      \u043C\u0435\u043D\u044E"
+    name: "\u043D\u0430\u0431\u0440\u043E\u0441\u043E\u043A \u0433\u043B\u0430\u0432\u043D\u043E\u0433\u043E \u043C\u0435\u043D\u044E"
     layerFlags: 0
     layerType: 0
     blendMode: 0
@@ -511,6 +510,5 @@ ScriptedImporter:
   platformSettings: []
   generatePhysicsShape: 0
   secondarySpriteTextures: []
-  spritePackingTag: 
-  canvasSize: {x: 345, y: 193}
   previousTextureSize: {x: 1024, y: 2048}
+  canvasSize: {x: 345, y: 193}

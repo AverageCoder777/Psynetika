@@ -1,5 +1,6 @@
 ﻿using System;
 using Ink.Runtime;
+using Ink.UnityIntegration;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,8 +16,8 @@ public class BasicInkExample : MonoBehaviour {
 
 	// Creates a new Story object with the compiled story which we can then play!
 	void StartStory () {
-		story = new Story (inkJSONAsset.text);
-        if(OnCreateStory != null) OnCreateStory(story);
+		story = new Story (inkFileAsset.storyJson);
+		if(OnCreateStory != null) OnCreateStory(story);
 		RefreshView();
 	}
 	
@@ -96,8 +97,9 @@ public class BasicInkExample : MonoBehaviour {
 	}
 
 	[SerializeField]
-	private TextAsset inkJSONAsset = null;
-	public Story story;
+	private InkFile inkFileAsset = null;
+	// Created at runtime from the compiled ink; Story isn't serializable so it isn't persisted by Unity.
+	[NonSerialized] public Story story;
 
 	[SerializeField]
 	private Canvas canvas = null;

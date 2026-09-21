@@ -211,7 +211,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1258554789045574420, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -146.65204
+      value: -146.6517
       objectReference: {fileID: 0}
     - target: {fileID: 1258554789045574420, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.y
@@ -223,11 +223,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1341792782285845634, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -141.78136
+      value: -141.7859
       objectReference: {fileID: 0}
     - target: {fileID: 1341792782285845634, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 28.328602
+      value: 28.328632
       objectReference: {fileID: 0}
     - target: {fileID: 1341792782285845634, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1510,7 +1510,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
+  m_ActiveFontFeatures: 6e72656bu
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -1636,7 +1636,7 @@ GameObject:
   m_IsActive: 1
 --- !u!212 &561650437
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1693,6 +1693,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!4 &561650438
 Transform:
   m_ObjectHideFlags: 0
@@ -2235,18 +2236,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 185400646266643072, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: m_text
-      value: " \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422
-        \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422
-        \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422
-        \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422
-        \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422
-        \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422
-        \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422
-        \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422
-        \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422
-        \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422
-        \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422
-        \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422"
+      value: " \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422 \u0422\u042D\u0425\u0421\u0422"
       objectReference: {fileID: 0}
     - target: {fileID: 185400646266643072, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: m_fontSize
@@ -3913,8 +3903,7 @@ GameObject:
   - component: {fileID: 1439994136}
   - component: {fileID: 1439994137}
   m_Layer: 0
-  m_Name: "\xD0\x9B\xD0\xBE\xD0\xBF\xD0\xB0\xD1\x81\xD1\x82\xD0\xB8 \xD0\xB2\xD0\xBD\xD1\x83\xD1\x82\xD1\x80\xD0\xB8
-    \xD0\xB2\xD0\xB5\xD0\xBD\xD1\x82\xD0\xB8\xD0\xBA\xD0\xBE\xD0\xB2 (1)"
+  m_Name: "\xD0\x9B\xD0\xBE\xD0\xBF\xD0\xB0\xD1\x81\xD1\x82\xD0\xB8 \xD0\xB2\xD0\xBD\xD1\x83\xD1\x82\xD1\x80\xD0\xB8 \xD0\xB2\xD0\xB5\xD0\xBD\xD1\x82\xD0\xB8\xD0\xBA\xD0\xBE\xD0\xB2 (1)"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3937,7 +3926,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1439994137
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3994,6 +3983,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!1 &1441308850 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8965484931928530446, guid: 51b06ea4729825a45b7f36c092a5f3d6, type: 3}
@@ -5052,7 +5042,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1818314367
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5109,6 +5099,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!1 &1836938793
 GameObject:
   m_ObjectHideFlags: 0
@@ -5297,7 +5288,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
+  m_ActiveFontFeatures: 6e72656bu
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -5828,7 +5819,7 @@ BoxCollider2D:
   m_EdgeRadius: 0
 --- !u!212 &2121904942
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5885,6 +5876,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!4 &2121904943
 Transform:
   m_ObjectHideFlags: 0
