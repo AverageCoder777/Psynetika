@@ -16,7 +16,7 @@ public class JumpingState : AirStates
     {
         Jump(settings.jump.thrust);
         canDoubleJump = true;
-        animator.SetTrigger(JumpingHash);
+        charManager.ActiveAnimator.SetTrigger(JumpingHash);
         movement.Rb.gravityScale = settings.jump.upGravityScale;
         wallContactTime = 0f;
         player.LastState = this;
@@ -45,7 +45,7 @@ public class JumpingState : AirStates
         if (doubleJumpInput && canDoubleJump)
         {
             Jump(settings.jump.doubleJumpThrust);
-            animator.SetTrigger(DoubleJumpingHash);
+            charManager.ActiveAnimator.SetTrigger(DoubleJumpingHash);
             canDoubleJump = false;
         }
         movement.Rb.gravityScale = movement.Rb.linearVelocity.y >= 0 ? settings.jump.upGravityScale : settings.jump.downGravityScale;
@@ -59,7 +59,7 @@ public class JumpingState : AirStates
     public override void Exit()
     {
         base.Exit();
-        animator.ResetTrigger(JumpingHash);
-        animator.ResetTrigger(DoubleJumpingHash);
+        charManager.ActiveAnimator.ResetTrigger(JumpingHash);
+        charManager.ActiveAnimator.ResetTrigger(DoubleJumpingHash);
     }
 }

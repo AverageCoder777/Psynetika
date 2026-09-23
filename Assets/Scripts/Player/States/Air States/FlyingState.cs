@@ -15,7 +15,7 @@ public class FlyingState : AirStates
         }
         else if (movement.Rb.linearVelocity.y > 0)
         {
-            animator.SetTrigger(JumpingHash);
+            charManager.ActiveAnimator.SetTrigger(JumpingHash);
             movement.Rb.gravityScale = settings.jump.upGravityScale;
         }
     }
@@ -61,6 +61,6 @@ public class FlyingState : AirStates
     public override void Exit()
     {
         movement.Rb.gravityScale = movement.Rb.linearVelocity.y >= 0f ? settings.jump.upGravityScale : settings.jump.downGravityScale;
-        animator.ResetTrigger(JumpingHash);
+        charManager.ActiveAnimator.ResetTrigger(JumpingHash);
     }
 }

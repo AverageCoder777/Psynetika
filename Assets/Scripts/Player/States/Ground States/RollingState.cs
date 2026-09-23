@@ -17,8 +17,8 @@ public class RollingState : GroundedStates
         base.Enter();
         rollElapsed = 0f;
         rollDir = charManager.ActiveSR != null && charManager.ActiveSR.flipX ? -1f : 1f;
-        animator.SetTrigger(RollingHash);
-        animator.SetBool(GroundedHash, true);
+        charManager.ActiveAnimator.SetTrigger(RollingHash);
+        charManager.ActiveAnimator.SetBool(GroundedHash, true);
         Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
         player.LastState = this;
     }
@@ -30,7 +30,7 @@ public class RollingState : GroundedStates
                 stateMachine.ChangeState(player.IdleState);
             else if (movement.Rb.linearVelocity.y < 0f)
             {
-                animator.SetBool(GroundedHash, false);
+                charManager.ActiveAnimator.SetBool(GroundedHash, false);
                 stateMachine.ChangeState(player.FlyingState);
             }
         }
@@ -55,7 +55,7 @@ public class RollingState : GroundedStates
     public override void Exit()
     {
         base.Exit();
-        animator.ResetTrigger(RollingHash);
+        charManager.ActiveAnimator.ResetTrigger(RollingHash);
         rollEnd = false;
     }
 }
