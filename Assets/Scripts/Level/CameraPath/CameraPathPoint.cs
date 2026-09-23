@@ -8,6 +8,9 @@ using UnityEngine;
 up/down — это не сдвиг линии, а расширение коридора: при нуле камера держится ровно на линии,
 при up = 8 в этом месте она может подняться на 8 юнитов выше (высокий зал, прыжок на уступ).
 Между точками запас меняется плавно, поэтому коридор не ломается ступенькой.
+
+straight — режим отрезка, который начинается в этой точке и идёт к следующей: гибкий (изгибается
+сглаживанием в кривую) или строго прямой. У последней точки незамкнутого пути флаг ни на что не влияет.
 */
 [Serializable]
 public struct CameraPathPoint
@@ -21,11 +24,15 @@ public struct CameraPathPoint
     [Tooltip("Насколько камере можно опуститься ниже линии в этой точке, в юнитах")]
     [Min(0f)] public float down;
 
-    public CameraPathPoint(Vector2 position, float up = 0f, float down = 0f)
+    [Tooltip("Отрезок от этой точки до следующей строго прямой: сглаживание его не изгибает")]
+    public bool straight;
+
+    public CameraPathPoint(Vector2 position, float up = 0f, float down = 0f, bool straight = false)
     {
         this.position = position;
         this.up = up;
         this.down = down;
+        this.straight = straight;
     }
 
     public static CameraPathPoint Lerp(CameraPathPoint from, CameraPathPoint to, float t)

@@ -14,7 +14,8 @@ CinemachineConfiner2D.
 аккуратную замкнутую фигуру руками — достаточно провести линию.
 
 Линия не обязана быть прямой: точки ставятся где угодно, «Сглаживание» превращает ломаную в плавную
-кривую, а у каждой точки есть запас вверх/вниз — там коридор расширяется, и камера может подняться
+кривую. Каждый отрезок при этом бывает гибким (участвует в сглаживании) или строго прямым — длинный
+ровный коридор не должен выгибаться из-за соседнего поворота. У каждой точки есть и запас вверх/вниз — там коридор расширяется, и камера может подняться
 над линией (высокий зал, уступ, шахта), а потом плавно вернуться к ней.
 
 Точки хранятся в локальных координатах объекта, поэтому весь путь двигается и масштабируется
@@ -148,10 +149,36 @@ public class CameraPath : MonoBehaviour
         nodes[index] = node;
     }
 
+    // Число отрезков: у замкнутого пути последний идёт от последней точки к первой.
+    public int SegmentCount => nodes == null || nodes.Count < 2 ? 0 : closed ? nodes.Count : nodes.Count - 1;
+
+    // Отрезок segment идёт от точки segment к следующей; режим хранится в его начальной точке.
+    public bool IsSegmentStraight(int segment)
+    {
+        return NodeAt(segment).straight;
+    }
+
+    // Точка на отрезке в локальных координатах — та же, что попадёт в коридор (для ручек редактора).
+    public Vector2 EvaluateSegment(int segment, float t)
+    {
+        CameraPathPoint from = NodeAt(segment);
+        CameraPathPoint to = NodeAt(segment + 1);
+
+        if (!IsCurved(segment))
+        {
+            return Vector2.Lerp(from.position, to.position, t);
+        }
+
+        GetControlPoints(segment, out Vector2 p0, out Vector2 p3);
+
+        return CatmullRom(p0, from.position, to.position, p3, t);
+    }
+
     /*
-    Точки, по которым реально строится коридор: сами узлы при smoothing = 0, иначе кривая
-    Катмулла–Рома через узлы. Кривая проходит ровно через поставленные точки, поэтому дизайнер
-    двигает понятные ему места, а не контрольные ручки. Запас up/down между узлами — линейно.
+    Точки, по которым реально строится коридор. Прямой отрезок — это просто его два узла, гибкий —
+    кривая Катмулла–Рома через узлы (при smoothing = 0 гибкие отрезки тоже прямые). Кривая проходит
+    ровно через поставленные точки, поэтому дизайнер двигает понятные ему места, а не контрольные
+    ручки. Запас up/down между узлами — линейно.
     */
     public List<CameraPathPoint> Sample()
     {
@@ -162,37 +189,83 @@ public class CameraPath : MonoBehaviour
             return samples;
         }
 
-        if (smoothing <= 0 || nodes.Count < 3)
-        {
-            samples.AddRange(nodes);
-            return samples;
-        }
-
-        int count = nodes.Count;
-        int segments = closed ? count : count - 1;
+        int segments = SegmentCount;
 
         for (int i = 0; i < segments; i++)
         {
-            Vector2 p0 = NodeAt(i - 1).position;
-            Vector2 p1 = NodeAt(i).position;
-            Vector2 p2 = NodeAt(i + 1).position;
-            Vector2 p3 = NodeAt(i + 2).position;
+            CameraPathPoint from = NodeAt(i);
+
+            if (!IsCurved(i))
+            {
+                samples.Add(from);
+                continue;
+            }
+
+            GetControlPoints(i, out Vector2 p0, out Vector2 p3);
+            CameraPathPoint to = NodeAt(i + 1);
 
             for (int step = 0; step <= smoothing; step++)
             {
                 float t = step / (float)(smoothing + 1);
-                CameraPathPoint sample = CameraPathPoint.Lerp(NodeAt(i), NodeAt(i + 1), t);
-                sample.position = CatmullRom(p0, p1, p2, p3, t);
+                CameraPathPoint sample = CameraPathPoint.Lerp(from, to, t);
+                sample.position = CatmullRom(p0, from.position, to.position, p3, t);
                 samples.Add(sample);
             }
         }
 
-        if (!closed)
+        if (!closed || segments == 0)
         {
-            samples.Add(nodes[count - 1]);
+            samples.Add(nodes[nodes.Count - 1]);
         }
 
         return samples;
+    }
+
+    private bool IsCurved(int segment)
+    {
+        return smoothing > 0 && nodes.Count >= 3 && !IsSegmentStraight(segment);
+    }
+
+    /*
+    Внешние контрольные точки кривой для отрезка p1→p2.
+
+    Обычно это соседние узлы. Но если сосед — прямой отрезок, кривая должна выйти из узла ровно
+    по его направлению, иначе на стыке «гибкая → прямая» получится излом. Касательная Катмулла–Рома
+    в p1 равна (p2 - p0) / 2, поэтому фиктивная p0 = p2 - 2L·d даёт касательную L·d вдоль прямой
+    (L — длина отрезка, d — направление прямой). В p2 — симметрично.
+    */
+    private void GetControlPoints(int segment, out Vector2 p0, out Vector2 p3)
+    {
+        int count = nodes.Count;
+        Vector2 p1 = NodeAt(segment).position;
+        Vector2 p2 = NodeAt(segment + 1).position;
+        float length = Vector2.Distance(p1, p2);
+
+        bool hasPrevious = closed || segment > 0;
+        bool hasNext = closed || segment + 1 < count - 1;
+
+        p0 = NodeAt(segment - 1).position;
+        p3 = NodeAt(segment + 2).position;
+
+        if (hasPrevious && IsSegmentStraight(segment - 1))
+        {
+            Vector2 direction = (p1 - p0).normalized;
+
+            if (direction != Vector2.zero)
+            {
+                p0 = p2 - direction * (2f * length);
+            }
+        }
+
+        if (hasNext && IsSegmentStraight(segment + 1))
+        {
+            Vector2 direction = (p3 - p2).normalized;
+
+            if (direction != Vector2.zero)
+            {
+                p3 = p1 + direction * (2f * length);
+            }
+        }
     }
 
     // Узел по индексу: у замкнутого пути индексы заворачиваются, у открытого — упираются в концы.
