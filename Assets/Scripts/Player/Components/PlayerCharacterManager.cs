@@ -19,6 +19,7 @@ public class PlayerCharacterManager : MonoBehaviour
         activePlayerCharacterType = type;
         activeCharacter = type == PlayerCharacterType.Dog ? dog : satan; 
         activeAnimator = activeCharacter.GetComponent<Animator>();
+        Debug.Log("Installed animator from" +  activeCharacter + ". Active animator: " + activeAnimator);
         OnCharacterSwitched?.Invoke(type);
     }
     public Animator ActiveAnimator { get => activeAnimator; set => activeAnimator = value; }

@@ -17,7 +17,7 @@ public class IdleState : GroundedStates
     public override void Enter()
     {
         base.Enter();
-        animator.SetBool(MovingHash, false);
+        charManager.ActiveAnimator.SetBool(MovingHash, false);
         grounded = true;
         movement.Rb.linearVelocity = new Vector2(0, movement.Rb.linearVelocity.y);
     }

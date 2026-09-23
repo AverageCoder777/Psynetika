@@ -22,8 +22,8 @@ public class LadderState : State
         movement.Rb.gravityScale = 0f;
         movement.Rb.linearVelocity = Vector2.zero;
         
-        animator.SetBool(ClimbingHash, true);
-        animator.SetBool(GroundedHash, false);
+        charManager.ActiveAnimator.SetBool(ClimbingHash, true);
+        charManager.ActiveAnimator.SetBool(GroundedHash, false);
         
         enterTime = Time.time;
         player.LastState = this;
@@ -79,7 +79,7 @@ public class LadderState : State
         base.Exit();
 
         movement.Rb.gravityScale = settings.jump.downGravityScale;
-        animator.SetBool(ClimbingHash, false);
-        animator.SetBool(GroundedHash, true);
+        charManager.ActiveAnimator.SetBool(ClimbingHash, false);
+        charManager.ActiveAnimator.SetBool(GroundedHash, true);
     }
 }

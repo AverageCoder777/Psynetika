@@ -14,7 +14,6 @@ public abstract class State
         movement = player.Movement;
         attack = player.Attack;
         charManager = player.PlayerCharManager;
-        animator = charManager.ActiveAnimator;
         this.stateMachine = stateMachine;
         this.settings = settings;
     }

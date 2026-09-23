@@ -16,12 +16,12 @@ MonoBehaviour:
     switchDelay: 0.5
   move:
     dogSpeed: 8
-    satanSpeed: 6
+    satanSpeed: 8
     accelerationRate: 15
     frictionRate: 20
   jump:
-    thrust: 12
-    doubleJumpThrust: 6
+    thrust: 8
+    doubleJumpThrust: 5
     upGravityScale: 1.1
     downGravityScale: 2
     maxDoubleJumpHeight: 40
@@ -39,7 +39,7 @@ MonoBehaviour:
     wallJumpForce: 10
     wallDetectionDistance: 0.5
     wallWaitTime: 0.2
-    wallJumpSpeed: 5
+    wallJumpSpeed: 0.8
   ladder:
     climbSpeed: 5
     exitDelay: 0.25
@@ -50,7 +50,7 @@ MonoBehaviour:
     dogBaseHitTime: 1
     dogBaseHitDistance: 1
     dogBaseDamage: 10
-    satanBaseHitTime: 2
+    satanBaseHitTime: 1
     satanBaseHitDistance: 2
     satanBaseDamage: 22
     comboResetTime: 2

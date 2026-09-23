@@ -26,7 +26,7 @@ public class CrouchingState : GroundedStates
         float delta = originalCapsuleSize.y - newSize.y;
         capsule.size = newSize;
         capsule.offset = new Vector2(originalCapsuleOffset.x, originalCapsuleOffset.y - delta / 2f);
-        animator.SetBool(CrouchingHash, true);
+        charManager.ActiveAnimator.SetBool(CrouchingHash, true);
         player.LastState = this;
     }
     public override void HandleInput()
@@ -76,7 +76,7 @@ public class CrouchingState : GroundedStates
         capsule.size = originalCapsuleSize;
         capsule.offset = originalCapsuleOffset;
         if (player.debugMessages) Debug.Log("Stood up successfully");
-        animator.SetBool(CrouchingHash, false);
+        charManager.ActiveAnimator.SetBool(CrouchingHash, false);
     }
     private bool CanStandUp()
     {

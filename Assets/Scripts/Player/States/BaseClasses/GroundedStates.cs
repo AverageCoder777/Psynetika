@@ -10,18 +10,18 @@ public abstract class GroundedStates : State
         : base(player, stateMachine, settings) { }
     public override void Enter()
     {
-        animator.SetBool(GroundedHash, true);
+        charManager.ActiveAnimator.SetBool(GroundedHash, true);
     }
     public override void LogicUpdate()
     {
         base.LogicUpdate();
         if (movementInput.x != 0)
         {
-            animator.SetBool(MovingHash, true);
+            charManager.ActiveAnimator.SetBool(MovingHash, true);
         }
         else
         {
-            animator.SetBool(MovingHash, false);
+            charManager.ActiveAnimator.SetBool(MovingHash, false);
         }
     }
     public override void HandleInput()
@@ -48,7 +48,7 @@ public abstract class GroundedStates : State
     public override void Exit()
     {
         base.Exit();
-        animator.SetBool(MovingHash, false);
-        animator.SetBool(GroundedHash, false);
+        charManager.ActiveAnimator.SetBool(MovingHash, false);
+        charManager.ActiveAnimator.SetBool(GroundedHash, false);
     }
 }

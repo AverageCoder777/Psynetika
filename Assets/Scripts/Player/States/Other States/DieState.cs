@@ -12,7 +12,7 @@ public class DyingState : State
     private PlayerCharacterType _type;
     public override void Enter()
     {
-        animator.SetTrigger(DieHash);
+        charManager.ActiveAnimator.SetTrigger(DieHash);
         player.DisableEnemyVisibility();
         deathTimer = 0f;
         _type = charManager.GetCurrentCharacterType();

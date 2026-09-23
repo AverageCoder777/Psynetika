@@ -12,7 +12,7 @@ public class WallState : State
     public override void Enter()
     {
         
-        animator.SetBool(WallSlidingHash, true);
+        charManager.ActiveAnimator.SetBool(WallSlidingHash, true);
         movement.Rb.gravityScale = 1f;
         player.LastState = this;
     }
@@ -59,7 +59,7 @@ public class WallState : State
 
     public override void Exit()
     {
-        animator.SetBool(WallSlidingHash, false);
+        charManager.ActiveAnimator.SetBool(WallSlidingHash, false);
         base.Exit();
     }
 

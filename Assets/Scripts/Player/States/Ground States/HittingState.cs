@@ -36,35 +36,35 @@ public class HittingState : GroundedStates
 
         if (playerIsSatan)
         {
-            animator.SetTrigger("Shooting");
+            charManager.ActiveAnimator.SetTrigger("Shooting");
         }
         else
         {
-            animator.SetTrigger("Hitting");
+            charManager.ActiveAnimator.SetTrigger("Hitting");
         }
 
         // Выключить все флаги комбо перед включением нового
         if (playerIsSatan)
         {
-            animator.SetBool("Shooting 1", false);
-            animator.SetBool("Shooting 2", false);
-            animator.SetBool("Shooting 3", false);
+            charManager.ActiveAnimator.SetBool("Shooting 1", false);
+            charManager.ActiveAnimator.SetBool("Shooting 2", false);
+            charManager.ActiveAnimator.SetBool("Shooting 3", false);
         }
         else
         {
-            animator.SetBool("Hitting 1", false);
-            animator.SetBool("Hitting 2", false);
-            animator.SetBool("Hitting 3", false);
+            charManager.ActiveAnimator.SetBool("Hitting 1", false);
+            charManager.ActiveAnimator.SetBool("Hitting 2", false);
+            charManager.ActiveAnimator.SetBool("Hitting 3", false);
         }
 
         // Установить флаг для текущего комбо
         if (playerIsSatan)
         {
-            animator.SetBool("Shooting " + comboCount, true);
+            charManager.ActiveAnimator.SetBool("Shooting " + comboCount, true);
         }
         else
         {
-            animator.SetBool("Hitting " + comboCount, true);
+            charManager.ActiveAnimator.SetBool("Hitting " + comboCount, true);
         }
         lastHitTime = Time.time;
         player.LastState = this;
@@ -86,11 +86,11 @@ public class HittingState : GroundedStates
             if (playerIsSatan)
             {
 
-                animator.SetBool("Shooting " + comboCount, false);
+                charManager.ActiveAnimator.SetBool("Shooting " + comboCount, false);
             }
             else
             {
-                animator.SetBool("Hitting " + comboCount, false);
+                charManager.ActiveAnimator.SetBool("Hitting " + comboCount, false);
             }
             hitCompleted = true;
             if (player.debugMessages)
@@ -211,11 +211,11 @@ public class HittingState : GroundedStates
         // Выключить текущий флаг комбо
         if (playerIsSatan)
         {
-            animator.SetBool("Shooting " + comboCount, false);
+            charManager.ActiveAnimator.SetBool("Shooting " + comboCount, false);
         }
         else
         {
-            animator.SetBool("Hitting " + comboCount, false);
+            charManager.ActiveAnimator.SetBool("Hitting " + comboCount, false);
         }
 
         // Перейти на следующий комбо
@@ -225,22 +225,22 @@ public class HittingState : GroundedStates
         // Включить новый флаг комбо
         if (playerIsSatan)
         {
-            animator.SetBool("Shooting " + comboCount, true);
+            charManager.ActiveAnimator.SetBool("Shooting " + comboCount, true);
         }
         else
         {
-            animator.SetBool("Hitting " + comboCount, true);
+            charManager.ActiveAnimator.SetBool("Hitting " + comboCount, true);
         }
     }
     private void ResetAnimator()
     {
         if (playerIsSatan)
         {
-            animator.SetBool("Shooting " + comboCount, false);
+            charManager.ActiveAnimator.SetBool("Shooting " + comboCount, false);
         }
         else
         {
-            animator.SetBool("Hitting " + comboCount, false);
+            charManager.ActiveAnimator.SetBool("Hitting " + comboCount, false);
         }
     }
 
