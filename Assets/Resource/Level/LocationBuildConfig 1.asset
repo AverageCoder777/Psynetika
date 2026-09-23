@@ -69,7 +69,7 @@ MonoBehaviour:
         sortingLayer: Default
         sortingOrderOffset: 0
         zOffset: 0
-        shape: 0
+        shape: 3
         physicsLayer: Floor
         tag: Floor
         physicsMaterial: {fileID: 0}
@@ -80,7 +80,7 @@ MonoBehaviour:
         sortingLayer: Default
         sortingOrderOffset: 0
         zOffset: 0
-        shape: 0
+        shape: 3
         physicsLayer: Walls
         tag: Wall
         physicsMaterial: {fileID: 0}

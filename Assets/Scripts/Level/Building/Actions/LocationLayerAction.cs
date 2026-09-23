@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /*
@@ -69,7 +70,8 @@ public abstract class LocationLayerAction
     }
 
     // Общая часть всех коллизионных действий: построить фигуру и настроить объект.
-    protected Collider2D BuildCollider(
+    // Пустой список — коллайдер не построен, причина уже записана в отчёт.
+    protected List<Collider2D> BuildCollider(
         GameObject target,
         LocationLayerSource layer,
         LocationBuildContext ctx,
@@ -84,10 +86,10 @@ public abstract class LocationLayerAction
             ctx.Warn($"Слой «{layer.Name}»: непрозрачных пикселей нет, коллайдер не построен");
             ctx.Note("пусто");
 
-            return null;
+            return new List<Collider2D>();
         }
 
-        Collider2D collider = LocationColliderFactory.Build(
+        List<Collider2D> colliders = LocationColliderFactory.Build(
             target,
             mask,
             shape,
@@ -96,18 +98,18 @@ public abstract class LocationLayerAction
             boundsPadding,
             out int pieces);
 
-        if (collider == null)
+        if (colliders.Count == 0)
         {
             ctx.Warn($"Слой «{layer.Name}»: фигура оказалась мельче порогов конфига, коллайдер не построен");
             ctx.Note("отсеяно порогами");
 
-            return null;
+            return colliders;
         }
 
-        ctx.Note(shape == ColliderShapeMode.Boxes
+        ctx.Note(shape == ColliderShapeMode.Boxes || shape == ColliderShapeMode.MergedBoxes
             ? $"{pieces} прямоугольников"
             : $"{pieces} контуров");
 
-        return collider;
+        return colliders;
     }
 }
