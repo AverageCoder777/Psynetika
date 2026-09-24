@@ -87,7 +87,6 @@ public class CombatSettings
     [Range(1f, 5f)] public float comboResetTime = 2f;
 
     [Header("Hit Detection")]
-    [Range(0.5f, 4f)] public float hitDetectionBoxHeight = 2f;
     [Range(0.1f, 1f)] public float bulletSpawnOffsetX = 0.65f;
     [Range(0.1f, 1f)] public float bulletSpawnOffsetY = 0.22f;
 }

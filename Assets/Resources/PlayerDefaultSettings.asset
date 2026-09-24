@@ -25,27 +25,20 @@ MonoBehaviour:
     upGravityScale: 1.1
     downGravityScale: 2
     maxDoubleJumpHeight: 40
-    jumpVelocityThreshold: -0.001
   crouch:
     crouchHeightMultiplier: 0.7
     crouchSpeedMultiplier: 0.5
-    headCheckDistanceBuffer: 0.1
-    capsuleHeightDivider: 1.5
   rolling:
     rollDistance: 4
     rollDuration: 0.25
   wall:
     wallSlideSpeed: 1
-    wallJumpForce: 10
-    wallDetectionDistance: 0.5
-    wallWaitTime: 0.2
-    wallJumpSpeed: 0.8
+    wallJumpForce: 20
+    wallWaitTime: 0.15
+    wallJumpSpeed: 0.45
   ladder:
     climbSpeed: 5
     exitDelay: 0.25
-  platform:
-    dropThroughDuration: 0.5
-    platformDetectionDistance: 1
   combat:
     dogBaseHitTime: 1
     dogBaseHitDistance: 1
@@ -54,7 +47,6 @@ MonoBehaviour:
     satanBaseHitDistance: 2
     satanBaseDamage: 22
     comboResetTime: 2
-    hitDetectionBoxHeight: 2
     bulletSpawnOffsetX: 0.65
     bulletSpawnOffsetY: 0.22
   health:
@@ -62,9 +54,11 @@ MonoBehaviour:
     satanMaxHP: 100
     resurrectionDelay: 5.5
   detection:
+    headCheckDistanceBuffer: 0.1
+    wallDetectionDistance: 0.5
+    dropThroughDuration: 0.5
+    jumpVelocityThreshold: 0
+    platformDropThreshold: 0.1
+    movementInputThreshold: 0.001
     floorDetectionDistance: 0.8
     platformDetectionDistance: 1
-    raycastOffset: 0.25
-    raycastOffsetVertical: 0.5
-    velocityThreshold: 0.001
-    smallVelocityThreshold: 0.1
