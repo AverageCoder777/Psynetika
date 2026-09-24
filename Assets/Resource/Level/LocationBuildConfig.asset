@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07f96e1a27ff0c84a97c238d3bbdee59, type: 3}
   m_Name: LocationBuildConfig
   m_EditorClassIdentifier: Assembly-CSharp::LocationBuildConfig
-  worldScale: 8
+  worldScale: 10
   alphaThreshold: 0.5
   simplifyTolerance: 1.5
   minPathPoints: 3
