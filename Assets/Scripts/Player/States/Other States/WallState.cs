@@ -29,7 +29,7 @@ public class WallState : State
 
         DetectWall();
 
-        if (Mathf.Abs(movement.Rb.linearVelocity.y) < 0.001 || wallSurfaceNormal == Vector2.zero)
+        if (Mathf.Abs(movement.Rb.linearVelocity.y) < settings.detection.jumpVelocityThreshold || wallSurfaceNormal == Vector2.zero)
         {
             stateMachine.ChangeState(player.IdleState);
         }
@@ -71,12 +71,12 @@ public class WallState : State
         RaycastHit2D hit = Physics2D.Raycast(
             raycastOrigin,
             wallDetectionDirection,
-            settings.wall.wallDetectionDistance,
+            settings.detection.wallDetectionDistance,
             LayerMask.GetMask("Walls")
         );
         if (player.debugMessages)
         {
-            Debug.DrawRay(raycastOrigin, wallDetectionDirection * settings.wall.wallDetectionDistance,
+            Debug.DrawRay(raycastOrigin, wallDetectionDirection * settings.detection.wallDetectionDistance,
                 hit.collider != null ? Color.green : Color.red);
         }
         if (hit.collider != null)

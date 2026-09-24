@@ -126,7 +126,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4639005122991999287
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -183,6 +183,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!95 &5097471844997715643
 Animator:
   serializedVersion: 7
@@ -224,6 +225,7 @@ GameObject:
   - component: {fileID: 3863086145341163272}
   - component: {fileID: 4200766791878785369}
   - component: {fileID: 8504989227509369689}
+  - component: {fileID: 8296408503775171053}
   - component: {fileID: 3118019941505062873}
   - component: {fileID: 885946949448962829}
   - component: {fileID: 104384304269117495}
@@ -265,7 +267,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e39da343aa508247a9e83d884e243e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  switchDelay: 0.5
   debugMessages: 1
 --- !u!114 &4449052849760632079
 MonoBehaviour:
@@ -322,10 +323,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 778ef637d20f40942ad4971803d3f44e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
-  dogMaxHP: 100
-  dogHP: 100
-  satanMaxHP: 100
-  satanHP: 100
 --- !u!114 &4279762284409354990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,24 +335,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2653367ebc9cb5040bf995f6e3d0194d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMoving
-  dogSpeed: 8
-  satanSpeed: 6
-  accelerationRate: 15
-  frictionRate: 20
-  movementInput: {x: 0, y: 0}
-  thrust: 8
-  doubleJumpThrust: 4
-  upGravityScale: 1.1
-  downGravityScale: 2
-  wallSlideSpeed: 1
-  wallJumpForce: 18
-  wallDetectionDistance: 0.5
-  wallWaitTime: 0.2
-  crouchMult: 0.7
-  rollDistance: 4
-  rollDuration: 0.25
-  platformLayerName: Platform
-  dropThroughDuration: 0.5
 --- !u!114 &3238211951885222272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,15 +347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a084edc5ef6b84492252e8f8abaafa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  dogHitTime: 1
-  dogHitDistance: 1
-  dogHitDamage: 10
   bulletPrefab: {fileID: 7568458503567619839, guid: 19f0135fb9cbb644ab800844ea9cfc57, type: 3}
-  satanHitTime: 1
-  satanHitDistance: 2
-  satanHitDamage: 22
-  attackSpeedMultiplier: 1
-  damageMultiplier: 1
 --- !u!114 &3863086145341163272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -413,10 +384,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d3001d1cc255b64ca09ffdae04c618f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterManager
-  satan: {fileID: 0}
-  dog: {fileID: 0}
   SatanActive: 0
   DogActive: 0
+--- !u!114 &8296408503775171053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5868496344035386359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 994b58aeeb5778840896f65bb76131fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDynSettings
+  satanHP: 100
+  satanDamageBoost: 0
+  satanAttackSpeedBoost: 0
+  satanAttackRangeBoost: 0
+  dogHP: 100
+  dogDamageBoost: 0
+  dogAttackSpeedBoost: 0
+  dogAttackRangeBoost: 0
+  attackSpeedMultiplier: 1
+  damageMultiplier: 1
+  speedMultiplier: 1
 --- !u!114 &3118019941505062873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -716,7 +708,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7304481829281720441
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -773,6 +765,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!95 &632793021609228900
 Animator:
   serializedVersion: 7
