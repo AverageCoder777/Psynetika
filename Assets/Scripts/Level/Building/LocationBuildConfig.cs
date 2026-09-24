@@ -80,7 +80,7 @@ public class LocationBuildConfig : ScriptableObject
                 namePattern = "col_*",
                 action = new SolidColliderAction
                 {
-                    shape = ColliderShapeMode.Outline,
+                    shape = ColliderShapeMode.Boxes,
                     physicsLayer = "Floor",
                     tag = "Floor"
                 }
@@ -90,7 +90,7 @@ public class LocationBuildConfig : ScriptableObject
                 namePattern = "wall_*",
                 action = new SolidColliderAction
                 {
-                    shape = ColliderShapeMode.Outline,
+                    shape = ColliderShapeMode.Boxes,
                     physicsLayer = "Walls",
                     tag = "Wall"
                 }

@@ -5,15 +5,20 @@ using UnityEngine;
 Сборка коллайдера по пиксельной маске слоя. Общая для всех действий, чтобы форма фигуры
 (контур / прямоугольники / габариты) была одним и тем же кодом везде, где она нужна.
 
-Outline  — один PolygonCollider2D, путь на каждый замкнутый контур. Дырки в геометрии Unity
-           понимает сама: путь внутри другого пути вычитается.
-Boxes    — Rigidbody2D (Static) + CompositeCollider2D + набор BoxCollider2D на одном объекте.
-           Ровно та же схема, что в существующем Assets/Prefabs/level 1/Стены.prefab (там ещё старое usedByComposite).
+Outline     — один PolygonCollider2D, путь на каждый замкнутый контур. Дырки в геометрии Unity
+              понимает сама: путь внутри другого пути вычитается.
+Boxes       — набор отдельных BoxCollider2D на одном объекте, без Rigidbody2D и слияния: статичной
+              геометрии тело не нужно, а каждый прямоугольник остаётся видимым и правится руками.
+MergedBoxes — Rigidbody2D (Static) + CompositeCollider2D + набор BoxCollider2D, слитых в одну фигуру.
+              Ровно та же схема, что в существующем Assets/Prefabs/level 1/Стены.prefab (там ещё старое usedByComposite).
 BoundingBox — один прямоугольник по габаритам непрозрачных пикселей, с отступом в юнитах.
+
+Возвращается список коллайдеров, которые нужно настраивать дальше (материал, эффектор): для
+Boxes это все боксы, для остальных режимов — единственная фигура. Пустой список — строить нечего.
 */
 public static class LocationColliderFactory
 {
-    public static Collider2D Build(
+    public static List<Collider2D> Build(
         GameObject target,
         SpriteMask2D mask,
         ColliderShapeMode shape,
@@ -26,13 +31,16 @@ public static class LocationColliderFactory
 
         if (target == null || mask == null || mask.SolidCount == 0)
         {
-            return null;
+            return new List<Collider2D>();
         }
 
         switch (shape)
         {
             case ColliderShapeMode.Boxes:
                 return BuildBoxes(target, mask, config, isTrigger, out pieces);
+
+            case ColliderShapeMode.MergedBoxes:
+                return BuildMergedBoxes(target, mask, config, isTrigger, out pieces);
 
             case ColliderShapeMode.BoundingBox:
                 return BuildBoundingBox(target, mask, boundsPadding, isTrigger, out pieces);
@@ -42,7 +50,7 @@ public static class LocationColliderFactory
         }
     }
 
-    private static Collider2D BuildOutline(
+    private static List<Collider2D> BuildOutline(
         GameObject target,
         SpriteMask2D mask,
         LocationBuildConfig config,
@@ -75,7 +83,7 @@ public static class LocationColliderFactory
 
         if (paths.Count == 0)
         {
-            return null;
+            return new List<Collider2D>();
         }
 
         PolygonCollider2D collider = target.AddComponent<PolygonCollider2D>();
@@ -89,10 +97,31 @@ public static class LocationColliderFactory
 
         pieces = paths.Count;
 
-        return collider;
+        return new List<Collider2D> { collider };
     }
 
-    private static Collider2D BuildBoxes(
+    private static List<Collider2D> BuildBoxes(
+        GameObject target,
+        SpriteMask2D mask,
+        LocationBuildConfig config,
+        bool isTrigger,
+        out int pieces)
+    {
+        List<Collider2D> boxes = new();
+
+        foreach (RectInt rect in RectDecomposer.Decompose(mask, config.minRectArea))
+        {
+            BoxCollider2D box = AddBox(target, mask, rect);
+            box.isTrigger = isTrigger;
+            boxes.Add(box);
+        }
+
+        pieces = boxes.Count;
+
+        return boxes;
+    }
+
+    private static List<Collider2D> BuildMergedBoxes(
         GameObject target,
         SpriteMask2D mask,
         LocationBuildConfig config,
@@ -105,7 +134,7 @@ public static class LocationColliderFactory
 
         if (rects.Count == 0)
         {
-            return null;
+            return new List<Collider2D>();
         }
 
         Rigidbody2D body = target.AddComponent<Rigidbody2D>();
@@ -117,22 +146,28 @@ public static class LocationColliderFactory
 
         foreach (RectInt rect in rects)
         {
-            Vector2 min = mask.ToLocal(rect.xMin, rect.yMin);
-            Vector2 max = mask.ToLocal(rect.xMax, rect.yMax);
-
-            BoxCollider2D box = target.AddComponent<BoxCollider2D>();
-            box.size = max - min;
-            box.offset = (min + max) * 0.5f;
-            box.compositeOperation = Collider2D.CompositeOperation.Merge;
+            AddBox(target, mask, rect).compositeOperation = Collider2D.CompositeOperation.Merge;
         }
 
         composite.GenerateGeometry();
         pieces = rects.Count;
 
-        return composite;
+        return new List<Collider2D> { composite };
     }
 
-    private static Collider2D BuildBoundingBox(
+    private static BoxCollider2D AddBox(GameObject target, SpriteMask2D mask, RectInt rect)
+    {
+        Vector2 min = mask.ToLocal(rect.xMin, rect.yMin);
+        Vector2 max = mask.ToLocal(rect.xMax, rect.yMax);
+
+        BoxCollider2D box = target.AddComponent<BoxCollider2D>();
+        box.size = max - min;
+        box.offset = (min + max) * 0.5f;
+
+        return box;
+    }
+
+    private static List<Collider2D> BuildBoundingBox(
         GameObject target,
         SpriteMask2D mask,
         float padding,
@@ -143,7 +178,7 @@ public static class LocationColliderFactory
 
         if (!RectDecomposer.TryGetBounds(mask, out RectInt bounds))
         {
-            return null;
+            return new List<Collider2D>();
         }
 
         Vector2 min = mask.ToLocal(bounds.xMin, bounds.yMin) - new Vector2(padding, padding);
@@ -162,6 +197,6 @@ public static class LocationColliderFactory
 
         pieces = 1;
 
-        return collider;
+        return new List<Collider2D> { collider };
     }
 }

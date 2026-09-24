@@ -21,12 +21,26 @@ LocationBuildMarker — ручные объекты сцены не трогаю
 Путь камеры (CameraPath) живёт отдельным объектом вне корня сборки: линию дизайнера нельзя терять
 при каждой перестройке арта. Если коридор по пути построен, прямоугольник по габаритам уровня
 утилита уже не строит.
+
+Сверху окна — превью всей сцены (LocationScenePreview): видно уровень целиком, выделенный объект с его
+коллайдерами и слой, выбранный в таблице. Выделение синхронно в обе стороны: клик по превью или
+выбор собранного объекта в Hierarchy выбирает его слой в таблице.
+
+Масштаб карты (worldScale конфига) правится прямо здесь и сразу применяется к собранному корню:
+арт и коллайдеры лежат под ним и растягиваются вместе, перестраивать не нужно. Путь камеры живёт
+вне корня, поэтому его точки по желанию масштабируются отдельно — относительно того же центра.
 */
 public class LocationBuilderWindow : EditorWindow
 {
     private const string UndoLabel = "Построение локации";
     private const float LayerColumnWidth = 160f;
     private const float RuleColumnWidth = 90f;
+    private const float PreviewMinHeight = 200f;
+    private const float PreviewMaxShare = 0.55f;
+    private const float MapScaleStep = 0.5f;
+    private const float MinMapScale = 0.1f;
+
+    private static readonly string[] FrameModeLabels = { "Сцена целиком", "Локация" };
 
     private static GUIStyle warnStyle;
     private static GUIStyle manualStyle;
@@ -48,6 +62,8 @@ public class LocationBuilderWindow : EditorWindow
     private string selectedLayer;
 
     private SerializedObject self;
+    private LocationScenePreview scenePreview;
+    private bool scaleCameraPath = true;
     private LocationBuildReport report;
     private bool reportIsPreview;
     private Vector2 scroll;
@@ -63,7 +79,7 @@ public class LocationBuilderWindow : EditorWindow
     private static void Open()
     {
         LocationBuilderWindow window = GetWindow<LocationBuilderWindow>("Построение локации");
-        window.minSize = new Vector2(460f, 560f);
+        window.minSize = new Vector2(520f, 760f);
     }
 
     // Слой без своего правила подсвечивается: чаще всего это опечатка в имени слоя.
@@ -136,43 +152,76 @@ public class LocationBuilderWindow : EditorWindow
     private void OnEnable()
     {
         self = new SerializedObject(this);
+        scenePreview = new LocationScenePreview(Repaint);
+        wantsMouseMove = true;
+
         RefreshScene();
         EditorSceneManager.activeSceneChangedInEditMode += OnActiveSceneChanged;
+        Selection.selectionChanged += OnSelectionChanged;
     }
 
     private void OnDisable()
     {
         EditorSceneManager.activeSceneChangedInEditMode -= OnActiveSceneChanged;
+        Selection.selectionChanged -= OnSelectionChanged;
+
+        scenePreview?.Dispose();
+        scenePreview = null;
     }
 
     private void OnActiveSceneChanged(Scene previous, Scene current)
     {
         RefreshScene();
+        scenePreview?.MarkDirty();
+        Repaint();
+    }
+
+    // Выделили собранный объект слоя (в Hierarchy или кликом по превью) — выбираем его слой в таблице.
+    private void OnSelectionChanged()
+    {
+        GameObject selected = Selection.activeGameObject;
+        LocationBuildMarker marker = CurrentMarker;
+
+        if (selected != null
+            && marker != null
+            && selected.transform != marker.transform
+            && selected.transform.IsChildOf(marker.transform)
+            && FindLayer(selected.name) != null)
+        {
+            selectedLayer = selected.name;
+        }
+
         Repaint();
     }
 
     private void OnGUI()
     {
-        DrawSceneSection();
-        EditorGUILayout.Space();
-
-        DrawSourceSection();
-        EditorGUILayout.Space();
-
-        DrawDiagnostics();
-        EditorGUILayout.Space();
-
-        DrawButtons();
-        EditorGUILayout.Space();
-
-        DrawCameraPathSection();
-        EditorGUILayout.Space();
-
-        DrawMessages();
+        // Превью вне прокрутки: сцена остаётся перед глазами, пока правятся слои.
+        DrawScenePreview();
 
         using (EditorGUILayout.ScrollViewScope scrollView = new(scroll))
         {
             scroll = scrollView.scrollPosition;
+
+            DrawSceneSection();
+            EditorGUILayout.Space();
+
+            DrawSourceSection();
+            EditorGUILayout.Space();
+
+            DrawDiagnostics();
+            EditorGUILayout.Space();
+
+            DrawButtons();
+            EditorGUILayout.Space();
+
+            DrawMapScaleSection();
+            EditorGUILayout.Space();
+
+            DrawCameraPathSection();
+            EditorGUILayout.Space();
+
+            DrawMessages();
 
             DrawLayerTable();
             EditorGUILayout.Space();
@@ -182,6 +231,53 @@ public class LocationBuilderWindow : EditorWindow
     }
 
     #region Разделы окна
+
+    private void DrawScenePreview()
+    {
+        LocationBuildMarker marker = CurrentMarker;
+        scenePreview.LocationRoot = marker != null ? marker.transform : null;
+        scenePreview.LayerObject = FindBuiltObject(selectedLayer);
+
+        using (new EditorGUILayout.HorizontalScope(EditorStyles.toolbar))
+        {
+            scenePreview.Mode = (LocationScenePreview.FrameMode)GUILayout.Toolbar(
+                (int)scenePreview.Mode,
+                FrameModeLabels,
+                EditorStyles.toolbarButton,
+                GUILayout.Width(200f));
+
+            scenePreview.ShowLocationColliders = GUILayout.Toggle(
+                scenePreview.ShowLocationColliders,
+                "Коллайдеры",
+                EditorStyles.toolbarButton);
+
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("колесо — зум, ПКМ — сдвиг, двойной клик — в Scene", EditorStyles.miniLabel);
+            GUILayout.Label($"x{scenePreview.Zoom:0.##}", EditorStyles.miniLabel, GUILayout.Width(40f));
+
+            if (GUILayout.Button("Вписать", EditorStyles.toolbarButton))
+            {
+                scenePreview.ResetView();
+            }
+
+            if (GUILayout.Button("Обновить", EditorStyles.toolbarButton))
+            {
+                scenePreview.MarkDirty();
+            }
+        }
+
+        // Высота по пропорциям кадра: широкий уровень не должен съедать пол-окна пустотой.
+        Vector2 frameSize = scenePreview.FrameSize;
+        float maxHeight = Mathf.Max(PreviewMinHeight, position.height * PreviewMaxShare);
+        float height = frameSize.x > 0f ? position.width * frameSize.y / frameSize.x : PreviewMinHeight;
+
+        Rect rect = GUILayoutUtility.GetRect(
+            position.width,
+            Mathf.Clamp(height, PreviewMinHeight, maxHeight),
+            GUILayout.ExpandWidth(true));
+
+        scenePreview.Draw(rect);
+    }
 
     private void DrawSceneSection()
     {
@@ -297,6 +393,50 @@ public class LocationBuilderWindow : EditorWindow
                     Clear();
                 }
             }
+        }
+    }
+
+    private void DrawMapScaleSection()
+    {
+        if (config == null)
+        {
+            return;
+        }
+
+        EditorGUILayout.LabelField("Масштаб карты", EditorStyles.boldLabel);
+
+        float current = config.worldScale;
+        float requested;
+
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            requested = EditorGUILayout.DelayedFloatField("Масштаб", current);
+
+            if (GUILayout.Button("−", EditorStyles.miniButtonLeft, GUILayout.Width(28f)))
+            {
+                requested = current - MapScaleStep;
+            }
+
+            if (GUILayout.Button("+", EditorStyles.miniButtonRight, GUILayout.Width(28f)))
+            {
+                requested = current + MapScaleStep;
+            }
+        }
+
+        using (new EditorGUI.DisabledScope(cameraPath == null))
+        {
+            scaleCameraPath = EditorGUILayout.ToggleLeft("Масштабировать путь камеры вместе с картой", scaleCameraPath);
+        }
+
+        EditorGUILayout.LabelField(
+            $"Хранится в конфиге «{config.name}»: общий для всех локаций с этим конфигом.",
+            EditorStyles.miniLabel);
+
+        requested = Mathf.Max(MinMapScale, requested);
+
+        if (!Mathf.Approximately(requested, current))
+        {
+            ApplyMapScale(requested);
         }
     }
 
@@ -760,6 +900,78 @@ public class LocationBuilderWindow : EditorWindow
         reportIsPreview = false;
 
         Selection.activeGameObject = marker.gameObject;
+        scenePreview.MarkDirty();
+    }
+
+    /*
+    Новый масштаб сразу ложится на собранный корень — так же, как его выставил бы Build.
+    Коллайдеры и границы камеры внутри корня растягиваются вместе с артом; конфайнеру
+    сбрасываем кеш, иначе он держал бы старую фигуру.
+    */
+    private void ApplyMapScale(float scale)
+    {
+        float factor = scale / config.worldScale;
+
+        Undo.RecordObject(config, UndoLabel);
+        config.worldScale = scale;
+        EditorUtility.SetDirty(config);
+
+        LocationBuildMarker marker = CurrentMarker;
+
+        if (marker != null)
+        {
+            Transform root = marker.transform;
+
+            Undo.RecordObject(root, UndoLabel);
+            root.localScale = Vector3.one * scale;
+
+            if (scaleCameraPath && cameraPath != null)
+            {
+                ScaleCameraPath(root.position, factor);
+            }
+
+            if (confiner != null)
+            {
+                confiner.InvalidateBoundingShapeCache();
+            }
+
+            EditorSceneManager.MarkSceneDirty(marker.gameObject.scene);
+        }
+
+        if (report != null)
+        {
+            report.LevelSize *= factor;
+            report.WorldScale = scale;
+        }
+
+        scenePreview.MarkDirty();
+    }
+
+    // Точки пути — в локальных координатах его объекта: переводим в мир, растягиваем от центра карты, возвращаем.
+    private void ScaleCameraPath(Vector3 pivot, float factor)
+    {
+        Undo.RecordObject(cameraPath, UndoLabel);
+        Transform pathTransform = cameraPath.transform;
+
+        for (int i = 0; i < cameraPath.nodes.Count; i++)
+        {
+            CameraPathPoint node = cameraPath.nodes[i];
+            Vector3 world = pathTransform.TransformPoint(node.position);
+            Vector3 scaled = pivot + (world - pivot) * factor;
+            scaled.z = world.z;
+
+            node.position = pathTransform.InverseTransformPoint(scaled);
+            node.up *= factor;
+            node.down *= factor;
+            cameraPath.nodes[i] = node;
+        }
+
+        EditorUtility.SetDirty(cameraPath);
+
+        if (cameraPath.HasCorridor)
+        {
+            CameraPathEditor.BuildWithUndo(cameraPath);
+        }
     }
 
     private void Clear()
@@ -775,6 +987,7 @@ public class LocationBuilderWindow : EditorWindow
         EditorSceneManager.MarkSceneDirty(marker.gameObject.scene);
 
         RefreshPreview();
+        scenePreview.MarkDirty();
     }
 
     private static void ClearChildren(Transform root)

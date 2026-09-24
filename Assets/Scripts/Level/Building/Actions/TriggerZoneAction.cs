@@ -6,8 +6,9 @@ using UnityEngine;
 [AddTypeMenu("Локация/Триггер-зона")]
 public class TriggerZoneAction : LocationLayerAction
 {
-    [Tooltip("Outline — точная форма, Boxes — прямоугольники, BoundingBox — один прямоугольник по габаритам")]
-    public ColliderShapeMode shape = ColliderShapeMode.Boxes;
+    [Tooltip("Merged Boxes — прямоугольники одной фигурой, Outline — точная форма, BoundingBox — один прямоугольник " +
+             "по габаритам. Boxes (отдельные боксы) шлёт OnTriggerEnter2D от каждого бокса")]
+    public ColliderShapeMode shape = ColliderShapeMode.MergedBoxes;
 
     [Tooltip("Слой физики объекта. Пусто = Default")]
     [PhysicsLayerName] public string physicsLayer = string.Empty;
@@ -20,9 +21,7 @@ public class TriggerZoneAction : LocationLayerAction
     public override void Apply(LocationLayerSource layer, LocationBuildContext ctx)
     {
         GameObject target = CreateObject(layer, ctx);
-        Collider2D collider = BuildCollider(target, layer, ctx, shape, true, 0f);
-
-        if (collider == null)
+        if (BuildCollider(target, layer, ctx, shape, true, 0f).Count == 0)
         {
             return;
         }

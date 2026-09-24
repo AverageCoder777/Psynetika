@@ -16,6 +16,10 @@ using UnityEngine;
 
 Геометрия кусков открыта (SegmentPolygon, JointPolygon): тем же кодом редактор рисует превью,
 поэтому в Scene View видна ровно та фигура, которая потом станет коллайдером.
+
+Зум точки (CameraPathPoint.zoom) растягивает коридор вместе с обзором: ширина рассчитана под кадр
+обычного размера, а в отдалённом месте кадр больше — узкий коридор выталкивал бы камеру с линии.
+Поэтому полоса отрезка — трапеция: у каждого конца своя ширина, умноженная на зум этого конца.
 */
 public static class CameraCorridorFactory
 {
@@ -144,20 +148,21 @@ public static class CameraCorridorFactory
             normal = -normal;
         }
 
-        Vector2 half = normal * (width * 0.5f);
+        Vector2 halfFrom = normal * (width * from.Zoom * 0.5f);
+        Vector2 halfTo = normal * (width * to.Zoom * 0.5f);
 
         return new[]
         {
-            from.position - half - Vector2.up * from.down,
-            to.position - half - Vector2.up * to.down,
-            to.position + half + Vector2.up * to.up,
-            from.position + half + Vector2.up * from.up
+            from.position - halfFrom - Vector2.up * from.down,
+            to.position - halfTo - Vector2.up * to.down,
+            to.position + halfTo + Vector2.up * to.up,
+            from.position + halfFrom + Vector2.up * from.up
         };
     }
 
     public static Vector2[] JointPolygon(CameraPathPoint point, float side)
     {
-        float half = side * 0.5f;
+        float half = side * point.Zoom * 0.5f;
         Vector2 center = point.position;
 
         return new[]

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 // Непробиваемая геометрия: земля, стены, потолки.
@@ -6,8 +7,9 @@ using UnityEngine;
 [AddTypeMenu("Локация/Статичная коллизия")]
 public class SolidColliderAction : LocationLayerAction
 {
-    [Tooltip("Outline — контур по пикселям, склоны остаются наклонными. Boxes — прямоугольники через CompositeCollider2D")]
-    public ColliderShapeMode shape = ColliderShapeMode.Outline;
+    [Tooltip("Boxes — отдельные BoxCollider2D. Merged Boxes — те же прямоугольники, слитые CompositeCollider2D " +
+             "(гладкие стыки). Outline — контур по пикселям, склоны остаются наклонными")]
+    public ColliderShapeMode shape = ColliderShapeMode.Boxes;
 
     [Tooltip("Слой физики объекта: Floor, Walls, Up Walls…")]
     [PhysicsLayerName] public string physicsLayer = "Floor";
@@ -22,6 +24,7 @@ public class SolidColliderAction : LocationLayerAction
         string shapeLabel = shape switch
         {
             ColliderShapeMode.Boxes => "прямоугольники",
+            ColliderShapeMode.MergedBoxes => "прямоугольники (слитые)",
             ColliderShapeMode.BoundingBox => "габариты",
             _ => "контур"
         };
@@ -32,9 +35,9 @@ public class SolidColliderAction : LocationLayerAction
     public override void Apply(LocationLayerSource layer, LocationBuildContext ctx)
     {
         GameObject target = CreateObject(layer, ctx);
-        Collider2D collider = BuildCollider(target, layer, ctx, shape, false, 0f);
+        List<Collider2D> colliders = BuildCollider(target, layer, ctx, shape, false, 0f);
 
-        if (collider == null)
+        if (colliders.Count == 0)
         {
             return;
         }
@@ -44,7 +47,10 @@ public class SolidColliderAction : LocationLayerAction
 
         if (physicsMaterial != null)
         {
-            collider.sharedMaterial = physicsMaterial;
+            foreach (Collider2D collider in colliders)
+            {
+                collider.sharedMaterial = physicsMaterial;
+            }
         }
     }
 }

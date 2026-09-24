@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /*
@@ -31,12 +32,14 @@ public class OneWayPlatformAction : LocationLayerAction
     public override void Apply(LocationLayerSource layer, LocationBuildContext ctx)
     {
         GameObject target = CreateObject(layer, ctx);
-        Collider2D collider = BuildCollider(target, layer, ctx, ColliderShapeMode.Boxes, false, 0f);
+        List<Collider2D> colliders = BuildCollider(target, layer, ctx, ColliderShapeMode.MergedBoxes, false, 0f);
 
-        if (collider == null)
+        if (colliders.Count == 0)
         {
             return;
         }
+
+        Collider2D collider = colliders[0];
 
         target.layer = ctx.ResolveLayer(physicsLayer, layer.Name);
         ctx.ApplyTag(target, tag, layer.Name);

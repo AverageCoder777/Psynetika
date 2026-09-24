@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -27,12 +28,21 @@ public class CameraBoundsAction : LocationLayerAction
     public override void Apply(LocationLayerSource layer, LocationBuildContext ctx)
     {
         GameObject target = CreateObject(layer, ctx);
-        Collider2D collider = BuildCollider(target, layer, ctx, shape, true, padding);
+        // Конфайнеру нужна ровно одна фигура: отдельные боксы здесь сливаются в одну.
+        ColliderShapeMode resolvedShape = shape == ColliderShapeMode.Boxes ? ColliderShapeMode.MergedBoxes : shape;
+        List<Collider2D> colliders = BuildCollider(target, layer, ctx, resolvedShape, true, padding);
 
-        if (collider == null)
+        if (colliders.Count == 0)
         {
             return;
         }
+
+        if (resolvedShape != shape)
+        {
+            ctx.Note("боксы слиты для конфайнера");
+        }
+
+        Collider2D collider = colliders[0];
 
         target.layer = ctx.ResolveLayer(physicsLayer, layer.Name);
 

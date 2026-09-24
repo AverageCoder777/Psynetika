@@ -14,7 +14,8 @@ CinemachineConfiner2D.
 аккуратную замкнутую фигуру руками — достаточно провести линию.
 
 Линия не обязана быть прямой: точки ставятся где угодно, «Сглаживание» превращает ломаную в плавную
-кривую, а у каждой точки есть запас вверх/вниз — там коридор расширяется, и камера может подняться
+кривую. Каждый отрезок при этом бывает гибким (участвует в сглаживании) или строго прямым — длинный
+ровный коридор не должен выгибаться из-за соседнего поворота. У каждой точки есть и запас вверх/вниз — там коридор расширяется, и камера может подняться
 над линией (высокий зал, уступ, шахта), а потом плавно вернуться к ней.
 
 Точки хранятся в локальных координатах объекта, поэтому весь путь двигается и масштабируется
@@ -23,6 +24,12 @@ CinemachineConfiner2D.
 
 Объект пути нарочно живёт вне корня сборки локации: LocationBuilderWindow при перестройке
 удаляет всех детей корня, а линия должна пережить перестройку арта.
+
+Зум на участке: у точек есть zoom (см. CameraPathPoint). В игре путь сам меняет OrthographicSize
+камеры конфайнера: берёт её позицию, находит ближайшее место на линии и ставит зум этого места.
+Позиция камеры, а не игрока — камера и так держится на линии, а коридор в каждом месте расширен
+ровно под свой зум, поэтому кадр всегда помещается в коридор и конфайнер его не выталкивает.
+После смены размера зовётся InvalidateLensCache: сам конфайнер смену обзора не замечает.
 */
 [DisallowMultipleComponent]
 public class CameraPath : MonoBehaviour
@@ -55,12 +62,45 @@ public class CameraPath : MonoBehaviour
     [Tooltip("Слой физики объекта коридора. Коридор — триггер и в физику уровня не вмешивается")]
     [PhysicsLayerName] public string physicsLayer = "Ignore Raycast";
 
+    [Tooltip("Плавность смены зума в игре, сек. 0 — зум меняется ровно по линии. Большая задержка " +
+             "при приближении даёт кадру ненадолго быть шире коридора — конфайнер его подвинет")]
+    [Min(0f)] public float zoomDamping;
+
     // Первая версия хранила точки голыми Vector2 в поле points. Держим старое поле, чтобы уже
     // нарисованные пути не пропали, и один раз переносим его в nodes (см. MigrateLegacyPoints).
     [SerializeField, HideInInspector, FormerlySerializedAs("points")]
     private List<Vector2> legacyPoints = new();
 
+    // Зум в игре: камера, её исходный обзор и линия в мировых координатах с зумом каждой точки.
+    private readonly List<Vector2> zoomLine = new();
+    private readonly List<float> zoomValues = new();
+    private CinemachineCamera zoomCamera;
+    private float baseOrthographicSize;
+    private float currentZoom = 1f;
+
     public Transform Corridor => transform.Find(CorridorName);
+
+    // Есть ли на пути участки с нестандартным зумом.
+    public bool HasZoom
+    {
+        get
+        {
+            if (nodes == null)
+            {
+                return false;
+            }
+
+            foreach (CameraPathPoint node in nodes)
+            {
+                if (!Mathf.Approximately(node.Zoom, 1f))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
 
     public bool HasCorridor => Corridor != null;
 
@@ -117,9 +157,12 @@ public class CameraPath : MonoBehaviour
             return false;
         }
 
-        float size = owner is CinemachineCamera camera
-            ? camera.Lens.OrthographicSize
-            : owner.State.Lens.OrthographicSize;
+        // В игре обзор камеры меняет сам путь — ширину считаем по исходному, а не по текущему зуму.
+        float size = zoomCamera != null
+            ? baseOrthographicSize
+            : owner is CinemachineCamera camera
+                ? camera.Lens.OrthographicSize
+                : owner.State.Lens.OrthographicSize;
 
         if (size <= 0f)
         {
@@ -148,10 +191,36 @@ public class CameraPath : MonoBehaviour
         nodes[index] = node;
     }
 
+    // Число отрезков: у замкнутого пути последний идёт от последней точки к первой.
+    public int SegmentCount => nodes == null || nodes.Count < 2 ? 0 : closed ? nodes.Count : nodes.Count - 1;
+
+    // Отрезок segment идёт от точки segment к следующей; режим хранится в его начальной точке.
+    public bool IsSegmentStraight(int segment)
+    {
+        return NodeAt(segment).straight;
+    }
+
+    // Точка на отрезке в локальных координатах — та же, что попадёт в коридор (для ручек редактора).
+    public Vector2 EvaluateSegment(int segment, float t)
+    {
+        CameraPathPoint from = NodeAt(segment);
+        CameraPathPoint to = NodeAt(segment + 1);
+
+        if (!IsCurved(segment))
+        {
+            return Vector2.Lerp(from.position, to.position, t);
+        }
+
+        GetControlPoints(segment, out Vector2 p0, out Vector2 p3);
+
+        return CatmullRom(p0, from.position, to.position, p3, t);
+    }
+
     /*
-    Точки, по которым реально строится коридор: сами узлы при smoothing = 0, иначе кривая
-    Катмулла–Рома через узлы. Кривая проходит ровно через поставленные точки, поэтому дизайнер
-    двигает понятные ему места, а не контрольные ручки. Запас up/down между узлами — линейно.
+    Точки, по которым реально строится коридор. Прямой отрезок — это просто его два узла, гибкий —
+    кривая Катмулла–Рома через узлы (при smoothing = 0 гибкие отрезки тоже прямые). Кривая проходит
+    ровно через поставленные точки, поэтому дизайнер двигает понятные ему места, а не контрольные
+    ручки. Запас up/down между узлами — линейно.
     */
     public List<CameraPathPoint> Sample()
     {
@@ -162,37 +231,83 @@ public class CameraPath : MonoBehaviour
             return samples;
         }
 
-        if (smoothing <= 0 || nodes.Count < 3)
-        {
-            samples.AddRange(nodes);
-            return samples;
-        }
-
-        int count = nodes.Count;
-        int segments = closed ? count : count - 1;
+        int segments = SegmentCount;
 
         for (int i = 0; i < segments; i++)
         {
-            Vector2 p0 = NodeAt(i - 1).position;
-            Vector2 p1 = NodeAt(i).position;
-            Vector2 p2 = NodeAt(i + 1).position;
-            Vector2 p3 = NodeAt(i + 2).position;
+            CameraPathPoint from = NodeAt(i);
+
+            if (!IsCurved(i))
+            {
+                samples.Add(from);
+                continue;
+            }
+
+            GetControlPoints(i, out Vector2 p0, out Vector2 p3);
+            CameraPathPoint to = NodeAt(i + 1);
 
             for (int step = 0; step <= smoothing; step++)
             {
                 float t = step / (float)(smoothing + 1);
-                CameraPathPoint sample = CameraPathPoint.Lerp(NodeAt(i), NodeAt(i + 1), t);
-                sample.position = CatmullRom(p0, p1, p2, p3, t);
+                CameraPathPoint sample = CameraPathPoint.Lerp(from, to, t);
+                sample.position = CatmullRom(p0, from.position, to.position, p3, t);
                 samples.Add(sample);
             }
         }
 
-        if (!closed)
+        if (!closed || segments == 0)
         {
-            samples.Add(nodes[count - 1]);
+            samples.Add(nodes[nodes.Count - 1]);
         }
 
         return samples;
+    }
+
+    private bool IsCurved(int segment)
+    {
+        return smoothing > 0 && nodes.Count >= 3 && !IsSegmentStraight(segment);
+    }
+
+    /*
+    Внешние контрольные точки кривой для отрезка p1→p2.
+
+    Обычно это соседние узлы. Но если сосед — прямой отрезок, кривая должна выйти из узла ровно
+    по его направлению, иначе на стыке «гибкая → прямая» получится излом. Касательная Катмулла–Рома
+    в p1 равна (p2 - p0) / 2, поэтому фиктивная p0 = p2 - 2L·d даёт касательную L·d вдоль прямой
+    (L — длина отрезка, d — направление прямой). В p2 — симметрично.
+    */
+    private void GetControlPoints(int segment, out Vector2 p0, out Vector2 p3)
+    {
+        int count = nodes.Count;
+        Vector2 p1 = NodeAt(segment).position;
+        Vector2 p2 = NodeAt(segment + 1).position;
+        float length = Vector2.Distance(p1, p2);
+
+        bool hasPrevious = closed || segment > 0;
+        bool hasNext = closed || segment + 1 < count - 1;
+
+        p0 = NodeAt(segment - 1).position;
+        p3 = NodeAt(segment + 2).position;
+
+        if (hasPrevious && IsSegmentStraight(segment - 1))
+        {
+            Vector2 direction = (p1 - p0).normalized;
+
+            if (direction != Vector2.zero)
+            {
+                p0 = p2 - direction * (2f * length);
+            }
+        }
+
+        if (hasNext && IsSegmentStraight(segment + 1))
+        {
+            Vector2 direction = (p3 - p2).normalized;
+
+            if (direction != Vector2.zero)
+            {
+                p3 = p1 + direction * (2f * length);
+            }
+        }
     }
 
     // Узел по индексу: у замкнутого пути индексы заворачиваются, у открытого — упираются в концы.
@@ -286,11 +401,150 @@ public class CameraPath : MonoBehaviour
     private void OnValidate()
     {
         MigrateLegacyPoints();
+        FillMissingZoom();
     }
 
     private void Awake()
     {
         MigrateLegacyPoints();
+        FillMissingZoom();
+    }
+
+    // Зум работает только в игре: в редакторе обзор камеры — это настройка, которую нельзя трогать.
+    private void OnEnable()
+    {
+        if (Application.isPlaying)
+        {
+            BeginZoom();
+        }
+    }
+
+    // До LateUpdate: Cinemachine считает кадр в LateUpdate, и новый обзор попадает в тот же кадр.
+    private void Update()
+    {
+        if (zoomCamera == null)
+        {
+            return;
+        }
+
+        float target = ZoomAt(zoomCamera.transform.position);
+
+        currentZoom = zoomDamping > 0f
+            ? Mathf.Lerp(currentZoom, target, 1f - Mathf.Exp(-Time.deltaTime / zoomDamping))
+            : target;
+
+        ApplyOrthographicSize(baseOrthographicSize * currentZoom);
+    }
+
+    // Выключили путь — камера возвращается к исходному обзору, а не застывает в чужом зуме.
+    private void OnDisable()
+    {
+        if (zoomCamera == null)
+        {
+            return;
+        }
+
+        ApplyOrthographicSize(baseOrthographicSize);
+        zoomCamera = null;
+    }
+
+    private void BeginZoom()
+    {
+        zoomCamera = null;
+
+        if (!HasZoom || confiner == null || confiner.ComponentOwner is not CinemachineCamera camera)
+        {
+            return;
+        }
+
+        // Линия статична: семплы кривой считаются один раз, дальше только поиск ближайшей точки.
+        zoomLine.Clear();
+        zoomValues.Clear();
+
+        foreach (CameraPathPoint sample in Sample())
+        {
+            zoomLine.Add(transform.TransformPoint(sample.position));
+            zoomValues.Add(sample.Zoom);
+        }
+
+        if (zoomLine.Count == 0)
+        {
+            return;
+        }
+
+        zoomCamera = camera;
+        baseOrthographicSize = camera.Lens.OrthographicSize;
+        currentZoom = ZoomAt(camera.transform.position);
+        ApplyOrthographicSize(baseOrthographicSize * currentZoom);
+    }
+
+    // Зум в ближайшем к точке месте линии: проекция на каждый отрезок, зум — линейно вдоль отрезка.
+    private float ZoomAt(Vector2 point)
+    {
+        int count = zoomLine.Count;
+
+        if (count == 1)
+        {
+            return zoomValues[0];
+        }
+
+        int segments = closed ? count : count - 1;
+        float bestDistance = float.MaxValue;
+        float bestZoom = 1f;
+
+        for (int i = 0; i < segments; i++)
+        {
+            int next = (i + 1) % count;
+            Vector2 from = zoomLine[i];
+            Vector2 delta = zoomLine[next] - from;
+            float lengthSqr = delta.sqrMagnitude;
+            float t = lengthSqr <= Mathf.Epsilon ? 0f : Mathf.Clamp01(Vector2.Dot(point - from, delta) / lengthSqr);
+            float distance = (from + delta * t - point).sqrMagnitude;
+
+            if (distance < bestDistance)
+            {
+                bestDistance = distance;
+                bestZoom = Mathf.Lerp(zoomValues[i], zoomValues[next], t);
+            }
+        }
+
+        return bestZoom;
+    }
+
+    private void ApplyOrthographicSize(float size)
+    {
+        if (Mathf.Approximately(zoomCamera.Lens.OrthographicSize, size))
+        {
+            return;
+        }
+
+        LensSettings lens = zoomCamera.Lens;
+        lens.OrthographicSize = size;
+        zoomCamera.Lens = lens;
+
+        if (confiner != null)
+        {
+            confiner.InvalidateLensCache();
+        }
+    }
+
+    // Точки, сохранённые до появления зума, читаются с нулём — в данных и в инспекторе это 1.
+    private void FillMissingZoom()
+    {
+        if (nodes == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            if (nodes[i].zoom <= 0f)
+            {
+                CameraPathPoint node = nodes[i];
+                node.zoom = 1f;
+                nodes[i] = node;
+            }
+        }
     }
 
     private void MigrateLegacyPoints()
