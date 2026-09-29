@@ -4,12 +4,15 @@ using UnityEngine;
 /*
 Все данные типа врага в одном ассете: новый враг = новый конфиг + префаб, без кода.
 Поведение задаётся данными:
+  body       — «тело»: как враг физически двигается (ходьба, полёт…),
+  idle       — тактика, пока игрок не замечен (стоять, патруль…),
+  engage     — тактика в бою между атаками (преследование…),
+  home       — поводок и возвращение к точке спавна,
   perception — как замечает игрока (триггеры или радиусы),
-  patrol/ground — что делает, пока игрока нет,
-  attacks — полиморфный список модулей атак (ближний бой, выстрел, каст способности, свои наследники).
+  attacks    — полиморфный список модулей атак (ближний бой, выстрел, каст способности, свои наследники).
 
-Старые конфиги (где атака описывалась полями meleeDamage/bulletPrefab/abilities) продолжают работать:
-если attacks пуст, ResolveAttacks() собирает модули из устаревших полей.
+Старые конфиги продолжают работать: пустые body/idle/engage собираются из устаревших блоков
+ground/patrol, пустой attacks — из полей meleeDamage/bulletPrefab/abilities.
 */
 [CreateAssetMenu(menuName = "Psynetika/Enemy Config", fileName = "EnemyConfig")]
 public class EnemyConfig : ScriptableObject
@@ -25,8 +28,20 @@ public class EnemyConfig : ScriptableObject
 
     [Header("Движение")]
     [Min(0f)] public float moveSpeed = 2f;
-    public EnemyPatrolSettings patrol = new();
-    public EnemyGroundSettings ground = new();
+
+    [Tooltip("Как враг двигается. Пусто = ходьба с настройками из устаревшего блока Ground")]
+    [SerializeReference, SubclassSelector]
+    public EnemyLocomotion body;
+
+    [Tooltip("Что делает, пока игрок не замечен. Пусто = патруль или стояние по устаревшему блоку Patrol")]
+    [SerializeReference, SubclassSelector]
+    public EnemyTactic idle;
+
+    [Tooltip("Как двигается в бою между атаками. Пусто = преследование")]
+    [SerializeReference, SubclassSelector]
+    public EnemyTactic engage;
+
+    public EnemyHomeSettings home = new();
 
     [Header("Обнаружение игрока")]
     public EnemyPerceptionSettings perception = new();
@@ -55,6 +70,10 @@ public class EnemyConfig : ScriptableObject
     [Header("Смерть")]
     [Min(0f)] public float deathDespawnDelay = 0.7f;
 
+    [Header("Устаревшее — читается, только пока Idle/Body пусты")]
+    public EnemyPatrolSettings patrol = new();
+    public EnemyGroundSettings ground = new();
+
     [Header("Устаревшее — читается, только пока список Attacks пуст")]
     [Min(0)] public int meleeDamage = 10;
     [Tooltip("Время замаха: урон/выстрел происходит в конце цикла")]
@@ -65,6 +84,19 @@ public class EnemyConfig : ScriptableObject
     public List<AbilityDefinition> abilities = new();
 
     private List<EnemyAttackModule> resolvedAttacks;
+    private EnemyLocomotion legacyBody;
+    private EnemyTactic legacyIdle;
+    private EnemyTactic legacyEngage;
+
+    // Модули движения: настроенные в конфиге или собранные из устаревших блоков.
+    // Возвращаются настройки, а не рантайм — рантайм каждый враг создаёт себе сам (CreateRuntime).
+    public EnemyLocomotion ResolveBody() => body ?? (legacyBody ??= GroundLocomotion.FromLegacy(ground));
+
+    public EnemyTactic ResolveIdleTactic() => idle ?? (legacyIdle ??= patrol != null && patrol.enabled
+        ? PatrolLineTactic.FromLegacy(patrol)
+        : new StandTactic());
+
+    public EnemyTactic ResolveEngageTactic() => engage ?? (legacyEngage ??= new ChaseTactic());
 
     // Итоговый набор атак: либо то, что настроено в attacks, либо миграция устаревших полей.
     // Результат кешируется — конфиг общий для всех экземпляров врага.
@@ -121,5 +153,8 @@ public class EnemyConfig : ScriptableObject
     {
         // Правки в инспекторе (в том числе в плей-моде) должны попадать во врагов сразу.
         resolvedAttacks = null;
+        legacyBody = null;
+        legacyIdle = null;
+        legacyEngage = null;
     }
 }

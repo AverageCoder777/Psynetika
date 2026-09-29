@@ -31,7 +31,19 @@ public class EnemyPerceptionSettings
     [Min(0f)] public float loseTargetPadding = 1.5f;
 }
 
-// Патруль, пока игрок не замечен.
+// Точка спавна как «дом» врага.
+[Serializable]
+public class EnemyHomeSettings
+{
+    [Tooltip("Враг сам не отходит от точки спавна дальше этого радиуса: у границы останавливается и ждёт. 0 = без поводка")]
+    [Min(0f)] public float leashRadius = 0f;
+
+    [Tooltip("Потеряв игрока, вернуться к точке спавна, а не начинать покой там, где потерял")]
+    public bool returnWhenLost = false;
+}
+
+// Устаревшее: патруль теперь задаётся тактикой EnemyConfig.idle (PatrolLineTactic).
+// Читается, только пока idle не задан.
 [Serializable]
 public class EnemyPatrolSettings
 {
@@ -48,7 +60,8 @@ public class EnemyPatrolSettings
     [Range(0.1f, 2f)] public float speedScale = 0.5f;
 }
 
-// Проверки земли под ногами: общие для патруля и преследования.
+// Устаревшее: проверки земли теперь в теле EnemyConfig.body (GroundLocomotion).
+// Читается, только пока body не задан.
 [Serializable]
 public class EnemyGroundSettings
 {

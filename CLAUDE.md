@@ -111,7 +111,11 @@ Psynetika — 2D-платформер на **Unity 6000.3.13f1** (URP 2D). Ко�
 * `EnemyConfig.attacks` — список `[SerializeReference]` модулей (`MeleeAttackModule`,
   `BulletAttackModule`, `AbilityAttackModule`); новый тип атаки = новый класс-модуль.
 * `EnemyConfig.perception` — зоны агро/атаки: триггер-коллайдеры или радиусы (без ручной обвязки).
-* `EnemyConfig.patrol` — патруль/стояние на месте, остановка у обрывов.
+* `EnemyConfig.body` / `idle` / `engage` — движение в три слоя: **тело** (`EnemyLocomotion`: как двигается,
+  единственный владелец `Rigidbody2D`, движение через скорость) и **тактики** (`EnemyTactic`: куда хочет
+  идти, выдают `MoveIntent`, не зная тела). Модули — настройки в общем конфиге, состояние врага — в
+  рантайме из `CreateRuntime()`. Устаревшие блоки `patrol`/`ground` читаются, пока поля пусты.
 
-Состояния врага живут в реестре по роли (`EnemyStateId`), см. `EnemyController.RegisterState`;
+Состояния (режимы) врага — `Rest`/`Engage`/`Attack`/`Return`/`Dead` — живут в реестре по роли
+(`EnemyStateId`), см. `EnemyController.RegisterState`;
 новый архетип **не требует** нового наследника контроллера, пока хватает существующих ролей.

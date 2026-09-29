@@ -20,7 +20,14 @@ using UnityEngine;
   оранжевые квадратики   — над и под каждой точкой: тянуть вверх/вниз, чтобы в этом месте
                            камера могла подняться выше (или опуститься ниже) линии;
   фиолетовый квадрат     — угол кадра камеры в точке: тянуть наружу — отдалить камеру, внутрь —
-                           приблизить. Там, где зум не 1, пунктиром показан кадр и подпись «зум ×N».
+                           приблизить. Там, где зум не 1 или задан фокус, пунктиром показан кадр;
+  зелёная стрелка        — от центра кадра (если игрок стоит в этой точке пути) вниз: тянуть
+                           вниз — камера ниже, игрок выше в кадре; вверх — наоборот.
+                           Стрелка, а не точка: без сдвигов камеры центр кадра совпадает с точкой
+                           пути, и точку фокуса было бы не схватить — её перекрывала бы сама точка.
+
+Кадр и зелёная точка считаются по настройкам композера камеры (TargetOffset, ScreenPosition), то есть
+показывают, где камера окажется на самом деле, а не просто рамку вокруг точки пути.
 
 Коридор пересобирается сразу после правки, если включено «Перестраивать сразу»: дизайнеру нужно
 видеть настоящую фигуру конфайнера, а не только линию. Пересборка идёт мимо Undo — коридор целиком
@@ -40,11 +47,13 @@ public class CameraPathEditor : Editor
     private const float MinZoom = 0.2f;
     private const float MaxZoom = 5f;
     private const float ZoomStep = 0.05f;
+    private const float FocusStep = 0.05f;
 
     private static readonly Color LineColor = new(0.3f, 0.9f, 1f, 1f);
     private static readonly Color CorridorColor = new(0.3f, 0.9f, 1f, 0.2f);
     private static readonly Color RangeColor = new(1f, 0.6f, 0.2f, 1f);
     private static readonly Color ZoomColor = new(0.75f, 0.45f, 1f, 1f);
+    private static readonly Color FocusColor = new(0.35f, 1f, 0.45f, 1f);
     private static readonly Color StraightColor = new(1f, 1f, 1f, 1f);
     private static readonly Color HoverColor = new(1f, 0.95f, 0.4f, 1f);
     private static readonly int ClickHash = "CameraPathClick".GetHashCode();
@@ -85,6 +94,7 @@ public class CameraPathEditor : Editor
         { "Клик по значку", "кружок — гибкий отрезок, квадрат — прямой" },
         { "Оранжевые квадраты", "запас камеры вверх / вниз" },
         { "Фиолетовый квадрат", "зум: наружу — отдалить, внутрь — приблизить" },
+        { "Зелёная стрелка", "фокус: вниз — камера ниже, вверх — выше" },
         { ModifierKey + " + Z", "отменить правку" }
     };
 
@@ -241,7 +251,8 @@ public class CameraPathEditor : Editor
             "Режим новых отрезков и список клавиш — на панели в левом нижнем углу Scene View. " +
             "Оранжевые квадратики над и под точкой — насколько камере можно подняться выше " +
             "или опуститься ниже линии в этом месте. Фиолетовый квадрат в углу кадра точки — зум: " +
-            "участок с зумом — это точки с одинаковым зумом на его концах, между точками он меняется плавно.",
+            "участок с зумом — это точки с одинаковым зумом на его концах, между точками он меняется плавно. " +
+            "Зелёная стрелка от центра кадра — фокус: тяните вниз, чтобы опустить камеру, вверх — поднять.",
             MessageType.None);
 
         // Правка полей в инспекторе (сглаживание, запас, ширина) — тот же повод перестроить коридор.
@@ -312,6 +323,62 @@ public class CameraPathEditor : Editor
             EditorGUILayout.HelpBox(
                 "Конфайнер висит не на CinemachineCamera — менять обзор в игре будет нечему.",
                 MessageType.Warning);
+        }
+
+        if (path.ConfinerNeedsOversizeWindow)
+        {
+            EditorGUILayout.HelpBox(
+                "У конфайнера выключен Oversize Window: на выходе из участка с зумом камера застрянет. " +
+                "Он включится сам при сборке коридора и при старте игры, или нажмите кнопку.",
+                MessageType.Warning);
+
+            if (GUILayout.Button("Включить Oversize Window у конфайнера"))
+            {
+                Undo.RecordObject(path.confiner, UndoLabel);
+                path.ConfigureConfinerForZoom();
+                EditorUtility.SetDirty(path.confiner);
+                EditorSceneManager.MarkSceneDirty(path.confiner.gameObject.scene);
+            }
+        }
+
+        int focused = 0;
+
+        foreach (CameraPathPoint node in path.nodes)
+        {
+            if (node.focus != Vector2.zero)
+            {
+                focused++;
+            }
+        }
+
+        EditorGUILayout.LabelField(
+            "Фокус",
+            focused == 0
+                ? "везде обычный — тяните зелёную стрелку у точки пути"
+                : $"сдвинут у {focused} из {path.nodes.Count} точек");
+
+        if (focused > 0 && !path.TryGetFramingOffset(out _))
+        {
+            EditorGUILayout.HelpBox(
+                "У камеры конфайнера нет CinemachinePositionComposer — сдвигать фокус в игре нечем.",
+                MessageType.Warning);
+        }
+
+        using (new EditorGUI.DisabledScope(focused == 0))
+        {
+            if (GUILayout.Button("Сбросить фокус у всех точек"))
+            {
+                Undo.RecordObject(path, UndoLabel);
+
+                for (int i = 0; i < path.nodes.Count; i++)
+                {
+                    CameraPathPoint node = path.nodes[i];
+                    node.focus = Vector2.zero;
+                    path.nodes[i] = node;
+                }
+
+                EditorUtility.SetDirty(path);
+            }
         }
 
         using (new EditorGUI.DisabledScope(zoomed == 0))
@@ -386,14 +453,15 @@ public class CameraPathEditor : Editor
             }
 
             CameraCorridorFactory.GetJointRange(samples.Count, path.closed, out int first, out int last);
+            Vector2 frame = CameraCorridorFactory.FrameSize(path.ResolveWidth);
 
             for (int i = first; i <= last; i++)
             {
-                float side = CameraCorridorFactory.JointWidth(widths, i);
+                Vector2 size = CameraCorridorFactory.JointSize(widths, i, frame);
 
-                if (side > 0f)
+                if (size.x > 0f)
                 {
-                    DrawPolygon(CameraCorridorFactory.JointPolygon(samples[i], side));
+                    DrawPolygon(CameraCorridorFactory.JointPolygon(samples[i], size));
                 }
             }
 
@@ -424,6 +492,13 @@ public class CameraPathEditor : Editor
 
     private void DrawNodes(CameraPath path)
     {
+        // Ручки кадра (зум и фокус) — до ручек точек: если зелёная точка совпала с точкой пути,
+        // клик достаётся точке пути, и её по-прежнему можно тянуть.
+        for (int i = 0; i < path.nodes.Count; i++)
+        {
+            DrawFrameHandles(path, i);
+        }
+
         for (int i = 0; i < path.nodes.Count; i++)
         {
             Vector3 world = path.GetWorldPoint(i);
@@ -446,7 +521,6 @@ public class CameraPathEditor : Editor
             }
 
             DrawRangeHandles(path, i, size);
-            DrawZoomHandle(path, i);
         }
     }
 
@@ -742,41 +816,94 @@ public class CameraPathEditor : Editor
     }
 
     /*
-    Ручка зума: угол кадра камеры в этой точке. Кадр при зуме z — это обычный кадр, растянутый в z
-    раз от точки, поэтому зум считается проекцией смещения ручки на диагональ обычного кадра.
-    Шаг 0.05 — чтобы в данных оставались круглые числа, а не 1.4837.
+    Кадр камеры для игрока, стоящего в этой точке пути, и две его ручки.
+
+    Центр кадра = точка + (сдвиг композера при зуме 1) × зум + фокус, угол = центр + половина кадра × зум.
+    Зелёная стрелка из центра двигает фокус по вертикали (горизонтальный — полем focus в инспекторе).
+    Фиолетовая ручка в углу — зум: угол линейно зависит от зума
+    (точка + фокус + зум × (сдвиг + половина кадра)), поэтому зум — это проекция смещения ручки на это
+    направление, без подбора. Шаг зума 0.05, фокуса 0.05 юнита — чтобы в данных оставались круглые числа.
     */
-    private void DrawZoomHandle(CameraPath path, int index)
+    private void DrawFrameHandles(CameraPath path, int index)
     {
         CameraPathPoint node = path.nodes[index];
         GetFrameHalfSize(path, out float halfWidth, out float halfHeight);
+        path.TryGetFramingOffset(out Vector2 framing);
 
         float zoom = node.Zoom;
         Vector2 diagonal = new(halfWidth, halfHeight);
+        Vector2 center = node.position + node.focus + framing * zoom;
         Vector2 halfFrame = diagonal * zoom;
         Matrix4x4 matrix = path.transform.localToWorldMatrix;
-        Vector3 corner = matrix.MultiplyPoint3x4(node.position + halfFrame);
+
+        Vector3 centerWorld = matrix.MultiplyPoint3x4(center);
+        Vector3 corner = matrix.MultiplyPoint3x4(center + halfFrame);
         float size = HandleUtility.GetHandleSize(corner) * 0.04f;
+
+        bool zoomed = !Mathf.Approximately(zoom, 1f);
+        bool focused = node.focus != Vector2.zero;
+
+        // Кадр — только там, где что-то задано: рамки на каждой точке превратили бы сцену в кашу.
+        if (zoomed || focused)
+        {
+            using (new Handles.DrawingScope(ZoomColor))
+            {
+                DrawFrame(matrix, center, halfFrame);
+            }
+        }
+
+        using (new Handles.DrawingScope(FocusColor))
+        {
+            Handles.DrawDottedLine(matrix.MultiplyPoint3x4(node.position), centerWorld, 3f);
+
+            // Центр кадра — просто метка; тянется стрелка, её остриё далеко от точки пути.
+            if (Event.current.type == EventType.Repaint)
+            {
+                Handles.DotHandleCap(0, centerWorld, Quaternion.identity, size * 0.7f, EventType.Repaint);
+            }
+
+            if (focused)
+            {
+                Handles.Label(centerWorld + Vector3.right * size * 3f, $"фокус {node.focus.x:0.##}; {node.focus.y:0.##}");
+            }
+
+            Vector3 down = matrix.MultiplyVector(Vector3.down).normalized;
+            float arrow = HandleUtility.GetHandleSize(centerWorld) * 0.5f;
+
+            EditorGUI.BeginChangeCheck();
+            Vector3 movedCenter = Handles.Slider(centerWorld, down, arrow, Handles.ArrowHandleCap, 0f);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                Vector2 local = path.transform.InverseTransformPoint(movedCenter);
+                float focusY = local.y - node.position.y - framing.y * zoom;
+
+                Undo.RecordObject(path, UndoLabel);
+                node.focus = new Vector2(node.focus.x, Mathf.Round(focusY / FocusStep) * FocusStep);
+                path.nodes[index] = node;
+                EditorUtility.SetDirty(path);
+                return;
+            }
+        }
 
         using (new Handles.DrawingScope(ZoomColor))
         {
-            // Кадр — только там, где зум задан: рамки на каждой точке превратили бы сцену в кашу.
-            if (!Mathf.Approximately(zoom, 1f))
+            if (zoomed)
             {
-                DrawFrame(matrix, node.position, halfFrame);
                 Handles.Label(corner + Vector3.right * size * 3f, $"зум ×{zoom:0.##}");
             }
 
             EditorGUI.BeginChangeCheck();
-            Vector3 moved = Handles.FreeMoveHandle(corner, size, Vector3.zero, Handles.DotHandleCap);
+            Vector3 movedCorner = Handles.FreeMoveHandle(corner, size, Vector3.zero, Handles.DotHandleCap);
 
             if (!EditorGUI.EndChangeCheck())
             {
                 return;
             }
 
-            Vector2 offset = (Vector2)path.transform.InverseTransformPoint(moved) - node.position;
-            float picked = Vector2.Dot(offset, diagonal) / diagonal.sqrMagnitude;
+            Vector2 axis = framing + diagonal;
+            Vector2 offset = (Vector2)path.transform.InverseTransformPoint(movedCorner) - node.position - node.focus;
+            float picked = Vector2.Dot(offset, axis) / axis.sqrMagnitude;
 
             Undo.RecordObject(path, UndoLabel);
             node.zoom = Mathf.Clamp(Mathf.Round(picked / ZoomStep) * ZoomStep, MinZoom, MaxZoom);

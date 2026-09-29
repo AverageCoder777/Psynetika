@@ -182,11 +182,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1978735069803015246, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: Composition.ScreenPosition.x
-      value: 0.035674267
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1978735069803015246, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: Composition.ScreenPosition.y
-      value: 0.21184489
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1978735069803015246, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: Composition.HardLimits.Size.x

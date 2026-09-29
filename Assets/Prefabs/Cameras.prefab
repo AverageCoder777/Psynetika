@@ -269,16 +269,16 @@ MonoBehaviour:
   CameraDistance: 10
   DeadZoneDepth: 0
   Composition:
-    ScreenPosition: {x: -0.0000001713634, y: 0.0000002905726}
+    ScreenPosition: {x: 0, y: 0}
     DeadZone:
       Enabled: 1
       Size: {x: 0.1187207, y: 0.07014374}
     HardLimits:
       Enabled: 1
-      Size: {x: 0.5668221, y: 0.3592412}
+      Size: {x: 0.5668221, y: 0.25}
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
-  TargetOffset: {x: 0, y: 1.5, z: 0}
+  TargetOffset: {x: 0, y: -5, z: 0}
   Damping: {x: 0, y: 0, z: 0}
   Lookahead:
     Enabled: 1

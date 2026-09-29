@@ -21,6 +21,8 @@ public class EnemyAttackState : EnemyStates
     {
         elapsed = 0f;
         executed = false;
+        // Скорость теперь сохраняется между шагами: без остановки враг проскользил бы весь замах.
+        Movement.Stop();
         module = Attack.PickAttack();
         if (module == null)
         {
@@ -52,14 +54,14 @@ public class EnemyAttackState : EnemyStates
     {
         if (module == null)
         {
-            ChangeState(Sensor.PlayerInFollowRange ? EnemyStateId.Follow : RestStateId);
+            ChangeState(Sensor.PlayerInFollowRange ? EnemyStateId.Engage : LostTargetStateId);
             return;
         }
 
         // Игрок вышел из зоны удара до момента удара — замах срывается (так было и раньше).
         if (!executed && !Sensor.PlayerInHitRange)
         {
-            ChangeState(Sensor.PlayerInFollowRange ? EnemyStateId.Follow : RestStateId);
+            ChangeState(Sensor.PlayerInFollowRange ? EnemyStateId.Engage : LostTargetStateId);
             return;
         }
 
@@ -96,7 +98,7 @@ public class EnemyAttackState : EnemyStates
     private EnemyStateId NextStateId()
     {
         if (Sensor.PlayerInHitRange && Attack.HasReadyAttack) return EnemyStateId.Attack;
-        if (Sensor.PlayerInFollowRange || Sensor.PlayerInHitRange) return EnemyStateId.Follow;
-        return RestStateId;
+        if (Sensor.PlayerInFollowRange || Sensor.PlayerInHitRange) return EnemyStateId.Engage;
+        return LostTargetStateId;
     }
 }

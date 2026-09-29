@@ -1,68 +1,95 @@
 using UnityEngine;
 
+/*
+Исполняет намерения движения (MoveIntent) через «тело» из EnemyConfig.body.
+Сам знает только общее для всех тел: направление взгляда, точку спавна, скорость с бафами,
+границы территории (поводок, EnemyAggroZone) и блокировку управления при отбрасывании.
+
+Движение идёт через скорость Rigidbody2D, а не MovePosition: иначе отбрасывание и рывки
+перезаписывались бы каждым физическим шагом.
+*/
 [RequireComponent(typeof(Rigidbody2D))]
 public class EnemyMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
-    private Collider2D body;
     private EnemyAttack attack;
-    private EnemyConfig config;
+    private EnemyHomeSettings home;
+    private EnemyAggroZone aggroZone;
+    private EnemyLocomotionRuntime locomotion;
     private float baseSpeed;
+    private float controlLockedUntil;
+
+    public Rigidbody2D Body => rb;
+
+    // Физическое тело врага (не триггер) — на префабе бывают ещё триггеры зон сенсора.
+    public Collider2D BodyCollider { get; private set; }
 
     // +1 вправо, -1 влево. Спрайты врагов по умолчанию смотрят влево (flipX = движение вправо).
     public float FacingDirection { get; private set; } = -1f;
 
-    // Точка появления: от неё строится маршрут патруля.
+    // Точка появления: от неё строятся маршрут патруля, поводок и возвращение домой.
     public Vector2 SpawnPosition { get; private set; }
 
     public float Speed => baseSpeed * (attack != null ? attack.GetStatMult(StatMultId.CurrentMoveSpeedMult) : 1f);
+
+    // Результат последнего шага: враг реально двигается (для аниматора).
+    public bool IsMoving { get; private set; }
+
+    // Последний шаг упёрся в препятствие или границу поводка — тактика решает, что делать.
+    public bool LastMoveBlocked { get; private set; }
+
+    public bool IsControlLocked => Time.time < controlLockedUntil;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         SpawnPosition = transform.position;
-        body = FindBodyCollider();
+        BodyCollider = FindBodyCollider();
     }
 
     public void Initialize(EnemyConfig cfg)
     {
-        config = cfg;
         baseSpeed = cfg.moveSpeed;
+        home = cfg.home;
         // Соседей ищем здесь: контроллер мог доставить их после нашего Awake.
         attack = GetComponent<EnemyAttack>();
-        if (body == null) body = FindBodyCollider();
+        aggroZone = GetComponent<EnemyAggroZone>();
+        if (BodyCollider == null) BodyCollider = FindBodyCollider();
+
+        locomotion = cfg.ResolveBody().CreateRuntime(this);
+        locomotion.Attach();
     }
 
-    /*
-    Вызывать из PhysicsUpdate: горизонтальный шаг к targetX, вертикаль остаётся физике.
-    Возвращает false, если шаг не сделан из-за обрыва или стены впереди — состояние решает,
-    что с этим делать (патруль разворачивается, преследование останавливается).
-    */
-    public bool MoveTowardsX(float targetX, float speedScale = 1f)
+    // Вызывать из PhysicsUpdate состояния.
+    public void Execute(in MoveIntent intent)
     {
-        float dirX = targetX - rb.position.x;
-        if (Mathf.Abs(dirX) <= 0.01f)
+        LastMoveBlocked = false;
+        IsMoving = false;
+        if (locomotion == null || IsControlLocked) return;
+
+        if (!intent.HasDestination || intent.SpeedScale <= 0f)
         {
-            return true;
+            locomotion.Stop();
+            return;
         }
 
-        Face(dirX);
-        float dir = dirX > 0f ? 1f : -1f;
-        if (IsBlockedAhead(dir))
+        Vector2 destination = ClampToTerritory(intent.Destination, out bool clamped);
+        if (locomotion.IsAt(destination))
         {
-            return false;
+            locomotion.Stop();
+            // Дошёл до границы территории, а цель за ней: для тактики это такое же препятствие, как стена.
+            LastMoveBlocked = clamped;
+            return;
         }
 
-        // Уснувшее тело игнорирует MovePosition и само от него не просыпается.
-        if (rb.IsSleeping()) rb.WakeUp();
-
-        float step = Speed * Mathf.Max(0f, speedScale) * Time.fixedDeltaTime;
-        float newX = Mathf.MoveTowards(rb.position.x, targetX, step);
-        rb.MovePosition(new Vector2(newX, rb.position.y));
-        return true;
+        bool moved = locomotion.MoveTowards(destination, Speed * intent.SpeedScale, Time.fixedDeltaTime);
+        LastMoveBlocked = !moved;
+        IsMoving = moved;
     }
+
+    public bool IsAt(Vector2 point) => locomotion != null && locomotion.IsAt(point);
 
     public void Face(float dirX)
     {
@@ -75,38 +102,51 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
-    public void StopHorizontal()
+    public void Stop()
     {
-        if (rb == null) return;
-        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+        IsMoving = false;
+        if (locomotion != null)
+        {
+            locomotion.Stop();
+        }
+        else if (rb != null)
+        {
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+        }
     }
 
-    // Обрыв или стена по направлению dir. Выключено, пока в конфиге не заполнен ground.groundMask.
-    public bool IsBlockedAhead(float dir)
+    // Отбрасывание: задаёт скорость и на lockTime отключает управление, чтобы полёт доигрался.
+    public void ApplyKnockback(Vector2 velocity, float lockTime)
     {
-        if (config == null || config.ground == null) return false;
-        if (!config.ground.stopAtLedges || config.ground.groundMask.value == 0) return false;
+        if (rb == null) return;
+        rb.linearVelocity = velocity;
+        controlLockedUntil = Mathf.Max(controlLockedUntil, Time.time + Mathf.Max(0f, lockTime));
+        IsMoving = false;
+    }
 
-        Bounds bounds = body != null
-            ? body.bounds
-            : new Bounds(transform.position, new Vector3(0.5f, 1f, 0f));
+    // Враг сам не уходит от точки спавна дальше leashRadius и не выходит из EnemyAggroZone;
+    // отбрасыванием его вынести можно, тогда следующие намерения вернут его обратно.
+    private Vector2 ClampToTerritory(Vector2 destination, out bool clamped)
+    {
+        clamped = false;
 
-        int mask = config.ground.groundMask.value;
-        float edgeX = dir > 0f ? bounds.max.x : bounds.min.x;
-
-        // Стена прямо по курсу.
-        if (config.ground.wallProbeDistance > 0f)
+        if (home != null && home.leashRadius > 0f)
         {
-            Vector2 chest = new Vector2(edgeX, bounds.center.y);
-            if (Physics2D.Raycast(chest, new Vector2(dir, 0f), config.ground.wallProbeDistance, mask))
+            Vector2 offset = destination - SpawnPosition;
+            if (offset.sqrMagnitude > home.leashRadius * home.leashRadius)
             {
-                return true;
+                destination = SpawnPosition + offset.normalized * home.leashRadius;
+                clamped = true;
             }
         }
 
-        // Земля под следующим шагом: луч чуть за краем коллайдера.
-        Vector2 probe = new Vector2(edgeX + dir * 0.05f, bounds.min.y + 0.05f);
-        return !Physics2D.Raycast(probe, Vector2.down, config.ground.ledgeProbeDepth, mask);
+        if (aggroZone != null && !aggroZone.Contains(destination))
+        {
+            destination = aggroZone.Clamp(destination);
+            clamped = true;
+        }
+
+        return destination;
     }
 
     private Collider2D FindBodyCollider()

@@ -11,8 +11,14 @@ using UnityEngine;
 объединением простых кусков, а объединяет их сам Unity (CompositeCollider2D, GeometryType.Polygons):
   отрезок — четырёхугольник: полоса шириной в кадр вокруг отрезка, край которой дополнительно
             приподнят на up и опущен на down своих концов;
-  узел    — прямоугольник: квадрат со стороной в ширину коридора (он описан вокруг круга радиуса
-            width/2 и накрывает внешний клин при любом угле поворота), вытянутый на up и down.
+  узел    — прямоугольник не меньше кадра камеры и не меньше квадрата со стороной в ширину
+            коридора, вытянутый на up и down.
+
+Почему узел не просто квадрат в ширину коридора (он описан вокруг круга радиуса width/2 и
+накрывает внешний клин поворота): конфайнер пускает центр камеры только туда, где помещается
+весь кадр. На остром повороте («галочка» вниз) нижние края соседних полос уходят вверх по
+диагонали, и широкий кадр 16:9 упирается в них углами задолго до точки поворота — камера висит
+над дном. Узел размером с кадр гарантирует, что камера может встать центром ровно в точку пути.
 
 Геометрия кусков открыта (SegmentPolygon, JointPolygon): тем же кодом редактор рисует превью,
 поэтому в Scene View видна ровно та фигура, которая потом станет коллайдером.
@@ -74,14 +80,15 @@ public static class CameraCorridorFactory
         // На концах незамкнутого пути узлов нет: коридор должен кончаться ровно на точке,
         // иначе камера уезжает за край уровня на половину ширины.
         GetJointRange(samples.Count, closed, out int first, out int last);
+        Vector2 frame = FrameSize(widthForDirection);
 
         for (int i = first; i <= last; i++)
         {
-            float side = JointWidth(widths, i);
+            Vector2 size = JointSize(widths, i, frame);
 
-            if (side > 0f)
+            if (size.x > 0f)
             {
-                AddPolygon(CreateChild(target, $"{JointPrefix} {i}"), JointPolygon(samples[i], side));
+                AddPolygon(CreateChild(target, $"{JointPrefix} {i}"), JointPolygon(samples[i], size));
             }
         }
 
@@ -110,6 +117,26 @@ public static class CameraCorridorFactory
         }
 
         return widths;
+    }
+
+    /*
+    Кадр камеры в тех же единицах, что ширина коридора: поперёк вертикального участка нужна ширина
+    кадра, поперёк горизонтального — высота. Так размер берётся из той же функции ширины (с запасом
+    slack), и при ручной ширине кадр получается квадратом — ровно как раньше.
+    */
+    public static Vector2 FrameSize(Func<Vector2, float> widthForDirection)
+    {
+        return new Vector2(widthForDirection(Vector2.up), widthForDirection(Vector2.right));
+    }
+
+    // Размер узла: не меньше кадра и не меньше квадрата в ширину соседних полос. 0 — узла нет.
+    public static Vector2 JointSize(IReadOnlyList<float> widths, int vertex, Vector2 frame)
+    {
+        float side = JointWidth(widths, vertex);
+
+        return side > 0f
+            ? new Vector2(Mathf.Max(side, frame.x), Mathf.Max(side, frame.y))
+            : Vector2.zero;
     }
 
     public static void GetJointRange(int sampleCount, bool closed, out int first, out int last)
@@ -160,17 +187,17 @@ public static class CameraCorridorFactory
         };
     }
 
-    public static Vector2[] JointPolygon(CameraPathPoint point, float side)
+    public static Vector2[] JointPolygon(CameraPathPoint point, Vector2 size)
     {
-        float half = side * point.Zoom * 0.5f;
+        Vector2 half = size * (point.Zoom * 0.5f);
         Vector2 center = point.position;
 
         return new[]
         {
-            center + new Vector2(-half, -half - point.down),
-            center + new Vector2(half, -half - point.down),
-            center + new Vector2(half, half + point.up),
-            center + new Vector2(-half, half + point.up)
+            center + new Vector2(-half.x, -half.y - point.down),
+            center + new Vector2(half.x, -half.y - point.down),
+            center + new Vector2(half.x, half.y + point.up),
+            center + new Vector2(-half.x, half.y + point.up)
         };
     }
 

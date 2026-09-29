@@ -19,8 +19,13 @@
 | стрелок | Атаки → `Дальний бой/Выстрел` + префаб пули с `targetLayers = Player` |
 | кастер / босс | Атаки → `Способности/Каст способности` + `AbilityDefinition` |
 | несколько атак | несколько модулей + `attackSelection` (Priority / Random) и `minRange`/`maxRange` у модулей |
-| патрулирующий | `patrol.enabled = true`, `patrol.distance` |
-| не падает с платформ | `ground.stopAtLedges = true` + заполнить `ground.groundMask` |
+| патрулирующий | Idle → `Патруль по линии`, `distance` (±distance от точки спавна) |
+| патруль «отсюда досюда» у конкретного врага | компонент `EnemyPatrolPath` на враге в сцене, точки тащить в Scene View |
+| своя территория у конкретного врага | компонент `EnemyAggroZone` на враге в сцене, прямоугольник тянуть в Scene View |
+| стоит на месте до встречи | Idle → `Стоять` (или пусто) |
+| не падает с платформ | Body → `Ходьба`, `stopAtLedges = true` + заполнить `groundMask` |
+| не уходит далеко от спавна | `home.leashRadius` |
+| возвращается домой, потеряв игрока | `home.returnWhenLost = true` |
 | зоны агро без возни с триггерами | `perception.mode = Radius` (или Auto без триггеров на префабе) |
 
 ## Из чего собран враг
@@ -28,7 +33,7 @@
 ```
 EnemyController            тонкий координатор: ссылки на компоненты + реестр состояний
 ├── EnemyHealth            HP, события Damaged/Died, IAbilityTarget + IDirectDamageReceiver
-├── EnemyMovement          шаг по X, поворот спрайта, проверка обрыва/стены, точка спавна
+├── EnemyMovement          исполняет MoveIntent через тело из конфига, поворот, спавн, поводок, отбрасывание
 ├── EnemyAttack            выбор атаки, кулдауны, урон/пули/касты, IAbilityCaster + IAbilityStatOwner
 ├── EnemySensor            зоны агро и атаки: триггеры или радиусы
 ├── StatusEffectHandler    Burn/Glitch и их реакция
@@ -36,16 +41,49 @@ EnemyController            тонкий координатор: ссылки н�
 └── DamageFlash (опц.)     подсветка при уроне
 ```
 
+### Движение: тело, тактика, режим
+
+Три независимых слоя:
+
+```
+Режим (состояние)   Rest ─► Engage ⇄ Attack        Return ─► Rest        Dead
+        │ спрашивает у тактики из конфига
+Тактика             idle: Стоять / Патруль по линии      engage: Преследование
+        │ выдаёт MoveIntent («куда и с какой долей скорости»)
+Тело                Ходьба  (дальше: полёт, лазание по фоновым стенам)
+```
+
+* **Тело** (`EnemyConfig.body`, `EnemyLocomotion`) — как враг физически двигается. Единственный, кто
+  трогает `Rigidbody2D`. Движение идёт через скорость, поэтому `EnemyMovement.ApplyKnockback()` работает.
+* **Тактика** (`EnemyConfig.idle` / `engage`, `EnemyTactic`) — куда враг хочет идти. Не знает, ходит он
+  или летает: `Преследование` отдаёт точку игрока, а наземное тело само проецирует её на X и
+  останавливается у обрыва.
+* **Режим** (состояние FSM) — когда какую тактику включать. Режимов мало, и они общие для всех врагов.
+
+**Маршрут на сцене.** `EnemyPatrolPath` на экземпляре врага подменяет тактику `idle` из конфига:
+режим покоя ходит по его точкам (PingPong или Loop, пауза в каждой точке). Точки хранятся смещениями
+от врага и тащатся мышкой в Scene View. Так у пауков с общим конфигом свой маршрут у каждого.
+
+**Зона агро на сцене.** `EnemyAggroZone` на экземпляре — прямоугольник-территория врага:
+игрок внутри — враг его замечает (вместо радиуса/триггера агро; зона удара прежняя), сам враг за
+границу не выходит ни в погоне, ни в патруле. Игрок вышел — враг ждёт у границы `loseDelay` секунд
+и теряет его. Ограничение движения живёт в `EnemyMovement` рядом с поводком, поэтому работает с любой
+тактикой и любым телом.
+
+И тело, и тактика — это **настройки** в общем для всех экземпляров конфиге. Состояние конкретного врага
+(куда идёт патруль, сколько ждать) живёт в рантайме, который модуль создаёт через `CreateRuntime()`.
+Поэтому в полях модуля рантайм-данные хранить нельзя.
+
 ### Состояния
 
 Состояния лежат в реестре **по роли** (`EnemyStateId`), переходы идут по роли, а не по ссылке на объект:
 
 ```csharp
-controller.ChangeState(EnemyStateId.Follow);
+controller.ChangeState(EnemyStateId.Engage);
 ```
 
-Зарегистрированы по умолчанию: `Idle`, `Patrol`, `Follow`, `Attack`, `Dead`.
-Роли `Retreat` и `Stagger` свободны — достаточно написать состояние и зарегистрировать его.
+Зарегистрированы по умолчанию: `Rest`, `Engage`, `Attack`, `Return`, `Dead`.
+Роль `Stagger` свободна — достаточно написать состояние и зарегистрировать его.
 
 Смерть — такое же состояние (`EnemyDeadState`), поэтому предыдущее состояние корректно
 отрабатывает `Exit()` и не оставляет включённым флаг аниматора посреди замаха.
@@ -84,6 +122,31 @@ public class DashAttackModule : EnemyAttackModule
 Класс сразу появится в выпадающем списке `EnemyConfig.attacks`. Контроллер, состояния и сенсор
 править не нужно.
 
+### Новая тактика движения
+
+```csharp
+[Serializable]
+[AddTypeMenu("Держать дистанцию")]
+public class KeepDistanceTactic : EnemyTactic
+{
+    public float preferred = 5f;
+
+    public override EnemyTacticRuntime CreateRuntime(EnemyController owner) => new Runtime(this, owner);
+
+    private class Runtime : EnemyTacticRuntime
+    {
+        private readonly KeepDistanceTactic settings;
+        public Runtime(KeepDistanceTactic settings, EnemyController owner) : base(owner) => this.settings = settings;
+
+        // Вызывается на физическом шаге; результат сразу исполняет тело.
+        public override MoveIntent Tick(float deltaTime) { /* ... */ return MoveIntent.Stop; }
+    }
+}
+```
+
+Тактика появится в выпадающих списках `Idle`/`Engage` конфига. Новое тело — так же, наследник
+`EnemyLocomotion` + `EnemyLocomotionRuntime`, список `Body`.
+
 ### Новое поведение (состояние)
 
 ```csharp
@@ -94,7 +157,7 @@ public class BossController : EnemyController
     protected override void CreateStates()
     {
         base.CreateStates();
-        RegisterState(EnemyStateId.Retreat, new BossPhaseTwoState(this, StateMachine));
+        RegisterState(EnemyStateId.Stagger, new BossPhaseTwoState(this, StateMachine));
     }
 }
 ```
@@ -115,6 +178,10 @@ public class BossController : EnemyController
   в конфиг ничего не пишем.
 
 ## Миграция старых конфигов
+
+Пустые `body`/`idle`/`engage` собираются из устаревших блоков: `ground` → `Ходьба` с теми же
+проверками обрыва, `patrol.enabled` → `Патруль по линии` (иначе `Стоять`), бой → `Преследование`.
+Каждое поле мигрирует независимо: заданный `idle` не отключает миграцию `body`.
 
 Если список `attacks` пуст, `EnemyConfig.ResolveAttacks()` собирает модули из устаревших полей
 внизу конфига (`meleeDamage`/`attackDuration`, либо `bulletPrefab`/`bulletDamage`/`bulletSpawnOffset`,

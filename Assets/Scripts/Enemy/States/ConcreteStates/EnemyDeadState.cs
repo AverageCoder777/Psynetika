@@ -15,7 +15,7 @@ public class EnemyDeadState : EnemyStates
     {
         PlayTrigger(DieHash);
         Sensor.DisableSensing();
-        Movement.StopHorizontal();
+        Movement.Stop();
 
         float delay = Config != null ? Config.deathDespawnDelay : 0f;
         Object.Destroy(controller.gameObject, delay);

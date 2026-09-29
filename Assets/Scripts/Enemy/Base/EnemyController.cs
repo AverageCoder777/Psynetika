@@ -14,8 +14,8 @@ using UnityEngine;
 
 Минимальный враг = GameObject + EnemyController + ссылка на EnemyConfig: недостающие
 компоненты контроллер доставляет сам. Архетип (ближник, стрелок, патрульный, кастер)
-задаётся данными в конфиге, наследник нужен только ради нестандартных состояний —
-тогда переопредели CreateStates()/InitialStateId.
+задаётся данными в конфиге: тело, тактики и атаки. Наследник нужен только ради
+нестандартных режимов — тогда переопредели CreateStates()/InitialStateId.
 */
 public class EnemyController : MonoBehaviour
 {
@@ -35,10 +35,9 @@ public class EnemyController : MonoBehaviour
 
     private readonly Dictionary<EnemyStateId, EnemyStates> states = new();
 
-    public EnemyStateId CurrentStateId { get; private set; } = EnemyStateId.Idle;
+    public EnemyStateId CurrentStateId { get; private set; } = EnemyStateId.Rest;
 
-    protected virtual EnemyStateId InitialStateId =>
-        config != null && config.patrol != null && config.patrol.enabled ? EnemyStateId.Patrol : EnemyStateId.Idle;
+    protected virtual EnemyStateId InitialStateId => EnemyStateId.Rest;
     #endregion
 
     private HashSet<int> animatorParameters;
@@ -80,7 +79,7 @@ public class EnemyController : MonoBehaviour
 
     protected virtual void Start()
     {
-        EnemyStates initial = GetState(InitialStateId) ?? GetState(EnemyStateId.Idle);
+        EnemyStates initial = GetState(InitialStateId) ?? GetState(EnemyStateId.Rest);
         if (initial == null)
         {
             Debug.LogError($"[EnemyController] {name}: не зарегистрировано ни одного состояния.");
@@ -119,9 +118,9 @@ public class EnemyController : MonoBehaviour
     // переходы в остальных состояниях менять не нужно.
     protected virtual void CreateStates()
     {
-        RegisterState(EnemyStateId.Idle, new EnemyIdleState(this, StateMachine));
-        RegisterState(EnemyStateId.Patrol, new EnemyPatrolState(this, StateMachine));
-        RegisterState(EnemyStateId.Follow, new EnemyFollowState(this, StateMachine));
+        RegisterState(EnemyStateId.Rest, new EnemyRestState(this, StateMachine));
+        RegisterState(EnemyStateId.Engage, new EnemyEngageState(this, StateMachine));
+        RegisterState(EnemyStateId.Return, new EnemyReturnState(this, StateMachine));
         RegisterState(EnemyStateId.Attack, new EnemyAttackState(this, StateMachine));
         RegisterState(EnemyStateId.Dead, new EnemyDeadState(this, StateMachine));
     }

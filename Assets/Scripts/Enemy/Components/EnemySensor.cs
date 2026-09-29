@@ -7,6 +7,9 @@ using UnityEngine;
              ручной обвязки двух дочерних коллайдеров на префабе.
   Radius   — зоны берутся из EnemyConfig.perception. Ничего настраивать на префабе не нужно.
 Режим Auto выбирает Triggers, если коллайдеры назначены, иначе Radius.
+
+Если на враге есть EnemyAggroZone, зона агро берётся из неё (прямоугольник в сцене),
+а режим выше определяет только зону удара.
 */
 public class EnemySensor : MonoBehaviour
 {
@@ -19,6 +22,8 @@ public class EnemySensor : MonoBehaviour
     private PlayerController player;
     private Collider2D playerCollider;
     private IAbilityTarget playerTarget;
+    private EnemyAggroZone aggroZone;
+    private float lastSeenInZoneTime = float.NegativeInfinity;
 
     public bool PlayerInFollowRange { get; private set; }
     public bool PlayerInHitRange { get; private set; }
@@ -35,6 +40,7 @@ public class EnemySensor : MonoBehaviour
         {
             perception = config.perception;
         }
+        aggroZone = GetComponent<EnemyAggroZone>();
     }
 
     private void Start()
@@ -74,6 +80,11 @@ public class EnemySensor : MonoBehaviour
         {
             UpdateByRadius();
         }
+
+        if (aggroZone != null)
+        {
+            UpdateByAggroZone();
+        }
     }
 
     private bool UseTriggers => perception.mode switch
@@ -109,6 +120,19 @@ public class EnemySensor : MonoBehaviour
         PlayerInHitRange = distance <= perception.attackRange;
     }
 
+    // Игрок в зоне — замечен. Вышел — ещё loseDelay секунд считается замеченным: враг ждёт у границы.
+    private void UpdateByAggroZone()
+    {
+        if (aggroZone.Contains(player.transform.position))
+        {
+            lastSeenInZoneTime = Time.time;
+            PlayerInFollowRange = true;
+            return;
+        }
+
+        PlayerInFollowRange = PlayerInFollowRange && Time.time - lastSeenInZoneTime < aggroZone.loseDelay;
+    }
+
     public void DisableSensing()
     {
         enabled = false;
@@ -132,10 +156,15 @@ public class EnemySensor : MonoBehaviour
         }
 
         if (settings.mode == EnemyPerceptionSettings.DetectionMode.Triggers) return;
+        bool hasZone = TryGetComponent(out EnemyAggroZone _);
         if (settings.mode == EnemyPerceptionSettings.DetectionMode.Auto && (hitTrigger != null || followTrigger != null)) return;
 
-        Gizmos.color = new Color(1f, 0.8f, 0.2f, 0.5f);
-        Gizmos.DrawWireSphere(transform.position, settings.followRange);
+        // С зоной агро радиус агро не используется — рисует её сама EnemyAggroZone.
+        if (!hasZone)
+        {
+            Gizmos.color = new Color(1f, 0.8f, 0.2f, 0.5f);
+            Gizmos.DrawWireSphere(transform.position, settings.followRange);
+        }
         Gizmos.color = new Color(1f, 0.3f, 0.2f, 0.7f);
         Gizmos.DrawWireSphere(transform.position, settings.attackRange);
     }

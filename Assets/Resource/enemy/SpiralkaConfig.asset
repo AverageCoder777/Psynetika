@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f397adc63a830414fb7708bc74fb8e09, type: 3}
+  m_Name: SpiralkaConfig
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyConfig
+  maxHp: 100
+  moveSpeed: 2
+  body:
+    rid: 1000
+  idle:
+    rid: 1001
+  engage:
+    rid: 1002
+  home:
+    leashRadius: 0
+    returnWhenLost: 0
+  perception:
+    mode: 0
+    followRange: 8
+    attackRange: 1.5
+    verticalTolerance: 3
+    loseTargetPadding: 1.5
+  attacks:
+  - rid: 1003
+  attackSelection: 0
+  attackSpeed: 1
+  attackCooldown: 0
+  coinsToDrop: 5
+  coinPrefab: {fileID: 3100125784294477904, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
+  statusEffects: {fileID: 11400000, guid: aad54200f10b1b942b7a1fe3cb8d024d, type: 2}
+  deathDespawnDelay: 0.7
+  patrol:
+    enabled: 0
+    distance: 3
+    waitTime: 1
+    speedScale: 0.5
+  ground:
+    stopAtLedges: 0
+    groundMask:
+      serializedVersion: 2
+      m_Bits: 0
+    ledgeProbeDepth: 1
+    wallProbeDistance: 0.1
+  meleeDamage: 10
+  attackDuration: 2
+  bulletPrefab: {fileID: 0}
+  bulletDamage: 10
+  bulletSpawnOffset: {x: 0.65, y: 0.22}
+  abilities: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 1000
+      type: {class: GroundLocomotion, ns: , asm: Assembly-CSharp}
+      data:
+        stopAtLedges: 1
+        groundMask:
+          serializedVersion: 2
+          m_Bits: 2184
+        ledgeProbeDepth: 1
+        wallProbeDistance: 0.1
+        arriveDistance: 0.05
+    - rid: 1001
+      type: {class: PatrolLineTactic, ns: , asm: Assembly-CSharp}
+      data:
+        distance: 3
+        waitTime: 1
+        speedScale: 0.5
+    - rid: 1002
+      type: {class: ChaseTactic, ns: , asm: Assembly-CSharp}
+      data:
+        speedScale: 1
+    - rid: 1003
+      type: {class: MeleeAttackModule, ns: , asm: Assembly-CSharp}
+      data:
+        label: "Удар"
+        animatorParameter: Hit
+        windup: 0.6
+        recovery: 0.4
+        cooldown: 0
+        minRange: 0
+        maxRange: 0
+        faceTargetOnStart: 1
+        damage: 10
+        damageType: 0

@@ -16,9 +16,15 @@ GameObject:
   - component: {fileID: 2006259624650983824}
   - component: {fileID: 5433366817759474643}
   - component: {fileID: 4958579326801671139}
+  - component: {fileID: 1740740191358179606}
+  - component: {fileID: 6679056877437056655}
+  - component: {fileID: 3834730135392875081}
   - component: {fileID: 7118042609670232350}
+  - component: {fileID: 1404824394299839281}
+  - component: {fileID: 675671832072533292}
+  - component: {fileID: 8495322021042378095}
   m_Layer: 10
-  m_Name: VETEROK
+  m_Name: Spiralka
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -131,15 +137,8 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 229bb46bb6408dd4686072ba39d4989b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  enemyHealth: 100
-  enemySpeed: 2
-  enemyDamage: 10
-  enemyHitDuration: 0.6
-  hitTrigger: {fileID: 2006259624650983824}
-  followTrigger: {fileID: 386774571251848270}
-  coinsToDrop: 5
-  coinPrefab: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  config: {fileID: 11400000, guid: bfcab9b89eb548238853dd2318916f21, type: 2}
 --- !u!61 &386774571251848270
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -317,4 +316,80 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba74d569b01ec1d40ad444b8bdfd7333, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatusEffectHandler
-  config: {fileID: 11400000, guid: aad54200f10b1b942b7a1fe3cb8d024d, type: 2}
+  config: {fileID: 0}
+--- !u!114 &1404824394299839281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5375767678507587362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1c353701b088d94788a63315398cf55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySensor
+  hitTrigger: {fileID: 2006259624650983824}
+  followTrigger: {fileID: 386774571251848270}
+--- !u!114 &675671832072533292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5375767678507587362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51a7f05b7bdf39c47aaaf93d8d42c0fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyLoot
+--- !u!114 &8495322021042378095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5375767678507587362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69e5219159f21a741b68580d1c27c33e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageFlash
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.15
+--- !u!114 &1740740191358179606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5375767678507587362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 842f07b70fa5636428d7cc2da9069705, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+--- !u!114 &6679056877437056655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5375767678507587362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0817c259bca48409bc1e3024e9521c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+--- !u!114 &3834730135392875081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5375767678507587362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62fb83b4160867f4fbc025f3f966c446, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack

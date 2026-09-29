@@ -963,6 +963,7 @@ public class LocationBuilderWindow : EditorWindow
             node.position = pathTransform.InverseTransformPoint(scaled);
             node.up *= factor;
             node.down *= factor;
+            node.focus *= factor;
             cameraPath.nodes[i] = node;
         }
 

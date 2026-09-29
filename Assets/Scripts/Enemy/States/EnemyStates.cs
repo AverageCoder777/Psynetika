@@ -2,6 +2,9 @@ using UnityEngine;
 
 public abstract class EnemyStates
 {
+    private static readonly int WalkingHash = Animator.StringToHash("Walking");
+    private static readonly int IdleHash = Animator.StringToHash("Idle");
+
     protected readonly EnemyController controller;
     protected readonly EnemyStateMachine stateMachine;
 
@@ -11,11 +14,11 @@ public abstract class EnemyStates
     protected EnemySensor Sensor => controller.Sensor;
     protected Animator Animator => controller.Animator;
 
-    // Куда возвращаться, когда игрок потерян: на патруль, если он включён и зарегистрирован.
-    protected EnemyStateId RestStateId =>
-        Config != null && Config.patrol != null && Config.patrol.enabled && controller.HasState(EnemyStateId.Patrol)
-            ? EnemyStateId.Patrol
-            : EnemyStateId.Idle;
+    // Куда уходить, потеряв игрока: домой, если так настроено, иначе в покой на месте.
+    protected EnemyStateId LostTargetStateId =>
+        Config != null && Config.home != null && Config.home.returnWhenLost && controller.HasState(EnemyStateId.Return)
+            ? EnemyStateId.Return
+            : EnemyStateId.Rest;
 
     protected EnemyStates(EnemyController controller, EnemyStateMachine stateMachine)
     {
@@ -28,7 +31,7 @@ public abstract class EnemyStates
     protected void PlayTrigger(int parameterHash) => controller.SetAnimatorTrigger(parameterHash);
 
     /*
-    Общая реакция на игрока, одинаковая для покоя, патруля и преследования.
+    Общая реакция на игрока, одинаковая для покоя, возвращения и боя.
     Возвращает true, если переход произошёл — вызывающему состоянию нужно сразу выйти из метода.
     */
     protected bool TryReactToPlayer()
@@ -39,9 +42,23 @@ public abstract class EnemyStates
         }
         if (Sensor.PlayerInFollowRange)
         {
-            return ChangeState(EnemyStateId.Follow);
+            return ChangeState(EnemyStateId.Engage);
         }
         return false;
+    }
+
+    // Флаги ходьбы/покоя по факту движения, а не по состоянию: упёршийся в обрыв враг стоит.
+    protected void UpdateLocomotionFlags()
+    {
+        bool moving = Movement.IsMoving;
+        SetFlag(WalkingHash, moving);
+        SetFlag(IdleHash, !moving);
+    }
+
+    protected void ClearLocomotionFlags()
+    {
+        SetFlag(WalkingHash, false);
+        SetFlag(IdleHash, false);
     }
 
     public virtual void Enter() { }

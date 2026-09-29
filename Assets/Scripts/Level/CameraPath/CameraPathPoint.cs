@@ -16,6 +16,11 @@ zoom — во сколько раз обзор камеры в этой точк
 1.5 — видно в полтора раза больше (отдаление), 0.7 — ближе. Между точками зум меняется плавно,
 поэтому «участок с зумом» — это просто точки с одинаковым зумом на его концах. 0 в данных значит 1:
 так читаются точки, сохранённые до появления поля (Unity заполняет новое поле структуры нулём).
+
+focus — сдвиг камеры относительно игрока в этой точке, в юнитах: (0, -2) — камера на 2 юнита ниже
+обычного, игрок выше в кадре. Добавляется к сдвигу точки слежения камеры и меняется между точками
+плавно, как зум. Сдвинуть камеру дальше, чем пускает коридор, фокус не может: если камера упирается,
+расширьте коридор запасом up/down у этой точки.
 */
 [Serializable]
 public struct CameraPathPoint
@@ -36,13 +41,24 @@ public struct CameraPathPoint
              "0.7 — ближе. Между точками меняется плавно, коридор расширяется вместе с обзором")]
     [Min(0f)] public float zoom;
 
-    public CameraPathPoint(Vector2 position, float up = 0f, float down = 0f, bool straight = false, float zoom = 1f)
+    [Tooltip("Сдвиг камеры относительно игрока в этой точке, в юнитах: (0, -2) — камера на 2 юнита ниже, " +
+             "игрок выше в кадре. Между точками меняется плавно")]
+    public Vector2 focus;
+
+    public CameraPathPoint(
+        Vector2 position,
+        float up = 0f,
+        float down = 0f,
+        bool straight = false,
+        float zoom = 1f,
+        Vector2 focus = default)
     {
         this.position = position;
         this.up = up;
         this.down = down;
         this.straight = straight;
         this.zoom = zoom;
+        this.focus = focus;
     }
 
     // Зум с учётом старых данных: 0 — поле ещё не заполнялось, значит обычный обзор.
@@ -55,6 +71,7 @@ public struct CameraPathPoint
             Mathf.Lerp(from.up, to.up, t),
             Mathf.Lerp(from.down, to.down, t),
             false,
-            Mathf.Lerp(from.Zoom, to.Zoom, t));
+            Mathf.Lerp(from.Zoom, to.Zoom, t),
+            Vector2.Lerp(from.focus, to.focus, t));
     }
 }

@@ -36,7 +36,7 @@ MonoBehaviour:
     rollDuration: 0.25
   wall:
     wallSlideSpeed: 1
-    wallJumpForce: 10
+    wallJumpForce: 16
     wallDetectionDistance: 0.5
     wallWaitTime: 0.2
     wallJumpSpeed: 0.8

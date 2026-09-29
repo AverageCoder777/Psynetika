@@ -26,15 +26,37 @@ CinemachineConfiner2D.
 удаляет всех детей корня, а линия должна пережить перестройку арта.
 
 Зум на участке: у точек есть zoom (см. CameraPathPoint). В игре путь сам меняет OrthographicSize
-камеры конфайнера: берёт её позицию, находит ближайшее место на линии и ставит зум этого места.
-Позиция камеры, а не игрока — камера и так держится на линии, а коридор в каждом месте расширен
-ровно под свой зум, поэтому кадр всегда помещается в коридор и конфайнер его не выталкивает.
+камеры конфайнера: берёт позицию цели камеры (игрока), находит ближайшее место на линии и ставит
+зум этого места. Именно цели, а не самой камеры: камеру двигает конфайнер, а его допустимая
+область зависит от зума — получалась петля. Стоило конфайнеру придержать камеру (скелет ещё
+запекается, узкая щель коридора), как зум переставал меняться, а без смены зума не расширялась
+область — и камера оставалась в отдалении навсегда. Цель от зума не зависит, поэтому зум
+возвращается сразу, как игрок ушёл с участка. Без цели — по позиции камеры, как запасной вариант.
 После смены размера зовётся InvalidateLensCache: сам конфайнер смену обзора не замечает.
+
+Фокус на участке: у точек есть focus — сдвиг камеры относительно игрока в юнитах. Работает тем же
+механизмом, что зум: по месту игрока на линии берётся фокус, он прибавляется к TargetOffset
+композера. Сдвинуть камеру за пределы коридора фокус не может — это решает конфайнер.
+
+Вместе с обзором масштабируется TargetOffset у CinemachinePositionComposer. Композиция кадра
+(ScreenPosition, мёртвая зона) задана в долях экрана и сама растягивается с обзором, а TargetOffset —
+в юнитах мира. Без масштабирования при приближении сдвиг точки слежения становится большой долей
+кадра, камера уезжает вверх и игрок проваливается к нижнему краю — видна одна голова.
+
+Зуму обязательно нужен Oversize Window у конфайнера. Без него допустимая область камеры — коридор,
+сжатый на размер кадра: там, где коридор уже текущего кадра, области просто нет. На выходе из
+отдалённого участка коридор сужается раньше, чем уменьшается кадр, камера не может туда въехать,
+а зум считается по её позиции — и она навсегда застревает в отдалении. С Oversize Window узкие
+места превращаются в линию-скелет, по которой проходит кадр любого размера. Путь включает его сам:
+при сборке коридора и при старте игры (ConfigureConfinerForZoom).
 */
 [DisallowMultipleComponent]
 public class CameraPath : MonoBehaviour
 {
     public const string CorridorName = "Коридор (сгенерировано)";
+
+    // Разница зума (и размера обзора), которую не считаем изменением.
+    private const float ZoomSnap = 0.001f;
 
     [Tooltip("Точки пути в локальных координатах и запас вверх/вниз у каждой. Правятся ручками " +
              "в Scene View: Shift+клик — добавить, Ctrl+клик — удалить, квадратики над/под точкой — запас")]
@@ -74,9 +96,13 @@ public class CameraPath : MonoBehaviour
     // Зум в игре: камера, её исходный обзор и линия в мировых координатах с зумом каждой точки.
     private readonly List<Vector2> zoomLine = new();
     private readonly List<float> zoomValues = new();
+    private readonly List<Vector2> focusValues = new();
     private CinemachineCamera zoomCamera;
+    private CinemachinePositionComposer zoomComposer;
+    private Vector3 baseTargetOffset;
     private float baseOrthographicSize;
     private float currentZoom = 1f;
+    private Vector2 currentFocus;
 
     public Transform Corridor => transform.Find(CorridorName);
 
@@ -93,6 +119,28 @@ public class CameraPath : MonoBehaviour
             foreach (CameraPathPoint node in nodes)
             {
                 if (!Mathf.Approximately(node.Zoom, 1f))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    // Есть ли на пути участки со сдвигом фокуса.
+    public bool HasFocus
+    {
+        get
+        {
+            if (nodes == null)
+            {
+                return false;
+            }
+
+            foreach (CameraPathPoint node in nodes)
+            {
+                if (node.focus.sqrMagnitude > ZoomSnap * ZoomSnap)
                 {
                     return true;
                 }
@@ -371,6 +419,7 @@ public class CameraPath : MonoBehaviour
 
         confiner.BoundingShape2D = collider;
         confiner.InvalidateBoundingShapeCache();
+        ConfigureConfinerForZoom();
 
         return collider;
     }
@@ -427,13 +476,34 @@ public class CameraPath : MonoBehaviour
             return;
         }
 
-        float target = ZoomAt(zoomCamera.transform.position);
+        SampleAt(ZoomProbePosition(), out float targetZoom, out Vector2 targetFocus);
 
-        currentZoom = zoomDamping > 0f
-            ? Mathf.Lerp(currentZoom, target, 1f - Mathf.Exp(-Time.deltaTime / zoomDamping))
-            : target;
+        if (zoomDamping > 0f)
+        {
+            float blend = 1f - Mathf.Exp(-Time.deltaTime / zoomDamping);
+            currentZoom = Mathf.Lerp(currentZoom, targetZoom, blend);
+            currentFocus = Vector2.Lerp(currentFocus, targetFocus, blend);
+        }
+        else
+        {
+            currentZoom = targetZoom;
+            currentFocus = targetFocus;
+        }
+
+        // Экспонента подходит к цели бесконечно: без доводки обзор менялся бы на микроны каждый кадр,
+        // и конфайнер каждый кадр пересчитывал бы область — это само по себе даёт дрожь.
+        if (Mathf.Abs(currentZoom - targetZoom) < ZoomSnap)
+        {
+            currentZoom = targetZoom;
+        }
+
+        if ((currentFocus - targetFocus).sqrMagnitude < ZoomSnap * ZoomSnap)
+        {
+            currentFocus = targetFocus;
+        }
 
         ApplyOrthographicSize(baseOrthographicSize * currentZoom);
+        ApplyTargetOffset(currentZoom, currentFocus);
     }
 
     // Выключили путь — камера возвращается к исходному обзору, а не застывает в чужом зуме.
@@ -445,14 +515,16 @@ public class CameraPath : MonoBehaviour
         }
 
         ApplyOrthographicSize(baseOrthographicSize);
+        ApplyTargetOffset(1f, Vector2.zero);
         zoomCamera = null;
+        zoomComposer = null;
     }
 
     private void BeginZoom()
     {
         zoomCamera = null;
 
-        if (!HasZoom || confiner == null || confiner.ComponentOwner is not CinemachineCamera camera)
+        if ((!HasZoom && !HasFocus) || confiner == null || confiner.ComponentOwner is not CinemachineCamera camera)
         {
             return;
         }
@@ -460,11 +532,13 @@ public class CameraPath : MonoBehaviour
         // Линия статична: семплы кривой считаются один раз, дальше только поиск ближайшей точки.
         zoomLine.Clear();
         zoomValues.Clear();
+        focusValues.Clear();
 
         foreach (CameraPathPoint sample in Sample())
         {
             zoomLine.Add(transform.TransformPoint(sample.position));
             zoomValues.Add(sample.Zoom);
+            focusValues.Add(sample.focus);
         }
 
         if (zoomLine.Count == 0)
@@ -474,23 +548,80 @@ public class CameraPath : MonoBehaviour
 
         zoomCamera = camera;
         baseOrthographicSize = camera.Lens.OrthographicSize;
-        currentZoom = ZoomAt(camera.transform.position);
+
+        zoomComposer = camera.GetComponent<CinemachinePositionComposer>();
+        baseTargetOffset = zoomComposer != null ? zoomComposer.TargetOffset : Vector3.zero;
+
+        // Коридор мог быть собран до появления зума — без этого камера застрянет на выходе из участка.
+        ConfigureConfinerForZoom();
+
+        SampleAt(ZoomProbePosition(), out currentZoom, out currentFocus);
         ApplyOrthographicSize(baseOrthographicSize * currentZoom);
+        ApplyTargetOffset(currentZoom, currentFocus);
     }
 
-    // Зум в ближайшем к точке месте линии: проекция на каждый отрезок, зум — линейно вдоль отрезка.
-    private float ZoomAt(Vector2 point)
+    // Нужен ли конфайнеру Oversize Window, которого у него сейчас нет (см. шапку файла).
+    public bool ConfinerNeedsOversizeWindow =>
+        HasZoom && confiner != null && !confiner.OversizeWindow.Enabled;
+
+    /*
+    Включить Oversize Window, если на пути есть зум. MaxWindowSize — самый большой обзор, который
+    бывает на пути (плюс запас): дальше конфайнер не считает кеш, это экономит время запекания.
+    Уже заданный пользователем больший предел (или 0 — «без предела») не трогаем.
+    */
+    public void ConfigureConfinerForZoom()
+    {
+        if (confiner == null || !HasZoom)
+        {
+            return;
+        }
+
+        float maxZoom = 1f;
+
+        foreach (CameraPathPoint node in nodes)
+        {
+            maxZoom = Mathf.Max(maxZoom, node.Zoom);
+        }
+
+        float maxWindow = TryGetCameraSize(out _, out float halfHeight) ? halfHeight * maxZoom * 1.1f : 0f;
+        CinemachineConfiner2D.OversizeWindowSettings settings = confiner.OversizeWindow;
+
+        bool enough = settings.Enabled
+                      && (settings.MaxWindowSize <= 0f || maxWindow <= 0f || settings.MaxWindowSize >= maxWindow);
+
+        if (enough)
+        {
+            return;
+        }
+
+        settings.Enabled = true;
+        settings.MaxWindowSize = maxWindow;
+        confiner.OversizeWindow = settings;
+        confiner.InvalidateBoundingShapeCache();
+    }
+
+    // Чья позиция задаёт зум: цель слежения камеры (игрок или таргет-группа), без неё — сама камера.
+    private Vector2 ZoomProbePosition()
+    {
+        Transform target = zoomCamera.Follow;
+
+        return target != null ? target.position : zoomCamera.transform.position;
+    }
+
+    // Зум и фокус в ближайшем к точке месте линии: проекция на каждый отрезок, значения — линейно вдоль него.
+    private void SampleAt(Vector2 point, out float zoom, out Vector2 focus)
     {
         int count = zoomLine.Count;
+        zoom = zoomValues[0];
+        focus = focusValues[0];
 
         if (count == 1)
         {
-            return zoomValues[0];
+            return;
         }
 
         int segments = closed ? count : count - 1;
         float bestDistance = float.MaxValue;
-        float bestZoom = 1f;
 
         for (int i = 0; i < segments; i++)
         {
@@ -504,16 +635,62 @@ public class CameraPath : MonoBehaviour
             if (distance < bestDistance)
             {
                 bestDistance = distance;
-                bestZoom = Mathf.Lerp(zoomValues[i], zoomValues[next], t);
+                zoom = Mathf.Lerp(zoomValues[i], zoomValues[next], t);
+                focus = Vector2.Lerp(focusValues[i], focusValues[next], t);
             }
         }
+    }
 
-        return bestZoom;
+    // Сдвиг точки слежения в масштабе обзора (игрок остаётся на своём месте в кадре) плюс фокус участка.
+    private void ApplyTargetOffset(float zoom, Vector2 focus)
+    {
+        if (zoomComposer == null)
+        {
+            return;
+        }
+
+        zoomComposer.TargetOffset = new Vector3(
+            baseTargetOffset.x * zoom + focus.x,
+            baseTargetOffset.y * zoom + focus.y,
+            baseTargetOffset.z);
+    }
+
+    /*
+    Где центр кадра относительно игрока при зуме 1 и без фокуса: сдвиг точки слежения композера плюс
+    место игрока в кадре (ScreenPosition). В CM3 у ScreenPosition +x — вправо, +y — вниз (см.
+    ScreenToOrtho у CinemachinePositionComposer); игрок ставится туда, значит центр кадра сдвинут
+    в противоположную сторону. Редактор по этому сдвигу рисует кадр камеры для игрока в точке пути.
+    */
+    public bool TryGetFramingOffset(out Vector2 offset)
+    {
+        offset = Vector2.zero;
+
+        if (confiner == null || confiner.ComponentOwner is not CinemachineCamera camera)
+        {
+            return false;
+        }
+
+        CinemachinePositionComposer composer = camera.GetComponent<CinemachinePositionComposer>();
+
+        if (composer == null || !TryGetCameraSize(out float halfWidth, out float halfHeight))
+        {
+            return false;
+        }
+
+        // В игре TargetOffset композера меняет сам путь — берём исходный.
+        Vector3 targetOffset = zoomComposer != null ? baseTargetOffset : composer.TargetOffset;
+        Vector2 screen = composer.Composition.ScreenPosition;
+
+        offset = new Vector2(
+            targetOffset.x - screen.x * 2f * halfWidth,
+            targetOffset.y + screen.y * 2f * halfHeight);
+
+        return true;
     }
 
     private void ApplyOrthographicSize(float size)
     {
-        if (Mathf.Approximately(zoomCamera.Lens.OrthographicSize, size))
+        if (Mathf.Abs(zoomCamera.Lens.OrthographicSize - size) < ZoomSnap)
         {
             return;
         }
