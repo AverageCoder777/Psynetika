@@ -24,8 +24,10 @@ public class EnemyAttackState : EnemyStates
         // Скорость теперь сохраняется между шагами: без остановки враг проскользил бы весь замах.
         Movement.Stop();
         module = Attack.PickAttack();
-        if (module == null)
+        // Командная очередь: пока идёт удар, остальные из команды ждут. Отпускается в Exit().
+        if (module == null || !Attack.TryTakeTurn())
         {
+            module = null;
             return;
         }
 
@@ -87,6 +89,7 @@ public class EnemyAttackState : EnemyStates
 
     public override void Exit()
     {
+        Attack.ReleaseTurn();
         if (parameterHash != 0) SetFlag(parameterHash, false);
         module = null;
         parameterHash = 0;

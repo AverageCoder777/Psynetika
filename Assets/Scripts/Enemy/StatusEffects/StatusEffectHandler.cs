@@ -3,7 +3,9 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 // Работает с любым носителем IDirectDamageReceiver (+ опционально IAbilityStatOwner для замедления Glitch):
-// врагом, а в будущем игроком или другим объектом.
+// врагом, игроком или другим объектом.
+// Burn/Glitch накладываются уроном соответствующего типа (MaybeApplyStatusFromDamage),
+// Poison — явно источником с его параметрами (TryApplyPoison).
 public class StatusEffectHandler : MonoBehaviour
 {
     // Хардкод-дефолты на случай, если config не назначен — статусы работают без редакторской настройки,
@@ -24,6 +26,7 @@ public class StatusEffectHandler : MonoBehaviour
     private bool dependenciesResolved;
     private BurnRuntime burn;
     private GlitchRuntime glitch;
+    private PoisonRuntime poison;
     private bool reactionConsumedThisHit;
     private bool configMissingLogged;
 
@@ -119,6 +122,38 @@ public class StatusEffectHandler : MonoBehaviour
     {
         ClearBurn();
         ClearGlitch();
+        ClearPoison();
+    }
+
+    /*
+    Отравить объект, которому принадлежит коллайдер/компонент hit. Носителю урона обработчик статусов
+    не обязателен заранее: у игрока его на префабе нет, поэтому он доставляется при первом отравлении.
+    */
+    public static bool TryApplyPoison(Component hit, PoisonSettings settings)
+    {
+        if (hit == null || settings == null) return false;
+        IDirectDamageReceiver receiver = hit.GetComponentInParent<IDirectDamageReceiver>();
+        if (receiver == null) return false;
+        if (receiver is IAbilityTarget target && !target.IsAlive) return false;
+
+        GameObject owner = ((Component)receiver).gameObject;
+        if (!owner.TryGetComponent(out StatusEffectHandler handler))
+        {
+            handler = owner.AddComponent<StatusEffectHandler>();
+        }
+        handler.ApplyPoison(settings);
+        return true;
+    }
+
+    // Повторное отравление перезапускает эффект с новыми параметрами, а не складывает тики.
+    public void ApplyPoison(PoisonSettings settings)
+    {
+        if (settings == null) return;
+
+        ResolveDependencies();
+        ClearPoison();
+        poison = new PoisonRuntime(this, settings);
+        poison.Start();
     }
 
     private void ApplyBurnInternal()
@@ -152,6 +187,14 @@ public class StatusEffectHandler : MonoBehaviour
         glitch?.Stop();
         glitch = null;
     }
+
+    private void ClearPoison()
+    {
+        poison?.Stop();
+        poison = null;
+    }
+
+    private bool IsCarrierAlive => damageSink is not IAbilityTarget target || target.IsAlive;
 
     private void SpawnExplosionVfx()
     {
@@ -234,6 +277,80 @@ public class StatusEffectHandler : MonoBehaviour
             if (handler != null && handler.burn == this)
             {
                 handler.ClearBurn();
+            }
+        }
+    }
+
+    private class PoisonRuntime
+    {
+        private readonly StatusEffectHandler handler;
+        private readonly PoisonSettings settings;
+        private readonly CancellationTokenSource cts = new CancellationTokenSource();
+        private GameObject vfxInstance;
+
+        public PoisonRuntime(StatusEffectHandler handler, PoisonSettings settings)
+        {
+            this.handler = handler;
+            this.settings = settings;
+        }
+
+        public void Start()
+        {
+            if (settings.vfxPrefab != null)
+            {
+                vfxInstance = Object.Instantiate(settings.vfxPrefab, handler.transform);
+            }
+            Run().Forget();
+        }
+
+        public void Stop()
+        {
+            if (!cts.IsCancellationRequested)
+            {
+                cts.Cancel();
+            }
+            cts.Dispose();
+            if (vfxInstance != null)
+            {
+                Object.Destroy(vfxInstance);
+                vfxInstance = null;
+            }
+        }
+
+        private async UniTaskVoid Run()
+        {
+            CancellationToken token = cts.Token;
+            float elapsed = 0f;
+            float duration = Mathf.Max(0.1f, settings.duration);
+            float tickInterval = Mathf.Max(0.05f, settings.tickInterval);
+            int tickDamage = Mathf.Max(1, settings.tickDamage);
+            int delayMs = Mathf.Max(1, Mathf.RoundToInt(tickInterval * 1000f));
+
+            try
+            {
+                while (elapsed < duration)
+                {
+                    await UniTask.Delay(delayMs, cancellationToken: token);
+                    elapsed += tickInterval;
+
+                    // Мёртвого не травим: PlayerHealth на каждый урон при 0 HP заново поднимает Died.
+                    if (handler == null || handler.damageSink == null || !handler.IsCarrierAlive)
+                    {
+                        break;
+                    }
+                    // Как и Burn — сырой урон мимо статус-пайплайна.
+                    handler.damageSink.ApplyDamage(new DamageEvent
+                    {
+                        Amount = tickDamage,
+                        Type = DamageType.Poison
+                    });
+                }
+            }
+            catch (System.OperationCanceledException) { }
+
+            if (handler != null && handler.poison == this)
+            {
+                handler.ClearPoison();
             }
         }
     }

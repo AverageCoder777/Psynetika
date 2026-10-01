@@ -26,6 +26,9 @@ public abstract class EnemyAttackModule
     [Tooltip("Персональный кулдаун этой атаки, сек. 0 = только общий attackCooldown из конфига")]
     [Min(0f)] public float cooldown = 0f;
 
+    [Tooltip("Случайная прибавка к кулдауну: итог от cooldown до cooldown + cooldownRandom, сек")]
+    [Min(0f)] public float cooldownRandom = 0f;
+
     [Tooltip("Минимальная дистанция по X до игрока")]
     [Min(0f)] public float minRange = 0f;
 

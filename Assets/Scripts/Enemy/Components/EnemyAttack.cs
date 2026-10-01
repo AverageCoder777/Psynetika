@@ -17,6 +17,7 @@ public class EnemyAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, 
     private readonly Dictionary<EnemyAttackModule, float> moduleReadyAt = new();
     private readonly List<EnemyAttackModule> candidates = new();
     private float globalReadyAt;
+    private EnemySquad squad;
 
     private float damageMultiplier = 1f;
     private float attackSpeedMultiplier = 1f;
@@ -28,6 +29,10 @@ public class EnemyAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, 
 
     public bool HasReadyAttack => PickAttack() != null;
 
+    // Есть атака, готовая по кулдаунам и очереди команды, но без учёта дистанции:
+    // тактике пора идти на сближение.
+    public bool HasAttackOffCooldown => PickAttack(ignoreRange: true) != null;
+
     public void Initialize(EnemyConfig cfg)
     {
         config = cfg;
@@ -37,6 +42,7 @@ public class EnemyAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, 
         movement = GetComponent<EnemyMovement>();
         health = GetComponent<EnemyHealth>();
         sensor = GetComponent<EnemySensor>();
+        squad = ResolveSquad(cfg);
 
         if (NeedsAbilityRunner())
         {
@@ -81,19 +87,40 @@ public class EnemyAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, 
         }
     }
 
+    #region Очередь команды
+    private static EnemySquad ResolveSquad(EnemyConfig cfg)
+    {
+        if (cfg == null || cfg.squad == null || !cfg.squad.enabled) return null;
+        return EnemySquad.Get(string.IsNullOrEmpty(cfg.squad.groupId) ? $"config:{cfg.name}" : cfg.squad.groupId);
+    }
+
+    private float MaxTurnTime => config != null && config.squad != null ? config.squad.maxTurnTime : 3f;
+
+    // Без команды очередь всегда свободна.
+    private bool IsTurnAvailable => squad == null || squad.CanAcquire(this, MaxTurnTime);
+
+    // Занять очередь команды на сближение и удар. false — сейчас атакует кто-то другой.
+    public bool TryTakeTurn() => squad == null || squad.TryAcquire(this, MaxTurnTime);
+
+    public void ReleaseTurn()
+    {
+        squad?.Release(this, config != null && config.squad != null ? config.squad.turnGap : 0f);
+    }
+    #endregion
+
     #region Выбор атаки
     private IReadOnlyList<EnemyAttackModule> Attacks =>
         config != null ? config.ResolveAttacks() : Array.Empty<EnemyAttackModule>();
 
     /*
-    Подбирает атаку, готовую прямо сейчас: кулдауны (общий и персональный), дистанция до игрока
-    и собственное условие модуля. Ничего не меняет — после фактического удара состояние обязано
-    вызвать NotifyAttackUsed(), иначе кулдаун не запустится.
+    Подбирает атаку, готовую прямо сейчас: кулдауны (общий и персональный), очередь команды,
+    дистанция до игрока (если не ignoreRange) и собственное условие модуля. Ничего не меняет —
+    после фактического удара состояние обязано вызвать NotifyAttackUsed(), иначе кулдаун не запустится.
     */
-    public EnemyAttackModule PickAttack()
+    public EnemyAttackModule PickAttack(bool ignoreRange = false)
     {
         IReadOnlyList<EnemyAttackModule> attacks = Attacks;
-        if (attacks.Count == 0 || Time.time < globalReadyAt)
+        if (attacks.Count == 0 || Time.time < globalReadyAt || !IsTurnAvailable)
         {
             return null;
         }
@@ -107,7 +134,7 @@ public class EnemyAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, 
             EnemyAttackModule module = attacks[i];
             if (module == null) continue;
             if (moduleReadyAt.TryGetValue(module, out float readyAt) && Time.time < readyAt) continue;
-            if (!IsInRange(module, distance)) continue;
+            if (!ignoreRange && !IsInRange(module, distance)) continue;
             if (!module.CanUse(controller)) continue;
 
             candidates.Add(module);
@@ -130,9 +157,10 @@ public class EnemyAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, 
     {
         if (module == null) return;
 
-        if (module.cooldown > 0f)
+        float cooldown = module.cooldown + UnityEngine.Random.Range(0f, module.cooldownRandom);
+        if (cooldown > 0f)
         {
-            moduleReadyAt[module] = Time.time + module.cooldown;
+            moduleReadyAt[module] = Time.time + cooldown;
         }
         if (config != null && config.attackCooldown > 0f)
         {

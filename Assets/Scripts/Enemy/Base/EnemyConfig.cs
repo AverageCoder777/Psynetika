@@ -9,7 +9,9 @@ using UnityEngine;
   engage     — тактика в бою между атаками (преследование…),
   home       — поводок и возвращение к точке спавна,
   perception — как замечает игрока (триггеры или радиусы),
-  attacks    — полиморфный список модулей атак (ближний бой, выстрел, каст способности, свои наследники).
+  attacks    — полиморфный список модулей атак (ближний бой, выстрел, каст способности, свои наследники),
+  squad      — командные атаки по очереди,
+  deathEffects — что происходит с телом после смерти (взрыв и т.п.).
 
 Старые конфиги продолжают работать: пустые body/idle/engage собираются из устаревших блоков
 ground/patrol, пустой attacks — из полей meleeDamage/bulletPrefab/abilities.
@@ -28,6 +30,9 @@ public class EnemyConfig : ScriptableObject
 
     [Header("Движение")]
     [Min(0f)] public float moveSpeed = 2f;
+
+    [Tooltip("Тело врага упирается в игрока и толкает его. Выключено = проходят друг сквозь друга (зоны агро и удара работают как прежде)")]
+    public bool blocksPlayer = false;
 
     [Tooltip("Как враг двигается. Пусто = ходьба с настройками из устаревшего блока Ground")]
     [SerializeReference, SubclassSelector]
@@ -60,6 +65,8 @@ public class EnemyConfig : ScriptableObject
     [Tooltip("Общая пауза после любой атаки, сек")]
     [Min(0f)] public float attackCooldown = 0f;
 
+    public EnemySquadSettings squad = new();
+
     [Header("Лут")]
     [Min(0)] public int coinsToDrop = 0;
     public GameObject coinPrefab;
@@ -68,7 +75,12 @@ public class EnemyConfig : ScriptableObject
     public StatusEffectConfig statusEffects;
 
     [Header("Смерть")]
+    [Tooltip("Тело исчезает не раньше этого времени, а эффекты смерти могут продлить его жизнь")]
     [Min(0f)] public float deathDespawnDelay = 0.7f;
+
+    [Tooltip("Что происходит после смерти: взрыв тела и т.п.")]
+    [SerializeReference, SubclassSelector]
+    public List<EnemyDeathEffect> deathEffects = new();
 
     [Header("Устаревшее — читается, только пока Idle/Body пусты")]
     public EnemyPatrolSettings patrol = new();

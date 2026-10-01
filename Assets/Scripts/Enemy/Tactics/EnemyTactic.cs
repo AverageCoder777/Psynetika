@@ -23,6 +23,7 @@ public abstract class EnemyTacticRuntime
 
     protected EnemyMovement Movement => owner.Movement;
     protected EnemySensor Sensor => owner.Sensor;
+    protected EnemyAttack Attack => owner.Attack;
     protected Vector2 Position => Movement.Body.position;
 
     protected EnemyTacticRuntime(EnemyController owner)

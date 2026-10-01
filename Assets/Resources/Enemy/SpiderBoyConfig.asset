@@ -14,14 +14,118 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyConfig
   maxHp: 40
   moveSpeed: 4
-  meleeDamage: 10
-  attackDuration: 3
+  body:
+    rid: 1000
+  idle:
+    rid: 1001
+  engage:
+    rid: 1002
+  home:
+    leashRadius: 0
+    returnWhenLost: 0
+  perception:
+    mode: 0
+    followRange: 8
+    attackRange: 1
+    verticalTolerance: 3
+    loseTargetPadding: 1.5
+  attacks:
+  - rid: 1003
+  attackSelection: 0
   attackSpeed: 1
-  bulletPrefab: {fileID: 0}
-  bulletDamage: 0
-  bulletSpawnOffset: {x: 0.65, y: 0.22}
+  attackCooldown: 0
+  squad:
+    enabled: 1
+    groupId: Spiders
+    turnGap: 0.5
+    maxTurnTime: 3
   coinsToDrop: 2
   coinPrefab: {fileID: 3100125784294477904, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
   statusEffects: {fileID: 11400000, guid: aad54200f10b1b942b7a1fe3cb8d024d, type: 2}
-  deathDespawnDelay: 2.5
+  deathDespawnDelay: 0.5
+  deathEffects:
+  - rid: 1004
+  patrol:
+    enabled: 0
+    distance: 3
+    waitTime: 1
+    speedScale: 0.5
+  ground:
+    stopAtLedges: 0
+    groundMask:
+      serializedVersion: 2
+      m_Bits: 0
+    ledgeProbeDepth: 1
+    wallProbeDistance: 0.1
+  meleeDamage: 10
+  attackDuration: 3
+  bulletPrefab: {fileID: 0}
+  bulletDamage: 0
+  bulletSpawnOffset: {x: 0.65, y: 0.22}
   abilities: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 1000
+      type: {class: GroundLocomotion, ns: , asm: Assembly-CSharp}
+      data:
+        stopAtLedges: 1
+        groundMask:
+          serializedVersion: 2
+          m_Bits: 2184
+        ledgeProbeDepth: 1
+        wallProbeDistance: 0.1
+        arriveDistance: 0.05
+    - rid: 1001
+      type: {class: WanderTactic, ns: , asm: Assembly-CSharp}
+      data:
+        radius: 2.5
+        speedScale: 0.6
+        pauseMin: 0.2
+        pauseMax: 1
+        verticalSpread: 0
+    - rid: 1002
+      type: {class: HitAndRunTactic, ns: , asm: Assembly-CSharp}
+      data:
+        approachSpeedScale: 1.5
+        approachTimeout: 2.5
+        giveUpPause: 1
+        skitterSpeedScale: 1
+        minDistance: 2
+        maxDistance: 3.5
+        retargetMin: 0.3
+        retargetMax: 0.9
+        sameSideChance: 0.7
+        verticalSpread: 0
+    - rid: 1003
+      type: {class: MeleeAttackModule, ns: , asm: Assembly-CSharp}
+      data:
+        label: "Кусь"
+        animatorParameter: Hit
+        windup: 0.15
+        recovery: 0.25
+        cooldown: 3
+        cooldownRandom: 2
+        minRange: 0
+        maxRange: 0
+        faceTargetOnStart: 1
+        damage: 10
+        damageType: 0
+    - rid: 1004
+      type: {class: PoisonBurstDeathEffect, ns: , asm: Assembly-CSharp}
+      data:
+        delayMin: 2
+        delayMax: 3
+        warningTime: 0.6
+        warningColor: {r: 0.55, g: 1, b: 0.35, a: 1}
+        warningBlinkRate: 6
+        radius: 1.5
+        damage: 0
+        poison:
+          duration: 2
+          tickInterval: 0.5
+          tickDamage: 2
+          vfxPrefab: {fileID: 0}
+        vfxPrefab: {fileID: 0}
+        vfxLifetime: 1.5
+        removeBody: 1

@@ -77,3 +77,20 @@ public class EnemyGroundSettings
     [Tooltip("На каком расстоянии перед собой считать стену препятствием")]
     [Min(0f)] public float wallProbeDistance = 0.1f;
 }
+
+// Командные атаки: враги одной команды атакуют по очереди, а не все разом.
+[Serializable]
+public class EnemySquadSettings
+{
+    [Tooltip("Атаковать по очереди с остальными врагами команды: на сближение и удар идёт только один")]
+    public bool enabled = false;
+
+    [Tooltip("Имя команды: враги с одинаковым именем делят очередь, даже с разными конфигами. Пусто = все враги с этим конфигом")]
+    public string groupId = "";
+
+    [Tooltip("Пауза после атаки одного, прежде чем следующий в команде начнёт свою, сек")]
+    [Min(0f)] public float turnGap = 0.5f;
+
+    [Tooltip("Дольше этого один враг очередь не держит (застрял у обрыва — команда не ждёт его вечно), сек")]
+    [Min(0.1f)] public float maxTurnTime = 3f;
+}
