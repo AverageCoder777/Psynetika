@@ -124,7 +124,7 @@ public class HittingState : GroundedStates
         {
             if (playerIsSatan && !shooted && hitElapsed >= (timeOfOneHit / 2))
             {
-                Vector2 spawnPos = new(origin.x + (direction.x * 0.65f), origin.y + (direction.y * 0.22f));
+                Vector2 spawnPos = new(origin.x + (direction.x * settings.combat.bulletSpawnOffsetX), origin.y + (direction.y * settings.combat.bulletSpawnOffsetY));
                 GameObject bulletObj = Object.Instantiate(
                     attack.bulletPrefab,
                     spawnPos,
@@ -142,7 +142,7 @@ public class HittingState : GroundedStates
             if (!playerIsSatan && hitElapsed >= timeOfOneHit)
             {
                 // Create a box area in front of the player
-                Vector2 boxSize = new(hitDistance, 2f);
+                Vector2 boxSize = new(hitDistance, hitDistance);
                 Vector2 boxCenter = origin + direction * (hitDistance / 2f);
                 
                 Collider2D[] hits = Physics2D.OverlapBoxAll(boxCenter, boxSize, 0f, enemyMask);

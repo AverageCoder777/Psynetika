@@ -50,7 +50,7 @@ public class JumpingState : AirStates
         }
         movement.Rb.gravityScale = movement.Rb.linearVelocity.y >= 0 ? settings.jump.upGravityScale : settings.jump.downGravityScale;
 
-        if (movement.Rb.linearVelocity.y < -0.001f)
+        if (movement.Rb.linearVelocity.y < -settings.detection.jumpVelocityThreshold)
         {
             stateMachine.ChangeState(player.FlyingState);
         }

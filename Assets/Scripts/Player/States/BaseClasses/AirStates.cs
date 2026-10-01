@@ -77,18 +77,18 @@ public abstract class AirStates : State
     protected bool DetectWall()
     {
         Vector2 wallDetectionDirection = charManager.ActiveSR.flipX ? Vector2.left : Vector2.right;
-        Vector2 raycastOrigin = (Vector2)player.transform.position + wallDetectionDirection * 0.25f;
+        Vector2 raycastOrigin = (Vector2)player.transform.position + wallDetectionDirection / 4f;
 
         RaycastHit2D hit = Physics2D.Raycast(
             raycastOrigin,
             wallDetectionDirection,
-            settings.wall.wallDetectionDistance,
+            settings.detection.wallDetectionDistance,
             LayerMask.GetMask("Walls")
         );
         #if UNITY_EDITOR
         if (player.debugMessages)
         {
-            Debug.DrawRay(raycastOrigin, wallDetectionDirection * settings.wall.wallDetectionDistance,
+            Debug.DrawRay(raycastOrigin, wallDetectionDirection * settings.detection.wallDetectionDistance,
                 hit.collider != null ? Color.green : Color.red);
         }
         #endif
@@ -99,26 +99,25 @@ public abstract class AirStates : State
         Vector2 floorDetectionDirection = Vector2.down;
         Vector2 platformDetectionDirection = Vector2.down;
         Vector2 raycastOrigin = (Vector2)player.transform.position - Vector2.up * 0.5f;
-        float detectionDistance = 0.8f;
 
         RaycastHit2D hitFloor = Physics2D.Raycast(
             raycastOrigin,
             floorDetectionDirection,
-            detectionDistance,
+            settings.detection.floorDetectionDistance,
             LayerMask.GetMask("Floor")
         );
         RaycastHit2D hitPlatform = Physics2D.Raycast(
             raycastOrigin,
             platformDetectionDirection,
-            detectionDistance,
+            settings.detection.floorDetectionDistance,
             LayerMask.GetMask("Platform")
         );
         #if UNITY_EDITOR
         if (player.debugMessages)
         {
-            Debug.DrawRay(raycastOrigin, floorDetectionDirection * detectionDistance,
+            Debug.DrawRay(raycastOrigin, floorDetectionDirection * settings.detection.floorDetectionDistance,
                 hitFloor.collider != null ? Color.blue : Color.yellow);
-            Debug.DrawRay(raycastOrigin, platformDetectionDirection * detectionDistance,
+            Debug.DrawRay(raycastOrigin, platformDetectionDirection * settings.detection.floorDetectionDistance,
                 hitPlatform.collider != null ? Color.blue : Color.yellow);
         }
         #endif

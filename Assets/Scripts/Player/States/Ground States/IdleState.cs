@@ -48,7 +48,7 @@ public class IdleState : GroundedStates
         {
             stateMachine.ChangeState(player.RollingState);
         }
-        else if (Mathf.Abs(movement.Rb.linearVelocityY) > 0.1f && !DetectPlatform())
+        else if (Mathf.Abs(movement.Rb.linearVelocityY) > settings.detection.platformDropThreshold && !DetectPlatform())
         {
             grounded = false;
             stateMachine.ChangeState(player.FlyingState);

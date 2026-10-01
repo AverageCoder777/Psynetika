@@ -22,9 +22,11 @@ public class CrouchingState : GroundedStates
         capsule = player.GetComponent<BoxCollider2D>();
         originalCapsuleSize = capsule.size;
         originalCapsuleOffset = capsule.offset;
-        Vector2 newSize = new(originalCapsuleSize.x, originalCapsuleSize.y * settings.crouch.crouchSpeedMultiplier);
-        float delta = originalCapsuleSize.y - newSize.y;
-        capsule.size = newSize;
+
+        // Уменьшаем высоту только сверху — смещаем центр, чтобы нижняя граница осталась на месте
+        float newHeight = originalCapsuleSize.y * settings.crouch.crouchHeightMultiplier;
+        float delta = originalCapsuleSize.y - newHeight;
+        capsule.size = new Vector2(originalCapsuleSize.x, newHeight);
         capsule.offset = new Vector2(originalCapsuleOffset.x, originalCapsuleOffset.y - delta / 2f);
         charManager.ActiveAnimator.SetBool(CrouchingHash, true);
         player.LastState = this;
@@ -57,17 +59,17 @@ public class CrouchingState : GroundedStates
     }
     public override void PhysicsUpdate()
     {
-        float targetX = movementInput.x * movement.GetCurrentSpeed() * 0.5f;
+        float targetX = movementInput.x * movement.GetCurrentSpeed() * settings.crouch.crouchSpeedMultiplier;
         float currentX = movement.Rb.linearVelocity.x;
 
-        float accel = Mathf.Abs(movementInput.x) > 0.001f ? settings.move.accelerationRate : settings.move.frictionRate;
+        float accel = Mathf.Abs(movementInput.x) > settings.detection.movementInputThreshold ? settings.move.accelerationRate : settings.move.frictionRate;
         float newX = Mathf.Lerp(currentX, targetX, accel * Time.fixedDeltaTime);
 
         movement.Rb.linearVelocity = new Vector2(newX, movement.Rb.linearVelocity.y);
 
-        if (movementInput.x > 0.001f)
+        if (movementInput.x > settings.detection.movementInputThreshold)
             charManager.ActiveSR.flipX = false;
-        else if (movementInput.x < -0.001f)
+        else if (movementInput.x < -settings.detection.movementInputThreshold)
             charManager.ActiveSR.flipX = true;
     }
     public override void Exit()
@@ -80,31 +82,22 @@ public class CrouchingState : GroundedStates
     }
     private bool CanStandUp()
     {
+        // Упростим проверку: поднимаем луч от центра коллайдера вверх на половину разницы высот
         Vector2 capsuleCenter = (Vector2)player.transform.position + capsule.offset;
-
-        float crouchCapsuleTop = capsuleCenter.y + (capsule.size.y / 1.5f);
-
-        float originalCapsuleTop = capsuleCenter.y + (originalCapsuleSize.y / 1.5f);
-
-        float headroomNeeded = originalCapsuleTop - crouchCapsuleTop + settings.crouch.headCheckDistanceBuffer;
-
         float halfWidth = capsule.size.x / 2f;
-        Vector2 originCenter = new(capsuleCenter.x, crouchCapsuleTop);
+        float heightDifference = originalCapsuleSize.y - capsule.size.y;
+        float headroomNeeded = heightDifference + settings.detection.headCheckDistanceBuffer;
 
-        RaycastHit2D hitLeft = Physics2D.Raycast(originCenter + Vector2.left * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
-        RaycastHit2D hitCenter = Physics2D.Raycast(originCenter, Vector2.up, headroomNeeded, obstacleMask);
-        RaycastHit2D hitRight = Physics2D.Raycast(originCenter + Vector2.right * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
+        Vector2 origin = new Vector2(capsuleCenter.x, capsuleCenter.y + capsule.size.y / 2f);
 
-        if ((hitLeft.collider != null && !hitLeft.collider.isTrigger) ||
-            (hitCenter.collider != null && !hitCenter.collider.isTrigger) ||
-            (hitRight.collider != null && !hitRight.collider.isTrigger))
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        // Проверяем центр и по краям простыми Raycast'ами вверх на headroomNeeded
+        RaycastHit2D hitCenter = Physics2D.Raycast(origin, Vector2.up, headroomNeeded, obstacleMask);
+        RaycastHit2D hitLeft = Physics2D.Raycast(origin + Vector2.left * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
+        RaycastHit2D hitRight = Physics2D.Raycast(origin + Vector2.right * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
+
+        return !((hitCenter.collider != null && !hitCenter.collider.isTrigger) ||
+                 (hitLeft.collider != null && !hitLeft.collider.isTrigger) ||
+                 (hitRight.collider != null && !hitRight.collider.isTrigger));
     }
     IEnumerator DropThroughPlatform()
     {
@@ -131,7 +124,7 @@ public class CrouchingState : GroundedStates
             Physics2D.IgnoreCollision(playerCollider, platformCollider, true);
         }
         
-        yield return new WaitForSeconds(settings.platform.dropThroughDuration);
+        yield return new WaitForSeconds(settings.detection.dropThroughDuration);
 
         foreach (var platformCollider in platformColliders)
         {

@@ -26,7 +26,7 @@ public class RollingState : GroundedStates
     {
         if (rollEnd)
         {
-            if (Mathf.Abs(movement.Rb.linearVelocity.y) < 0.001f)
+            if (Mathf.Abs(movement.Rb.linearVelocity.y) < settings.detection.movementInputThreshold)
                 stateMachine.ChangeState(player.IdleState);
             else if (movement.Rb.linearVelocity.y < 0f)
             {
@@ -39,7 +39,7 @@ public class RollingState : GroundedStates
     {
         if (!rollEnd)
         {
-            float duration = settings.rolling.rollDuration > 0f ? settings.rolling.rollDuration : 0.0001f;
+            float duration = settings.rolling.rollDuration;
             float rollSpeed = settings.rolling.rollDistance / duration;
             movement.Rb.linearVelocity = new Vector2(rollDir * rollSpeed, movement.Rb.linearVelocity.y);
 
