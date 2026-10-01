@@ -54,6 +54,7 @@ public class EnemyController : MonoBehaviour
         Attack = GetOrAddComponent<EnemyAttack>();
         Sensor = GetOrAddComponent<EnemySensor>();
         StatusEffectHandler statusHandler = GetOrAddComponent<StatusEffectHandler>();
+        EnemyLoot loot = GetOrAddComponent<EnemyLoot>();
 
         if (config == null)
         {
@@ -67,10 +68,7 @@ public class EnemyController : MonoBehaviour
         Attack.Initialize(config);
         Sensor.Initialize(config);
         statusHandler.SetConfigIfEmpty(config.statusEffects);
-        if (TryGetComponent(out EnemyLoot loot))
-        {
-            loot.Initialize(config);
-        }
+        loot.Initialize(config);
 
         StateMachine = new EnemyStateMachine();
         CreateStates();

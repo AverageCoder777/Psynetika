@@ -4,7 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="afd41b17-1e4f-4e76-a83c-17a07f76c863" name="Изменения" comment="" />
+    <list default="true" id="afd41b17-1e4f-4e76-a83c-17a07f76c863" name="Изменения" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Psynetika/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Psynetika/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Collectables/Chest.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Collectables/Chest.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Collectables/Укурокоин Прайм.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Collectables/Укурокоин Прайм.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/level 1/Chest.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/level 1/Chest.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Enemy/EnemyConfig.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Enemy/EnemyConfig.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Enemy/SpiderBoyConfig.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Enemy/SpiderBoyConfig.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Enemy/SpiralkaConfig.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Enemy/SpiralkaConfig.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level 1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level 1.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Enemy/Base/EnemyConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Enemy/Base/EnemyConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Enemy/Base/EnemyController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Enemy/Base/EnemyController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Enemy/Components/EnemyLoot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Enemy/Components/EnemyLoot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Enemy/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Enemy/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/interactable/Collectables/ChestScript.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/interactable/Collectables/ChestScript.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/interactable/Collectables/CoinsScript.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/interactable/Collectables/Coin.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/interactable/Collectables/CoinsScript.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/interactable/Collectables/Coin.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -114,7 +131,7 @@
       <workItem from="1779570069901" duration="5116000" />
       <workItem from="1780344930686" duration="3884000" />
       <workItem from="1790260809931" duration="24000" />
-      <workItem from="1790839061601" duration="653000" />
+      <workItem from="1790839061601" duration="3273000" />
     </task>
     <servers />
   </component>

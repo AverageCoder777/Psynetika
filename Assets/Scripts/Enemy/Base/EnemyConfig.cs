@@ -68,8 +68,8 @@ public class EnemyConfig : ScriptableObject
     public EnemySquadSettings squad = new();
 
     [Header("Лут")]
-    [Min(0)] public int coinsToDrop = 0;
-    public GameObject coinPrefab;
+    [Tooltip("Монеты, выпадающие при смерти. Пустой префаб = без лута")]
+    public CoinDrop loot = new();
 
     [Header("Статус-эффекты")]
     public StatusEffectConfig statusEffects;

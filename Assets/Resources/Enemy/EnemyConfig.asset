@@ -20,8 +20,14 @@ MonoBehaviour:
   bulletPrefab: {fileID: 0}
   bulletDamage: 10
   bulletSpawnOffset: {x: 0.65, y: 0.22}
-  coinsToDrop: 0
-  coinPrefab: {fileID: 0}
+  loot:
+    coinPrefab: {fileID: 8965484931928530446, guid: 51b06ea4729825a45b7f36c092a5f3d6, type: 3}
+    minCount: 1
+    maxCount: 3
+    minForce: 4
+    maxForce: 7
+    spreadAngle: 40
+    pickupDelay: 1
   statusEffects: {fileID: 0}
   deathDespawnDelay: 0.7
   abilities: []
