@@ -33,8 +33,8 @@ public class MovementSettings
 [System.Serializable]
 public class JumpPhysicsSettings
 {
+    [Range(0.1f, 10f)] public float airSpeedMultiplier = 0.75f;
     [Range(0f, 20f)] public float thrust = 12f;
-    [Range(0f, 10f)] public float doubleJumpThrust = 6f;
     [Range(0f, 2f)] public float upGravityScale = 1.1f;
     [Range(0f, 3f)] public float downGravityScale = 2f;
     [Range(0f, 100f)] public float maxDoubleJumpHeight = 40f;
@@ -61,6 +61,7 @@ public class WallSettings
     [Range(0f, 20f)] public float wallJumpForce = 10f;
     [Range(0.1f, 0.5f)] public float wallWaitTime = 0.2f;
     [Range(0f, 15f)] public float wallJumpSpeed = 5f;
+    [Range(1f,10f)] public float wallVerticalMultiplier = 3f;
 }
 
 [System.Serializable]
@@ -105,7 +106,7 @@ public class PhysicsDetectionSettings
     [Range(0.05f, 0.2f)] public float headCheckDistanceBuffer = 0.1f;
     [Range(0.2f, 1f)] public float wallDetectionDistance = 0.5f;
     [Range(0.2f, 1f)] public float dropThroughDuration = 0.5f;
-    [Range(-0.01f, 0f)] public float jumpVelocityThreshold = 0.001f; //Детект перехода с прыжка в падение
+    [Range(-0.2f, 0f)] public float jumpWallVelocityThreshold = -0.1f; //Детект перехода с прыжка в падение и детект соскальзывания по стене
     [Range(0.001f,0.4f)] public float platformDropThreshold = 0.1f; //Детект падения через платформу
     [Range(0.001f,0.1f)] public float movementInputThreshold = 0.001f;
     [Range (0.01f,2f)] public float floorDetectionDistance = 0.8f;

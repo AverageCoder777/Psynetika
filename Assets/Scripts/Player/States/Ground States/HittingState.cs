@@ -135,6 +135,11 @@ public class HittingState : GroundedStates
                 bullet.damage = attack.GetCurrentAttackStat<int>(AttackStatId.CurrentDamage);
                 bullet.Attacker = attack;
                 bullet.SetDirection(hitDir);
+                SpriteRenderer bulletSR = bulletObj.GetComponent<SpriteRenderer>();
+                if (bulletSR != null)
+                {
+                    bulletSR.flipX = hitDir < 0;
+                }
                 shooted = true;
                 if (player.debugMessages)
                     Debug.Log("Shot a bullet in direction " + hitDir);

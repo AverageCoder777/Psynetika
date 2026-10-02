@@ -39,7 +39,6 @@ public abstract class GroundedStates : State
         
         movement.Rb.linearVelocity = new Vector2(newVelocityX, movement.Rb.linearVelocity.y);
         
-        // Крутим спрайт в зависимости от направления
         if (movementInput.x > 0.01f)
             charManager.ActiveSR.flipX = false;
         else if (movementInput.x < -0.01f)

@@ -113,17 +113,20 @@ public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource,
     }
     private int GetCurrentDamage()
     {
-        int baseDamage = player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Dog ? settings.combat.dogBaseDamage : settings.combat.satanBaseDamage;
+        int baseDamage = GetBaseDamage();
         int damageBoost = player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Dog ? status.dogDamageBoost : status.satanDamageBoost;
         return Mathf.RoundToInt((baseDamage + damageBoost) * status.damageMultiplier);
     }
+    private int GetBaseDamage()
+    {
+        return player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Dog ? settings.combat.dogBaseDamage : settings.combat.satanBaseDamage;
+    }
     private float GetAttackRange()
     {
-        float baseDistance = player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Dog ? settings.combat.dogBaseHitDistance : settings.combat.satanBaseHitDistance;
-        return baseDistance;
+        return player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Dog ? settings.combat.dogBaseHitDistance : settings.combat.satanBaseHitDistance;
     }
 
-    int IAbilityDamageSource.GetBaseHitDamage() => Mathf.RoundToInt(GetStatMult(StatMultId.CurrentAttackSpeedMult));
+    int IAbilityDamageSource.GetBaseHitDamage() => GetBaseDamage();
     int IAbilityHealth.GetMaxHP() => health != null ? health.GetCurrentMaxHP() : 0;
     int IAbilityHealth.TryDrainHP(int amount, int minHp) => health != null ? health.TryDrainHP(amount, minHp) : 0;
 }

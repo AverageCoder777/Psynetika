@@ -100,7 +100,7 @@ public class SpellCastState : GroundedStates
 
     private void PlayCastAnimation()
     {
-        if (animator.runtimeAnimatorController is AnimatorOverrideController over)
+        if (charManager.ActiveAnimator.runtimeAnimatorController is AnimatorOverrideController over)
         {
             if (HasPlaceholderInBaseController(over))
             {
@@ -128,7 +128,7 @@ public class SpellCastState : GroundedStates
             warnedAboutOverride = true;
         }
 
-        animator.SetTrigger(SpellTriggerHash);
+        charManager.ActiveAnimator.SetTrigger(SpellTriggerHash);
     }
 
     private static bool HasPlaceholderInBaseController(AnimatorOverrideController over)

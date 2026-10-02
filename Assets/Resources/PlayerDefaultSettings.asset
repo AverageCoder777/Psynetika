@@ -20,8 +20,8 @@ MonoBehaviour:
     accelerationRate: 15
     frictionRate: 20
   jump:
+    airSpeedMultiplier: 0.75
     thrust: 8
-    doubleJumpThrust: 5
     upGravityScale: 1.1
     downGravityScale: 2
     maxDoubleJumpHeight: 40
@@ -36,6 +36,7 @@ MonoBehaviour:
     wallJumpForce: 20
     wallWaitTime: 0.15
     wallJumpSpeed: 0.45
+    wallVerticalMultiplier: 3
   ladder:
     climbSpeed: 5
     exitDelay: 0.25
@@ -57,7 +58,7 @@ MonoBehaviour:
     headCheckDistanceBuffer: 0.1
     wallDetectionDistance: 0.5
     dropThroughDuration: 0.5
-    jumpVelocityThreshold: 0
+    jumpVelocityThreshold: -0.05
     platformDropThreshold: 0.1
     movementInputThreshold: 0.001
     floorDetectionDistance: 0.8

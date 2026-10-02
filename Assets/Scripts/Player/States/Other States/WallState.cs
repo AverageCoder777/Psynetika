@@ -5,16 +5,24 @@ public class WallState : State
     private static readonly int WallSlidingHash = Animator.StringToHash("WallSliding");
     private bool jumpInput = false;
     private Vector2 wallSurfaceNormal = Vector2.zero;
+    private Collider2D wallCollider;
+    private Collider2D lastJumpedWall;
+    private float lastWallJumpTime = float.NegativeInfinity;
 
     public WallState(PlayerController player, StateMachine stateMachine, PlayerStaticSettings settings)
         : base(player, stateMachine, settings) { }
 
     public override void Enter()
     {
-        
+
         charManager.ActiveAnimator.SetBool(WallSlidingHash, true);
         movement.Rb.gravityScale = 1f;
         player.LastState = this;
+    }
+
+    public bool IsReattachBlocked(Collider2D wall, float duration)
+    {
+        return wall == lastJumpedWall && Time.time - lastWallJumpTime < duration;
     }
 
     public override void HandleInput()
@@ -27,11 +35,14 @@ public class WallState : State
     {
         base.LogicUpdate();
 
-        DetectWall();
+        RaycastHit2D wallHit = DetectWallHit();
+        wallCollider = wallHit.collider;
+        wallSurfaceNormal = wallHit.normal;
 
-        if (Mathf.Abs(movement.Rb.linearVelocity.y) < settings.detection.jumpVelocityThreshold || wallSurfaceNormal == Vector2.zero)
+        if (movement.Rb.linearVelocity.y > settings.detection.jumpWallVelocityThreshold || wallCollider == null)
         {
             stateMachine.ChangeState(player.IdleState);
+            return;
         }
 
         if (jumpInput)
@@ -49,8 +60,11 @@ public class WallState : State
 
     private void WallJump()
     {
+        lastJumpedWall = wallCollider;
+        lastWallJumpTime = Time.time;
+        player.TryConsumeAirJump();
         float horizontalVelocity = wallSurfaceNormal.x * settings.wall.wallJumpSpeed * settings.wall.wallJumpForce;
-        float verticalVelocity = Mathf.Sqrt(settings.wall.wallJumpForce * 2f);
+        float verticalVelocity = Mathf.Sqrt(settings.wall.wallJumpForce * settings.wall.wallVerticalMultiplier);
 
         movement.Rb.linearVelocity = new Vector2(horizontalVelocity, verticalVelocity);
 
@@ -61,31 +75,5 @@ public class WallState : State
     {
         charManager.ActiveAnimator.SetBool(WallSlidingHash, false);
         base.Exit();
-    }
-
-    private void DetectWall()
-    {
-        Vector2 wallDetectionDirection = charManager.ActiveSR.flipX ? Vector2.left : Vector2.right;
-        Vector2 raycastOrigin = (Vector2)player.transform.position + wallDetectionDirection * 0.25f;
-
-        RaycastHit2D hit = Physics2D.Raycast(
-            raycastOrigin,
-            wallDetectionDirection,
-            settings.detection.wallDetectionDistance,
-            LayerMask.GetMask("Walls")
-        );
-        if (player.debugMessages)
-        {
-            Debug.DrawRay(raycastOrigin, wallDetectionDirection * settings.detection.wallDetectionDistance,
-                hit.collider != null ? Color.green : Color.red);
-        }
-        if (hit.collider != null)
-        {
-            wallSurfaceNormal = hit.normal;
-        }
-        else
-        {
-            wallSurfaceNormal = Vector2.zero;
-        }
     }
 }

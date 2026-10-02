@@ -25,6 +25,7 @@ public class FlyingState : AirStates
         if (player.LastState is not WallState)
         {
             base.HandleInput();
+            TryDoubleJump();
         }
     }
 
@@ -51,8 +52,19 @@ public class FlyingState : AirStates
     {
         base.LogicUpdate();
 
+        if (stateMachine.CurrentPlayerState != this)
+        {
+            return;
+        }
+
         if (DetectFloor() != "None")
         {
+            if (movement.Rb.linearVelocity.y > 0f)
+            {
+                return;
+            }
+
+            player.ResetAirJumps();
             player.LastState = this;
             stateMachine.ChangeState(player.IdleState);
         }

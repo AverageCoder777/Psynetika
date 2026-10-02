@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class IdleState : GroundedStates
@@ -19,7 +18,7 @@ public class IdleState : GroundedStates
         base.Enter();
         charManager.ActiveAnimator.SetBool(MovingHash, false);
         grounded = true;
-        movement.Rb.linearVelocity = new Vector2(0, movement.Rb.linearVelocity.y);
+        //movement.Rb.linearVelocity = new Vector2(0, movement.Rb.linearVelocity.y);
     }
     public override void HandleInput()
     {

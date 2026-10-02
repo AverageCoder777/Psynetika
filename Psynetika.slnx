@@ -1,6 +1,6 @@
 ﻿<Solution>
-  <Project Path="UniTask.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="UniTask.csproj" />
   <Project Path="UniTask.Linq.csproj" />
   <Project Path="Ink-Libraries.csproj" />
   <Project Path="UniTask.Addressables.csproj" />

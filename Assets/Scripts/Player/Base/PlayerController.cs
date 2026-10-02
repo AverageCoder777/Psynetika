@@ -29,10 +29,22 @@ public class PlayerController : MonoBehaviour
     private PlayerActions playerActions;
     private PlayerCharacterManager playerCharManager;
     private bool isVisibleToEnemies = true;
+    private int airJumpsRemaining = 2;
 
     #endregion
     #region Publlic Fields
     public bool IsVisibleToEnemies => isVisibleToEnemies;
+    public bool TryConsumeAirJump()
+    {
+        if (airJumpsRemaining <= 0)
+        {
+            return false;
+        }
+
+        airJumpsRemaining--;
+        return true;
+    }
+    public void ResetAirJumps() => airJumpsRemaining = 2;
     public State LastState { get => lastState; set => lastState = value; }
     public SpellController SpellController => spellController;
     public PlayerMoving Movement => movement;

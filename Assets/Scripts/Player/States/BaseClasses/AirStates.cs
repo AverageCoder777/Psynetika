@@ -2,9 +2,10 @@ using UnityEngine;
 
 public abstract class AirStates : State
 {
+    private static readonly int DoubleJumpingHash = Animator.StringToHash("DoubleJumping");
+
     public AirStates(PlayerController player, StateMachine stateMachine, PlayerStaticSettings settings)
         : base(player, stateMachine, settings) { }
-    protected float wallContactTime = 0f;
     public override void Enter()
     {
         base.Enter();
@@ -15,35 +16,49 @@ public abstract class AirStates : State
         movement.MovementInput = movement.PlayerInput.actions["Move"].ReadValue<Vector2>();
     }
 
+    protected bool TryDoubleJump()
+    {
+        if (!movement.PlayerInput.actions["Jump"].WasPressedThisFrame() || !player.TryConsumeAirJump())
+        {
+            return false;
+        }
+
+        ApplyJumpVelocity();
+        charManager.ActiveAnimator.SetTrigger(DoubleJumpingHash);
+        return true;
+    }
+
+    protected void ApplyJumpVelocity()
+    {
+        Vector2 velocity = movement.Rb.linearVelocity;
+        velocity.y = settings.jump.thrust / movement.Rb.mass;
+        movement.Rb.linearVelocity = velocity;
+    }
+
     public override void LogicUpdate()
     {
         base.LogicUpdate();
 
         if (movement.Rb.linearVelocity.y <= 0 && DetectFloor()=="Floor")
         {
+            player.ResetAirJumps();
             stateMachine.ChangeState(player.IdleState);
             return;
         }
 
-        bool touchingWall = DetectWall();
-        if (touchingWall && (charManager.GetCurrentCharacterType() != PlayerCharacterType.Satan))
+        Collider2D wall = DetectWall();
+        if (wall != null
+            && charManager.GetCurrentCharacterType() != PlayerCharacterType.Satan
+            && !player.WallState.IsReattachBlocked(wall, settings.wall.wallWaitTime))
         {
-            wallContactTime += Time.deltaTime;
-            if (wallContactTime >= settings.wall.wallWaitTime)
-            {
-                stateMachine.ChangeState(player.WallState);
-                return;
-            }
-        }
-        else
-        {
-            wallContactTime = 0f;
+            stateMachine.ChangeState(player.WallState);
+            return;
         }
     }
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-        float targetVelocityX = movement.MovementInput.x * movement.GetCurrentSpeed() * 0.75f;//0.75 - фактор скорости перемещения в воздухе, добавить переменную!!!
+        float targetVelocityX = movement.MovementInput.x * movement.GetCurrentSpeed() * settings.jump.airSpeedMultiplier;
         float currentVelocityX = movement.Rb.linearVelocity.x;
 
         float newVelocityX = currentVelocityX;
@@ -72,63 +87,7 @@ public abstract class AirStates : State
     }
     public override void Exit()
     {
+        charManager.ActiveAnimator.ResetTrigger(DoubleJumpingHash);
         base.Exit();
-    }
-    protected bool DetectWall()
-    {
-        Vector2 wallDetectionDirection = charManager.ActiveSR.flipX ? Vector2.left : Vector2.right;
-        Vector2 raycastOrigin = (Vector2)player.transform.position + wallDetectionDirection / 4f;
-
-        RaycastHit2D hit = Physics2D.Raycast(
-            raycastOrigin,
-            wallDetectionDirection,
-            settings.detection.wallDetectionDistance,
-            LayerMask.GetMask("Walls")
-        );
-        #if UNITY_EDITOR
-        if (player.debugMessages)
-        {
-            Debug.DrawRay(raycastOrigin, wallDetectionDirection * settings.detection.wallDetectionDistance,
-                hit.collider != null ? Color.green : Color.red);
-        }
-        #endif
-        return hit.collider != null;
-    }
-    protected string DetectFloor()
-    {
-        Vector2 floorDetectionDirection = Vector2.down;
-        Vector2 platformDetectionDirection = Vector2.down;
-        Vector2 raycastOrigin = (Vector2)player.transform.position - Vector2.up * 0.5f;
-
-        RaycastHit2D hitFloor = Physics2D.Raycast(
-            raycastOrigin,
-            floorDetectionDirection,
-            settings.detection.floorDetectionDistance,
-            LayerMask.GetMask("Floor")
-        );
-        RaycastHit2D hitPlatform = Physics2D.Raycast(
-            raycastOrigin,
-            platformDetectionDirection,
-            settings.detection.floorDetectionDistance,
-            LayerMask.GetMask("Platform")
-        );
-        #if UNITY_EDITOR
-        if (player.debugMessages)
-        {
-            Debug.DrawRay(raycastOrigin, floorDetectionDirection * settings.detection.floorDetectionDistance,
-                hitFloor.collider != null ? Color.blue : Color.yellow);
-            Debug.DrawRay(raycastOrigin, platformDetectionDirection * settings.detection.floorDetectionDistance,
-                hitPlatform.collider != null ? Color.blue : Color.yellow);
-        }
-        #endif
-        if (hitFloor.collider != null)
-        {
-            return "Floor";
-        }
-        if (hitPlatform.collider != null)
-        {
-            return "Platform";
-        }
-        return "None";
     }
 }
