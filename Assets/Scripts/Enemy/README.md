@@ -7,9 +7,8 @@
 3. В `EnemyController.Config` положить конфиг из шага 1.
 4. В конфиге заполнить: `maxHp`, `moveSpeed`, блок **Обнаружение игрока**, список **Атаки**.
 
-`EnemyHealth`, `EnemyMovement`, `EnemyAttack`, `EnemySensor`, `StatusEffectHandler` контроллер
-добавляет сам, если их нет на префабе. Опционально можно докинуть `DamageFlash` (нужен `SpriteRenderer`)
-и `EnemyLoot` (дроп монет из конфига).
+`EnemyHealth`, `EnemyMovement`, `EnemyAttack`, `EnemySensor`, `StatusEffectHandler`, `EnemyLoot` контроллер
+добавляет сам, если их нет на префабе. Опционально можно докинуть `DamageFlash` (нужен `SpriteRenderer`).
 
 Всё остальное — данные:
 
@@ -28,6 +27,8 @@
 | возвращается домой, потеряв игрока | `home.returnWhenLost = true` |
 | зоны агро без возни с триггерами | `perception.mode = Radius` (или Auto без триггеров на префабе) |
 | враг физически упирается в игрока и толкает его (щитоносец, стена) | `blocksPlayer = true` (по умолчанию игрок проходит сквозь врагов) |
+| монеты при смерти | блок **Лут** (`CoinDrop`): префаб `Укурокоин Прайм`, количество, сила разлёта, `pickupDelay` |
+| стая мелочи не толкается друг с другом | `blocksEnemies = false` |
 | мечется вокруг игрока и наскакивает с укусом | Engage → `Наскоки`, у атаки `cooldown` + `cooldownRandom` (3 + 2 = раз в 3–5 с) |
 | бесцельно бродит, пока не заметил игрока | Idle → `Блуждание` |
 | атакуют по очереди, а не толпой | `squad.enabled = true`, общий `squad.groupId` у всей команды |
@@ -42,7 +43,7 @@ EnemyController            тонкий координатор: ссылки н�
 ├── EnemyAttack            выбор атаки, кулдауны, урон/пули/касты, IAbilityCaster + IAbilityStatOwner
 ├── EnemySensor            зоны агро и атаки: триггеры или радиусы
 ├── StatusEffectHandler    Burn/Glitch и их реакция
-├── EnemyLoot (опц.)       дроп монет
+├── EnemyLoot              дроп монет при смерти (EnemyConfig.loot)
 └── DamageFlash (опц.)     подсветка при уроне
 ```
 

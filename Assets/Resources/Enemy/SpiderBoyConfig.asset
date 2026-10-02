@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: SpiderBoyConfig
   m_EditorClassIdentifier: Assembly-CSharp::EnemyConfig
   maxHp: 40
-  moveSpeed: 4
+  moveSpeed: 6
+  blocksPlayer: 0
+  blocksEnemies: 0
   body:
     rid: 1000
   idle:
@@ -39,8 +41,14 @@ MonoBehaviour:
     groupId: Spiders
     turnGap: 0.5
     maxTurnTime: 3
-  coinsToDrop: 2
-  coinPrefab: {fileID: 3100125784294477904, guid: 2e9e69c26f884884ca9b268fb4e05e6f, type: 3}
+  loot:
+    coinPrefab: {fileID: 8965484931928530446, guid: 51b06ea4729825a45b7f36c092a5f3d6, type: 3}
+    minCount: 1
+    maxCount: 3
+    minForce: 4
+    maxForce: 7
+    spreadAngle: 40
+    pickupDelay: 1
   statusEffects: {fileID: 11400000, guid: aad54200f10b1b942b7a1fe3cb8d024d, type: 2}
   deathDespawnDelay: 0.5
   deathEffects:
@@ -91,16 +99,16 @@ MonoBehaviour:
         approachTimeout: 2.5
         giveUpPause: 1
         skitterSpeedScale: 1
-        minDistance: 2
-        maxDistance: 3.5
-        retargetMin: 0.3
-        retargetMax: 0.9
+        minDistance: 3.5
+        maxDistance: 6
+        retargetMin: 0.4
+        retargetMax: 1.1
         sameSideChance: 0.7
         verticalSpread: 0
     - rid: 1003
       type: {class: MeleeAttackModule, ns: , asm: Assembly-CSharp}
       data:
-        label: "Кусь"
+        label: "\u041A\u0443\u0441\u044C"
         animatorParameter: Hit
         windup: 0.15
         recovery: 0.25
@@ -109,7 +117,7 @@ MonoBehaviour:
         minRange: 0
         maxRange: 0
         faceTargetOnStart: 1
-        damage: 10
+        damage: 3
         damageType: 0
     - rid: 1004
       type: {class: PoisonBurstDeathEffect, ns: , asm: Assembly-CSharp}

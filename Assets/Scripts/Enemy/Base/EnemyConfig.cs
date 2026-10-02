@@ -34,6 +34,9 @@ public class EnemyConfig : ScriptableObject
     [Tooltip("Тело врага упирается в игрока и толкает его. Выключено = проходят друг сквозь друга (зоны агро и удара работают как прежде)")]
     public bool blocksPlayer = false;
 
+    [Tooltip("Тело врага упирается в других врагов. Выключено = враги проходят друг сквозь друга (стаи мелочи)")]
+    public bool blocksEnemies = true;
+
     [Tooltip("Как враг двигается. Пусто = ходьба с настройками из устаревшего блока Ground")]
     [SerializeReference, SubclassSelector]
     public EnemyLocomotion body;
@@ -68,8 +71,8 @@ public class EnemyConfig : ScriptableObject
     public EnemySquadSettings squad = new();
 
     [Header("Лут")]
-    [Min(0)] public int coinsToDrop = 0;
-    public GameObject coinPrefab;
+    [Tooltip("Монеты, выпадающие при смерти. Пустой префаб = без лута")]
+    public CoinDrop loot = new();
 
     [Header("Статус-эффекты")]
     public StatusEffectConfig statusEffects;

@@ -1,69 +1,42 @@
-using System.Collections;
+using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
+// Сундук: открывается по Interact, когда игрок рядом, и выбрасывает монеты (см. CoinDrop).
 public class ChestScript : MonoBehaviour, IInteractable
 {
-    private static WaitForSeconds _waitForSeconds0_02 = new WaitForSeconds(0.02f);
+    private static readonly int CanOpenHash = Animator.StringToHash("CanOpen");
+    private static readonly int OpenHash = Animator.StringToHash("Open");
 
-    [Header("Spawn settings")]
-    [SerializeField] private GameObject coinPrefab;
-    [SerializeField] private Transform spawnParent; // optional parent for spawned coins
+    [Header("Монеты")]
+    [SerializeField] private CoinDrop coins = new() { minCount = 5, maxCount = 8, minForce = 5f, maxForce = 8f };
 
-    [Header("Spawn area")]
-    [Tooltip("If set, coins will spawn at random positions inside this BoxCollider2D bounds. If null, fallback to circular spawnRadius.")]
+    [Tooltip("Монеты появляются в случайной точке внутри этой области. Пусто = из центра сундука")]
     [SerializeField] private BoxCollider2D spawnBox;
-    [SerializeField] private float spawnRadius = 0.5f; // fallback when spawnBox == null
 
-    [Header("Count")]
-    [SerializeField] private int minCoins = 3;
-    [SerializeField] private int maxCoins = 8;
+    [Tooltip("Пауза между монетами, сек — монеты вылетают струйкой, а не одной кучей")]
+    [Min(0f)] [SerializeField] private float spawnInterval = 0.02f;
 
-    [Header("Scatter")]
-    [SerializeField] private float minForce = 2f;
-    [SerializeField] private float maxForce = 6f;
-    [SerializeField, Range(0f, 1f)] private float upwardBias = 0.6f;
-
-    [Header("Pop animation (2D)")]
-    [Tooltip("Duration of the pop animation in seconds")]
-    [SerializeField] private float popDuration = 0.45f;
-    [Tooltip("Animation curve used for pop interpolation (0..1)")]
-    [SerializeField] private AnimationCurve popCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
-    [Tooltip("If true, Rigidbody2D will be switched to Dynamic after pop and receive a small impulse")]
-    [SerializeField] private bool enablePhysicsAfterPop = true;
-    [Tooltip("Impulse applied after pop when physics enabled")]
-    [SerializeField] private float postPopImpulse = 0.5f;
+    [Header("Прочее")]
     [SerializeField] private Animator animator;
 
-    [Header("Behavior")]
-    [SerializeField] private bool destroyChestAfterOpen = false;
-    [SerializeField] private float destroyDelay = 2f;
-
-    [Header("Player detection")]
-    [Tooltip("Tag to identify player. Chest opens when an object with this tag is inside trigger and Interact action is performed.")]
+    [Tooltip("Сундук открывается, когда объект с этим тегом (по корню) стоит в триггере и нажат Interact")]
     [SerializeField] private string playerTag = "Player";
-    public UnityEvent onOpened;
-    private bool opened = false;
-    private GameObject playerInRangeObj;
 
-    private void OnValidate()
-    {
-        if (minCoins < 0) minCoins = 0;
-        if (maxCoins < minCoins) maxCoins = minCoins;
-        spawnRadius = Mathf.Max(0f, spawnRadius);
-        minForce = Mathf.Max(0f, minForce);
-        maxForce = Mathf.Max(minForce, maxForce);
-        upwardBias = Mathf.Clamp01(upwardBias);
-        popDuration = Mathf.Max(0.01f, popDuration);
-        popCurve ??= AnimationCurve.EaseInOut(0, 0, 1, 1);
-    }
+    public UnityEvent onOpened;
+
+    private bool opened;
+    private GameObject playerInRangeObj;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (IsPlayerCollider2D(other))
         {
             playerInRangeObj = other.transform.root.gameObject;
-            animator.SetBool("CanOpen", true);
+            SetCanOpen(true);
         }
     }
 
@@ -72,14 +45,13 @@ public class ChestScript : MonoBehaviour, IInteractable
         if (playerInRangeObj != null && other.transform.root.gameObject == playerInRangeObj)
         {
             playerInRangeObj = null;
-            animator.SetBool("CanOpen", false);
+            SetCanOpen(false);
         }
     }
 
     private bool IsPlayerCollider2D(Collider2D c)
     {
-        if (c == null) return false;
-        if (string.IsNullOrEmpty(playerTag)) return false;
+        if (c == null || string.IsNullOrEmpty(playerTag)) return false;
         return c.transform.root.CompareTag(playerTag);
     }
 
@@ -87,71 +59,65 @@ public class ChestScript : MonoBehaviour, IInteractable
     {
         if (playerInRangeObj != null)
         {
-            ChestOpen();
+            Open();
         }
     }
 
-    private void ChestOpen()
+    private void Open()
     {
         if (opened) return;
         opened = true;
+
         if (animator != null)
-            animator.SetTrigger("Open");
-        Debug.Log("ChestScript: Chest opened");
-        StartCoroutine(SpawnCoinsRoutine());
+        {
+            animator.SetTrigger(OpenHash);
+        }
+
+        if (coins.coinPrefab == null)
+        {
+            Debug.LogWarning($"[ChestScript] {name}: не назначен префаб монеты.");
+        }
+        else
+        {
+            SpawnCoins(this.GetCancellationTokenOnDestroy()).Forget();
+        }
+
         onOpened?.Invoke();
     }
 
-    private IEnumerator SpawnCoinsRoutine()
+    private async UniTaskVoid SpawnCoins(CancellationToken token)
     {
-        if (coinPrefab == null) {
-            Debug.Log("PIDORAS NE POSTAVIL MONETKI");
-            yield break;}
+        int count = coins.RollCount();
+        int delayMs = Mathf.RoundToInt(spawnInterval * 1000f);
 
-        int count = Random.Range(minCoins, maxCoins + 1);
-        bool useBox = spawnBox != null;
-
-        for (int i = 0; i < count; i++)
+        try
         {
-            Vector2 spawnPos2D;
-            if (useBox)
+            for (int i = 0; i < count; i++)
             {
-                Bounds b = spawnBox.bounds;
-                float x = Random.Range(b.min.x, b.max.x);
-                float y = Random.Range(b.min.y, b.max.y);
-                spawnPos2D = new Vector2(x, y);
+                if (i > 0 && delayMs > 0)
+                {
+                    await UniTask.Delay(delayMs, cancellationToken: token);
+                }
+
+                coins.SpawnOne(GetSpawnPoint());
             }
-            else
-            {
-                Vector2 offset = Random.insideUnitCircle * spawnRadius;
-                spawnPos2D = (Vector2)transform.position + offset;
-            }
+        }
+        catch (OperationCanceledException) { }
+    }
 
-            Vector3 spawnPos = (Vector3)spawnPos2D;
+    private Vector2 GetSpawnPoint()
+    {
+        if (spawnBox == null) return transform.position;
 
-            GameObject coin = Instantiate(coinPrefab, spawnPos, Quaternion.identity);
-            coin.SetActive(true);
-            coin.transform.rotation = Quaternion.identity;
+        Bounds b = spawnBox.bounds;
+        return new Vector2(Random.Range(b.min.x, b.max.x), Random.Range(b.min.y, b.max.y));
+    }
 
-            if (coin.TryGetComponent<Rigidbody2D>(out var rb2))
-            {
-                rb2.linearVelocity = Vector2.zero;
-                rb2.angularVelocity = 0f;
-                rb2.constraints = RigidbodyConstraints2D.FreezeRotation;
-
-                Vector2 dir = ((Vector2)spawnPos - (Vector2)transform.position).magnitude > 0.01f
-                    ? ((Vector2)spawnPos - (Vector2)transform.position).normalized
-                    : Vector2.up;
-
-                dir = (dir + Vector2.up * upwardBias).normalized;
-
-                float angleVariation = Random.Range(-30f, 30f);
-                dir = (Quaternion.Euler(0f, 0f, angleVariation) * dir).normalized;
-
-                float force = Random.Range(minForce, maxForce);
-                rb2.AddForce(dir * force, ForceMode2D.Impulse);
-            }
-            yield return _waitForSeconds0_02;
+    private void SetCanOpen(bool value)
+    {
+        if (animator != null)
+        {
+            animator.SetBool(CanOpenHash, value);
         }
     }
 }

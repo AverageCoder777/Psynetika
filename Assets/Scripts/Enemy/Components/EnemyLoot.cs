@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Лут врага: при смерти выбрасывает монеты по EnemyConfig.loot. Контроллер добавляет компонент сам.
 [RequireComponent(typeof(EnemyHealth))]
 public class EnemyLoot : MonoBehaviour
 {
@@ -28,12 +29,10 @@ public class EnemyLoot : MonoBehaviour
 
     private void DropCoins()
     {
-        if (config == null || config.coinPrefab == null) return;
+        if (config == null || config.loot == null) return;
 
-        for (int i = 0; i < config.coinsToDrop; i++)
-        {
-            GameObject coin = Instantiate(config.coinPrefab, transform.position, Quaternion.identity);
-            coin.SetActive(true);
-        }
+        // Из центра тела, а не из пивота у ног — иначе монеты рождаются в полу.
+        Vector2 origin = TryGetComponent(out IAbilityCaster caster) ? caster.Center : (Vector2)transform.position;
+        config.loot.Spawn(origin);
     }
 }

@@ -21,7 +21,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2717558987494706175
 Transform:
   m_ObjectHideFlags: 0
@@ -82,8 +82,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 126095851
+  m_SortingLayer: 1
   m_SortingOrder: 3
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7808828207649936917, guid: 6c81f1cedfbd69448a0af2d41b7bd116, type: 3}
@@ -130,7 +130,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dfaf03e484609e428a63db36526201a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinsScript
-  amountCoins: 1
+  amount: 1
+  pickupTrigger: {fileID: 146793241702819779}
+  playerTag: Player
 --- !u!61 &146793241702819779
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -193,7 +195,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1600
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -249,4 +251,4 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
