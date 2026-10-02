@@ -57,24 +57,25 @@ public class EnemyMovement : MonoBehaviour
         attack = GetComponent<EnemyAttack>();
         aggroZone = GetComponent<EnemyAggroZone>();
         if (BodyCollider == null) BodyCollider = FindBodyCollider();
-        if (!cfg.blocksPlayer) IgnorePlayerContacts();
+        if (!cfg.blocksPlayer) ExcludeBodyContacts("Player");
+        if (!cfg.blocksEnemies) ExcludeBodyContacts("Enemy");
 
         locomotion = cfg.ResolveBody().CreateRuntime(this);
         locomotion.Attach();
     }
 
-    // Исключаем слой Player только у физических коллайдеров врага, а не матрицей слоёв:
+    // Исключаем слой только у физических коллайдеров врага, а не матрицей слоёв:
     // матрица отключила бы и триггеры сенсора, по которым враг замечает и бьёт игрока.
-    private void IgnorePlayerContacts()
+    private void ExcludeBodyContacts(string layerName)
     {
-        int playerMask = LayerMask.GetMask("Player");
-        if (playerMask == 0) return;
+        int mask = LayerMask.GetMask(layerName);
+        if (mask == 0) return;
 
         foreach (Collider2D col in GetComponents<Collider2D>())
         {
             if (!col.isTrigger)
             {
-                col.excludeLayers = col.excludeLayers.value | playerMask;
+                col.excludeLayers = col.excludeLayers.value | mask;
             }
         }
     }

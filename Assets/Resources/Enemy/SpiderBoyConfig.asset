@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: SpiderBoyConfig
   m_EditorClassIdentifier: Assembly-CSharp::EnemyConfig
   maxHp: 40
-  moveSpeed: 4
+  moveSpeed: 6
+  blocksPlayer: 0
+  blocksEnemies: 0
   body:
     rid: 1000
   idle:
@@ -97,16 +99,16 @@ MonoBehaviour:
         approachTimeout: 2.5
         giveUpPause: 1
         skitterSpeedScale: 1
-        minDistance: 2
-        maxDistance: 3.5
-        retargetMin: 0.3
-        retargetMax: 0.9
+        minDistance: 3.5
+        maxDistance: 6
+        retargetMin: 0.4
+        retargetMax: 1.1
         sameSideChance: 0.7
         verticalSpread: 0
     - rid: 1003
       type: {class: MeleeAttackModule, ns: , asm: Assembly-CSharp}
       data:
-        label: "Кусь"
+        label: "\u041A\u0443\u0441\u044C"
         animatorParameter: Hit
         windup: 0.15
         recovery: 0.25
@@ -115,7 +117,7 @@ MonoBehaviour:
         minRange: 0
         maxRange: 0
         faceTargetOnStart: 1
-        damage: 10
+        damage: 3
         damageType: 0
     - rid: 1004
       type: {class: PoisonBurstDeathEffect, ns: , asm: Assembly-CSharp}
