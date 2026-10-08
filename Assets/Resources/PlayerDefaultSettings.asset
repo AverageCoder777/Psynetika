@@ -58,7 +58,7 @@ MonoBehaviour:
     headCheckDistanceBuffer: 0.1
     wallDetectionDistance: 0.5
     dropThroughDuration: 0.5
-    jumpVelocityThreshold: -0.05
+    jumpWallVelocityThreshold: -0.1
     platformDropThreshold: 0.1
     movementInputThreshold: 0.001
     floorDetectionDistance: 0.8
