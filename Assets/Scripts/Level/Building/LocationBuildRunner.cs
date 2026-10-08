@@ -87,7 +87,14 @@ public static class LocationBuildRunner
         root.localScale = Vector3.one * config.worldScale;
 
         LocationBuildContext context = new(root, config, report, confiner, objectCreated);
+
+        if (TryGetLayersBounds(layers, out Vector2 levelMin, out Vector2 levelMax))
+        {
+            context.SetLevelBounds(levelMin, levelMax);
+        }
+
         bool cameraBoundsBuilt = false;
+        List<ParallaxCoverageCheck.Layer> drawnLayers = new();
 
         foreach (LocationLayerSource layer in layers)
         {
@@ -108,6 +115,18 @@ public static class LocationBuildRunner
             {
                 cameraBoundsBuilt = true;
             }
+
+            if (action.renderSprite && layer.Sprite != null)
+            {
+                drawnLayers.Add(new ParallaxCoverageCheck.Layer
+                {
+                    name = layer.Name,
+                    mask = context.GetMask(layer.Sprite),
+                    // Тот же якорь, что ParallaxLayer возьмёт в игре: центр границ спрайта.
+                    anchor = layer.Sprite.bounds.center,
+                    factor = action is ParallaxAction parallax ? parallax.Factor : Vector2.zero
+                });
+            }
         }
 
         context.CurrentEntry = null;
@@ -116,6 +135,10 @@ public static class LocationBuildRunner
         {
             BuildFallbackCameraBounds(layers, context);
         }
+
+        // После границ камеры: проверке нужно знать, куда камера вообще может заехать.
+        drawnLayers.RemoveAll(drawn => drawn.mask == null);
+        ParallaxCoverageCheck.Run(drawnLayers, context);
 
         return report;
     }
@@ -277,19 +300,10 @@ public static class LocationBuildRunner
 
         foreach (LocationLayerSource layer in layers)
         {
-            Sprite sprite = layer.Sprite;
-
-            if (sprite == null)
+            if (!TryGetSpriteBounds(layer.Sprite, out Vector2 layerMin, out Vector2 layerMax))
             {
                 continue;
             }
-
-            Rect rect = sprite.textureRect.width > 0f ? sprite.textureRect : sprite.rect;
-            Vector2 pivot = sprite.pivot - sprite.textureRectOffset;
-            float pixelsPerUnit = sprite.pixelsPerUnit;
-
-            Vector2 layerMin = -pivot / pixelsPerUnit;
-            Vector2 layerMax = new Vector2(rect.width - pivot.x, rect.height - pivot.y) / pixelsPerUnit;
 
             min = Vector2.Min(min, layerMin);
             max = Vector2.Max(max, layerMax);
@@ -297,5 +311,25 @@ public static class LocationBuildRunner
         }
 
         return found;
+    }
+
+    // Габариты нарисованного содержимого одного слоя в локальных единицах корня.
+    private static bool TryGetSpriteBounds(Sprite sprite, out Vector2 min, out Vector2 max)
+    {
+        min = max = Vector2.zero;
+
+        if (sprite == null)
+        {
+            return false;
+        }
+
+        Rect rect = sprite.textureRect.width > 0f ? sprite.textureRect : sprite.rect;
+        Vector2 pivot = sprite.pivot - sprite.textureRectOffset;
+        float pixelsPerUnit = sprite.pixelsPerUnit;
+
+        min = -pivot / pixelsPerUnit;
+        max = new Vector2(rect.width - pivot.x, rect.height - pivot.y) / pixelsPerUnit;
+
+        return true;
     }
 }

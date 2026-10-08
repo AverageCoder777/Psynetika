@@ -44,6 +44,15 @@ public class SpriteMask2D
         return new Vector2((x - pivot.x) / pixelsPerUnit, (y - pivot.y) / pixelsPerUnit);
     }
 
+    // Обратный перевод: есть ли тело слоя в точке локальных координат объекта слоя.
+    public bool IsSolidAt(Vector2 local)
+    {
+        int x = Mathf.FloorToInt(local.x * pixelsPerUnit + pivot.x);
+        int y = Mathf.FloorToInt(local.y * pixelsPerUnit + pivot.y);
+
+        return this[x, y];
+    }
+
     public static SpriteMask2D FromSprite(Sprite sprite, float alphaThreshold, TextureCache cache)
     {
         if (sprite == null || sprite.texture == null)

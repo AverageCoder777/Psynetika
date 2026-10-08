@@ -28,6 +28,14 @@ public class LocationBuildContext
     // Строка отчёта обрабатываемого сейчас слоя — действия дописывают в неё, что создали.
     public LocationBuildEntry CurrentEntry { get; set; }
 
+    // Габариты всех слоёв в локальных единицах корня (без worldScale).
+    public bool HasLevelBounds { get; private set; }
+    public Vector2 LevelMin { get; private set; }
+    public Vector2 LevelMax { get; private set; }
+
+    private bool viewResolved;
+    private Vector2 viewHalfExtents;
+
     public LocationBuildContext(
         Transform root,
         LocationBuildConfig config,
@@ -40,6 +48,40 @@ public class LocationBuildContext
         Report = report;
         Confiner = confiner;
         this.objectCreated = objectCreated;
+    }
+
+    public void SetLevelBounds(Vector2 min, Vector2 max)
+    {
+        LevelMin = min;
+        LevelMax = max;
+        HasLevelBounds = true;
+    }
+
+    /*
+    Полуразмер кадра камеры в локальных единицах корня: обзор берётся у CinemachineCamera
+    конфайнера, аспект — у Camera.main (нет камеры — 16:9). Нет конфайнера — нули, и проверки,
+    которым нужен кадр, становятся мягче. Зум пути камеры не учитывается: это обзор по умолчанию.
+    */
+    public bool TryGetViewHalfExtents(out Vector2 halfExtents)
+    {
+        if (!viewResolved)
+        {
+            viewResolved = true;
+            CinemachineCamera virtualCamera = Confiner != null ? Confiner.GetComponent<CinemachineCamera>() : null;
+
+            if (virtualCamera != null)
+            {
+                Camera output = Camera.main;
+                float aspect = output != null && output.aspect > 0f ? output.aspect : 16f / 9f;
+                float halfHeight = virtualCamera.Lens.OrthographicSize;
+
+                viewHalfExtents = new Vector2(halfHeight * aspect, halfHeight) / Config.worldScale;
+            }
+        }
+
+        halfExtents = viewHalfExtents;
+
+        return viewHalfExtents != Vector2.zero;
     }
 
     public SpriteMask2D GetMask(Sprite sprite)
