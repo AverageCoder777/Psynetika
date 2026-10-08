@@ -10,6 +10,7 @@ public abstract class AirStates : State
     {
         base.Enter();
     }
+
     public override void HandleInput()
     {
         base.HandleInput();
@@ -39,7 +40,7 @@ public abstract class AirStates : State
     {
         base.LogicUpdate();
 
-        if (movement.Rb.linearVelocity.y <= 0 && DetectFloor()=="Floor")
+        if (movement.Rb.linearVelocity.y <= 0f && DetectFloor()=="Floor")
         {
             player.ResetAirJumps();
             stateMachine.ChangeState(player.IdleState);
@@ -60,13 +61,16 @@ public abstract class AirStates : State
         base.PhysicsUpdate();
         float targetVelocityX = movement.MovementInput.x * movement.GetCurrentSpeed() * settings.jump.airSpeedMultiplier;
         float currentVelocityX = movement.Rb.linearVelocity.x;
-
         float newVelocityX = currentVelocityX;
+
         if (movement.MovementInput.x != 0)
         {
-            newVelocityX = Mathf.Lerp(currentVelocityX, targetVelocityX, settings.move.accelerationRate * Time.fixedDeltaTime);
+            newVelocityX = Mathf.Lerp(
+                currentVelocityX,
+                targetVelocityX,
+                settings.move.accelerationRate * Time.fixedDeltaTime);
         }
-        else if (Mathf.Abs(currentVelocityX) > 0.1f)
+        else if (Mathf.Abs(currentVelocityX) < 0.01f)
         {
             newVelocityX = currentVelocityX;
         }
