@@ -43,6 +43,16 @@ public class EnemyMovement : MonoBehaviour
 
     private void Awake()
     {
+        CacheComponents();
+    }
+
+    // Initialize может прийти раньше нашего Awake: EnemyController вызывает его из своего Awake,
+    // а порядок Awake компонентов одного объекта Unity не гарантирует. Без этого rb был бы null,
+    // Attach() падал бы, состояния не создавались, и контроллер выключался в Start.
+    private void CacheComponents()
+    {
+        if (rb != null) return;
+
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         SpawnPosition = transform.position;
@@ -51,6 +61,7 @@ public class EnemyMovement : MonoBehaviour
 
     public void Initialize(EnemyConfig cfg)
     {
+        CacheComponents();
         baseSpeed = cfg.moveSpeed;
         home = cfg.home;
         // Соседей ищем здесь: контроллер мог доставить их после нашего Awake.

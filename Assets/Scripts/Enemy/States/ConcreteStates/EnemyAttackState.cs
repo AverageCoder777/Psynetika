@@ -24,7 +24,7 @@ public class EnemyAttackState : EnemyStates
         // Скорость теперь сохраняется между шагами: без остановки враг проскользил бы весь замах.
         Movement.Stop();
         module = Attack.PickAttack();
-        // Командная очередь: пока идёт удар, остальные из команды ждут. Отпускается в Exit().
+        // Очередь команды держим на всё время удара: тактика отпустила её в своём Exit().
         if (module == null || !Attack.TryTakeTurn())
         {
             module = null;
