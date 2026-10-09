@@ -55,5 +55,11 @@ public class DamageDummy : MonoBehaviour, IAbilityTarget
     Transform IAbilityTarget.Transform => transform;
     bool IAbilityTarget.IsAlive => true;
     Team IAbilityTarget.Team => global::Team.Neutral;
-    void IAbilityTarget.ReceiveDamage(DamageEvent ev) => TakeDamage(Mathf.RoundToInt(ev.Amount));
+    void IAbilityTarget.ReceiveDamage(DamageEvent ev)
+    {
+        int amount = Mathf.Max(0, Mathf.RoundToInt(ev.Amount));
+        TakeDamage(amount);
+        // Манекен бессмертен — весь урон засчитывается как нанесённый (удобно тестировать энергию).
+        DamageHelper.NotifyDamageDealt(ev, amount);
+    }
 }

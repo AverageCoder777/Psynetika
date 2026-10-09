@@ -12,6 +12,7 @@ public class PlayerStaticSettings : ScriptableObject
     [Header("═══ LADDER MECHANICS ═══")] public LadderSettings ladder;
     [Header("═══ COMBAT SYSTEM ═══")] public CombatSettings combat;
     [Header("═══ HEALTH ═══")] public HealthSettings health;
+    [Header("═══ ENERGY (ULTIMATE) ═══")] public EnergySettings energy;
     [Header("═══ PHYSICS DETECTION ═══")] public PhysicsDetectionSettings detection;
 }
 
@@ -98,6 +99,37 @@ public class HealthSettings
     [Range(1, 500)] public int dogMaxHP = 100;
     [Range(1, 500)] public int satanMaxHP = 100;
     [Range(1f, 10f)] public float resurrectionDelay = 5.5f;
+}
+
+[System.Serializable]
+public class EnergySettings
+{
+    // Сатана (Лилит) по умолчанию ещё и копит энергию со временем — как Эдгар в Brawl Stars.
+    public HeroEnergySettings satan = new HeroEnergySettings { passiveRegenPerSecond = 2f };
+    public HeroEnergySettings dog = new HeroEnergySettings();
+}
+
+[System.Serializable]
+public class HeroEnergySettings
+{
+    [Tooltip("Размер шкалы. Ульта доступна только при полной шкале и тратит её целиком.")]
+    [Min(1f)] public float maxEnergy = 100f;
+    [Range(0f, 1f)] public float startEnergyNormalized = 0f;
+
+    [Header("От урона")]
+    [Tooltip("Энергия за 1 единицу реально снятого HP (оверкилл не считается).")]
+    [Min(0f)] public float energyPerDamage = 1f;
+    [Min(0f)] public float basicAttackDamageMultiplier = 1f;
+    [Tooltip("Урон обычной способности (E). Плоский бонус за каст — нода «Энергия/Получить энергию ульты» в графе способности.")]
+    [Min(0f)] public float regularAbilityDamageMultiplier = 1f;
+    [Tooltip("Урон самой ульты. 0 — ульта не заряжает сама себя.")]
+    [Min(0f)] public float ultimateDamageMultiplier = 0f;
+
+    [Header("Пассивно")]
+    [Min(0f)] public float passiveRegenPerSecond = 0f;
+    [Tooltip("Копить пассивную энергию, пока герой не активен (переключён).")]
+    public bool regenWhileInactive = false;
+    public bool resetOnDeath = false;
 }
 
 [System.Serializable]

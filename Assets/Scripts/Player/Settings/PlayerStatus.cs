@@ -10,6 +10,9 @@ public class PlayerDynSettings : MonoBehaviour
     public int dogDamageBoost = 0;
     public int dogAttackSpeedBoost = 0;
     public int dogAttackRangeBoost = 0;
+    // Энергия ульты, управляется PlayerEnergy.
+    public float satanEnergy = 0f;
+    public float dogEnergy = 0f;
     public float attackSpeedMultiplier = 1f;
     public float damageMultiplier = 1f;
     public float speedMultiplier = 1f;

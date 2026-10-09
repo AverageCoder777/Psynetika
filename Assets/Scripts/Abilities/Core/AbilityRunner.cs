@@ -11,6 +11,10 @@ public class AbilityRunner : MonoBehaviour
     private AbilityServices services;
     private IAbilityCaster caster;
 
+    // Каст завершён (успешно, отменён или упал). bool — каст не состоялся: первая нода
+    // провалилась и кулдаун возвращён; подписчики возвращают свои ресурсы (энергию ульты).
+    public event Action<AbilityDefinition, bool> CastFinished;
+
     public AbilityServices Services => services;
     public IAbilityCaster Caster => caster;
 
@@ -103,6 +107,7 @@ public class AbilityRunner : MonoBehaviour
     {
         inst.IsExecuting = true;
         int succeeded = 0;
+        bool fizzled = false;
         NodeResult lastResult = NodeResult.Success;
         try
         {
@@ -129,6 +134,7 @@ public class AbilityRunner : MonoBehaviour
             if (lastResult == NodeResult.Failure && succeeded == 0)
             {
                 inst.CooldownEndsAt = 0f;
+                fizzled = true;
             }
         }
         catch (OperationCanceledException) { }
@@ -142,6 +148,7 @@ public class AbilityRunner : MonoBehaviour
             inst.IsExecuting = false;
             activeCasts.Remove(castCts);
             castCts.Dispose();
+            CastFinished?.Invoke(def, fizzled);
         }
     }
 }
