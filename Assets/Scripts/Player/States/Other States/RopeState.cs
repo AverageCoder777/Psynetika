@@ -75,8 +75,7 @@ public class RopeState : State
 
         movement.Rb.gravityScale = 0f;
         rope.Attach(player.transform, settings.rope.handOffset, distance);
-        player.ResetAirJumps();
-        player.LastState = this;
+        player.Movement.ResetAirJumps();
 
         charManager.ActiveAnimator.SetBool(GroundedHash, false);
         SetSwinging(true);
@@ -217,7 +216,7 @@ public class RopeState : State
         }
 
         movement.Rb.linearVelocity = velocity;
-        player.TryConsumeAirJump();
+        player.Movement.TryConsumeAirJump();
     }
 
     private static Vector2 Tangent(float angleRad) => new Vector2(Mathf.Cos(angleRad), Mathf.Sin(angleRad));

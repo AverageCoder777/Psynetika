@@ -69,9 +69,9 @@ public abstract class AirStates : State
         float currentVelocityX = movement.Rb.linearVelocity.x;
         float newVelocityX = currentVelocityX;
 
-        // После прыжка с верёвки инерция раскачки сохраняется: управление может тормозить и разворачивать,
+        // После прыжка с верёвки инерция раскачки сохраняется: управление может тормозить и разворачивать, 
         // но не срезает разгон до обычной воздушной скорости.
-        bool carryRopeMomentum = player.LastState is RopeState
+        bool carryRopeMomentum = player.PlayerSM.LastPlayerState is RopeState
             && Mathf.Sign(currentVelocityX) == Mathf.Sign(targetVelocityX)
             && Mathf.Abs(currentVelocityX) > Mathf.Abs(targetVelocityX);
 
