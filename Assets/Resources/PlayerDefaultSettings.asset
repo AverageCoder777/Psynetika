@@ -24,7 +24,7 @@ MonoBehaviour:
     thrust: 8
     upGravityScale: 1.1
     downGravityScale: 2
-    maxDoubleJumpHeight: 40
+    maxAirJumpsCount: 3
   crouch:
     crouchHeightMultiplier: 0.7
     crouchSpeedMultiplier: 0.5
@@ -56,7 +56,7 @@ MonoBehaviour:
     resurrectionDelay: 5.5
   detection:
     headCheckDistanceBuffer: 0.1
-    wallDetectionDistance: 0.5
+    wallDetectionDistance: 0.4
     dropThroughDuration: 0.5
     jumpWallVelocityThreshold: -0.1
     platformDropThreshold: 0.1

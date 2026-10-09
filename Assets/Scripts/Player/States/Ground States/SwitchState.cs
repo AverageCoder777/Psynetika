@@ -12,7 +12,6 @@ public class SwitchState : GroundedStates
     {
         base.Enter();
         player.StartCoroutine(SwitchCharacter());
-        player.LastState = this;
     }
 
     private IEnumerator SwitchCharacter()

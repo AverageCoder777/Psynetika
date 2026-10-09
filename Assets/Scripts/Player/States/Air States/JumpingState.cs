@@ -11,11 +11,10 @@ public class JumpingState : AirStates
 
     public override void Enter()
     {
-        player.TryConsumeAirJump();
+        player.Movement.TryConsumeAirJump();
         ApplyJumpVelocity();
         charManager.ActiveAnimator.SetTrigger(JumpingHash);
         movement.Rb.gravityScale = settings.jump.upGravityScale;
-        player.LastState = this;
     }
 
     public override void PhysicsUpdate()

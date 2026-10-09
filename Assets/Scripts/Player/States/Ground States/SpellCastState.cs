@@ -104,10 +104,6 @@ public class SpellCastState : GroundedStates
         {
             if (HasPlaceholderInBaseController(over))
             {
-                // Строковый индексатор ссылается на имя клипа БАЗОВОГО контроллера, поэтому
-                // работает и после предыдущих подмен (поиск по over.animationClips — нет:
-                // он возвращает уже подменённые клипы). null снимает подмену — способность
-                // без своего клипа играет плейсхолдер, а не клип предыдущей способности.
                 over[SpellPlaceholderClipName] = activeAbility.animClip;
             }
             else if (!warnedAboutPlaceholder)

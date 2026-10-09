@@ -37,7 +37,7 @@ public class JumpPhysicsSettings
     [Range(0f, 20f)] public float thrust = 12f;
     [Range(0f, 2f)] public float upGravityScale = 1.1f;
     [Range(0f, 3f)] public float downGravityScale = 2f;
-    [Range(0f, 100f)] public float maxDoubleJumpHeight = 40f;
+    [Range (1, 10)] public int maxAirJumpsCount = 2;
 }
 
 [System.Serializable]
@@ -104,7 +104,7 @@ public class HealthSettings
 public class PhysicsDetectionSettings
 {
     [Range(0.05f, 0.2f)] public float headCheckDistanceBuffer = 0.1f;
-    [Range(0.2f, 1f)] public float wallDetectionDistance = 0.5f;
+    [Range(0.01f, 1f)] public float wallDetectionDistance = 0.5f;
     [Range(0.2f, 1f)] public float dropThroughDuration = 0.5f;
     [Range(-0.2f, 0f)] public float jumpWallVelocityThreshold = -0.1f; //Детект перехода с прыжка в падение и детект соскальзывания по стене
     [Range(0.001f,0.4f)] public float platformDropThreshold = 0.1f; //Детект падения через платформу

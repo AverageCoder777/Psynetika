@@ -67,7 +67,6 @@ public class HittingState : GroundedStates
             charManager.ActiveAnimator.SetBool("Hitting " + comboCount, true);
         }
         lastHitTime = Time.time;
-        player.LastState = this;
         jumpRequested = false;
         attackRequested = false;
         movement.Rb.linearVelocity = new Vector2(0f, movement.Rb.linearVelocity.y);

@@ -26,7 +26,6 @@ public class LadderState : State
         charManager.ActiveAnimator.SetBool(GroundedHash, false);
         
         enterTime = Time.time;
-        player.LastState = this;
     }
 
     public override void HandleInput()

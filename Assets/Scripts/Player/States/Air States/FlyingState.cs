@@ -22,7 +22,7 @@ public class FlyingState : AirStates
 
     public override void HandleInput()
     {
-        if (player.LastState is not WallState)
+        if (player.PlayerSM.LastPlayerState is not WallState)
         {
             base.HandleInput();
             TryDoubleJump();
@@ -31,7 +31,7 @@ public class FlyingState : AirStates
 
     public override void PhysicsUpdate()
     {
-        if (player.LastState is not WallState)
+        if (player.PlayerSM.LastPlayerState is not WallState)
         {
             base.PhysicsUpdate();
         }
@@ -52,11 +52,6 @@ public class FlyingState : AirStates
     {
         base.LogicUpdate();
 
-        if (stateMachine.CurrentPlayerState != this)
-        {
-            return;
-        }
-
         if (DetectFloor() != "None")
         {
             if (movement.Rb.linearVelocity.y > 0f)
@@ -64,8 +59,7 @@ public class FlyingState : AirStates
                 return;
             }
 
-            player.ResetAirJumps();
-            player.LastState = this;
+            player.Movement.ResetAirJumps();
             stateMachine.ChangeState(player.IdleState);
         }
     }

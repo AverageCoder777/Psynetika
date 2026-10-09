@@ -16,8 +16,10 @@ public class PlayerMoving : MonoBehaviour, IMovable, IJumpable
     private PlayerCharacterManager charManager;
     private Vector2 movementInput;
     private Rigidbody2D rb;
+    private int airJumpsRemaining = 2;
     public PlayerInput PlayerInput => playerInput;
     public Rigidbody2D Rb => rb;
+    public void ResetAirJumps() => airJumpsRemaining = 2;
 
     private void Awake()
     {
@@ -26,6 +28,7 @@ public class PlayerMoving : MonoBehaviour, IMovable, IJumpable
         status = charManager.GetComponent<PlayerDynSettings>();
         rb = GetComponent<Rigidbody2D>();
         settings = Resources.Load<PlayerStaticSettings>("PlayerDefaultSettings");
+        airJumpsRemaining = settings.jump.maxAirJumpsCount;
     }
 
     public float GetCurrentSpeed()
@@ -37,6 +40,16 @@ public class PlayerMoving : MonoBehaviour, IMovable, IJumpable
     public float GetJumpForce()
     {
         return settings.jump.thrust;
+    }
+    public bool TryConsumeAirJump()
+    {
+        if (airJumpsRemaining <= 0)
+        {
+            return false;
+        }
+
+        airJumpsRemaining--;
+        return true;
     }
 }
 

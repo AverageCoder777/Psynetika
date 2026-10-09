@@ -3,6 +3,7 @@ using UnityEngine;
 public class StateMachine
 {
     public State CurrentPlayerState { get; set; }
+    public State LastPlayerState { get; set; }
 
     public void Initialize(State startingState)
     {
@@ -13,6 +14,7 @@ public class StateMachine
     public void ChangeState(State newState)
     {
         CurrentPlayerState.Exit();
+        LastPlayerState = CurrentPlayerState;
         #if UNITY_EDITOR
         Debug.Log("Exited " + CurrentPlayerState + " and entered " + newState);
         #endif

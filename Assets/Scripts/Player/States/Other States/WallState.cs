@@ -14,10 +14,9 @@ public class WallState : State
 
     public override void Enter()
     {
-
+        charManager.ActiveAnimator.SetTrigger("WallSlideBegin");
         charManager.ActiveAnimator.SetBool(WallSlidingHash, true);
         movement.Rb.gravityScale = 1f;
-        player.LastState = this;
     }
 
     public bool IsReattachBlocked(Collider2D wall, float duration)
@@ -62,13 +61,13 @@ public class WallState : State
     {
         lastJumpedWall = wallCollider;
         lastWallJumpTime = Time.time;
-        player.TryConsumeAirJump();
+        player.Movement.TryConsumeAirJump();
         float horizontalVelocity = wallSurfaceNormal.x * settings.wall.wallJumpSpeed * settings.wall.wallJumpForce;
         float verticalVelocity = Mathf.Sqrt(settings.wall.wallJumpForce * settings.wall.wallVerticalMultiplier);
 
         movement.Rb.linearVelocity = new Vector2(horizontalVelocity, verticalVelocity);
 
-        charManager.ActiveSR.flipX = !charManager.ActiveSR.flipX;
+        charManager.ActiveSR.flipX = !charManager.ActiveSR.flipX; // Через флип происходит и флип луча
     }
 
     public override void Exit()

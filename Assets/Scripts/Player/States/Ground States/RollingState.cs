@@ -20,7 +20,6 @@ public class RollingState : GroundedStates
         charManager.ActiveAnimator.SetTrigger(RollingHash);
         charManager.ActiveAnimator.SetBool(GroundedHash, true);
         Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
-        player.LastState = this;
     }
     public override void LogicUpdate()
     {

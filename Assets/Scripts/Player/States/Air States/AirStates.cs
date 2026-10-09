@@ -19,7 +19,7 @@ public abstract class AirStates : State
 
     protected bool TryDoubleJump()
     {
-        if (!movement.PlayerInput.actions["Jump"].WasPressedThisFrame() || !player.TryConsumeAirJump())
+        if (!movement.PlayerInput.actions["Jump"].WasPressedThisFrame() || !player.Movement.TryConsumeAirJump())
         {
             return false;
         }
@@ -42,7 +42,7 @@ public abstract class AirStates : State
 
         if (movement.Rb.linearVelocity.y <= 0f && DetectFloor()=="Floor")
         {
-            player.ResetAirJumps();
+            player.Movement.ResetAirJumps();
             stateMachine.ChangeState(player.IdleState);
             return;
         }

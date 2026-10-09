@@ -27,7 +27,6 @@ public class CrouchingState : GroundedStates
         capsule.size = new Vector2(originalCapsuleSize.x, newHeight);
         capsule.offset = new Vector2(originalCapsuleOffset.x, originalCapsuleOffset.y - delta / 2f);
         charManager.ActiveAnimator.SetBool(CrouchingHash, true);
-        player.LastState = this;
     }
     public override void HandleInput()
     {

@@ -18,7 +18,6 @@ public class IdleState : GroundedStates
         base.Enter();
         charManager.ActiveAnimator.SetBool(MovingHash, false);
         grounded = true;
-        //movement.Rb.linearVelocity = new Vector2(0, movement.Rb.linearVelocity.y);
     }
     public override void HandleInput()
     {
@@ -84,13 +83,8 @@ public class IdleState : GroundedStates
 
     protected bool DetectPlatform()
     {
-        // Проверяем столкновение вниз (направление гравитации)
         Vector2 platformDetectionDirection = Vector2.down;
-
-        // Смещаем raycast origin вниз от центра игрока, чтобы избежать его собственного коллайдера
         Vector2 raycastOrigin = (Vector2)player.transform.position - Vector2.up * 0.5f;
-
-        // Проверяем столкновение только вниз
         RaycastHit2D hit = Physics2D.Raycast(
             raycastOrigin,
             platformDetectionDirection,
