@@ -40,6 +40,19 @@ MonoBehaviour:
   ladder:
     climbSpeed: 5
     exitDelay: 0.25
+  rope:
+    handOffset: {x: 0, y: 0.6}
+    swingGravityScale: 1.5
+    swingAcceleration: 10
+    swingDamping: 0.15
+    maxSwingAngle: 80
+    catchMomentumKeep: 0.8
+    climbSpeed: 3
+    releaseVelocityMultiplier: 1.15
+    jumpOffThrustMultiplier: 0.6
+    minJumpOffSpeedX: 4
+    regrabCooldown: 0.35
+    blockedTolerance: 0.15
   combat:
     dogBaseHitTime: 1
     dogBaseHitDistance: 1
@@ -54,6 +67,27 @@ MonoBehaviour:
     dogMaxHP: 100
     satanMaxHP: 100
     resurrectionDelay: 5.5
+  energy:
+    satan:
+      maxEnergy: 100
+      startEnergyNormalized: 0
+      energyPerDamage: 1
+      basicAttackDamageMultiplier: 1
+      regularAbilityDamageMultiplier: 1
+      ultimateDamageMultiplier: 0
+      passiveRegenPerSecond: 2
+      regenWhileInactive: 0
+      resetOnDeath: 0
+    dog:
+      maxEnergy: 100
+      startEnergyNormalized: 0
+      energyPerDamage: 1
+      basicAttackDamageMultiplier: 1
+      regularAbilityDamageMultiplier: 1
+      ultimateDamageMultiplier: 0
+      passiveRegenPerSecond: 0
+      regenWhileInactive: 0
+      resetOnDeath: 0
   detection:
     headCheckDistanceBuffer: 0.1
     wallDetectionDistance: 0.5

@@ -10,6 +10,7 @@ public class PlayerStaticSettings : ScriptableObject
     [Header("═══ ROLLING ═══")] public RollingSettings rolling;
     [Header("═══ WALL MECHANICS ═══")] public WallSettings wall;
     [Header("═══ LADDER MECHANICS ═══")] public LadderSettings ladder;
+    [Header("═══ ROPE (SWING) ═══")] public RopeSettings rope;
     [Header("═══ COMBAT SYSTEM ═══")] public CombatSettings combat;
     [Header("═══ HEALTH ═══")] public HealthSettings health;
     [Header("═══ ENERGY (ULTIMATE) ═══")] public EnergySettings energy;
@@ -70,6 +71,34 @@ public class LadderSettings
 {
     [Range(0f, 10f)] public float climbSpeed = 5f;
     [Range(0.1f, 0.5f)] public float exitDelay = 0.25f;
+}
+
+[System.Serializable]
+public class RopeSettings
+{
+    [Tooltip("Точка хвата относительно центра героя (пасть/лапы собаки).")]
+    public Vector2 handOffset = new Vector2(0f, 0.6f);
+    [Range(0.1f, 3f)] public float swingGravityScale = 1.5f;
+    [Tooltip("Ускорение раскачки по касательной, пока зажато направление по ходу движения.")]
+    [Range(0f, 30f)] public float swingAcceleration = 5f;
+    [Range(0f, 2f)] public float swingDamping = 0.15f;
+    [Range(10f, 90f)] public float maxSwingAngle = 80f;
+    [Tooltip("Какая доля скорости влёта переходит в раскачку при хвате.")]
+    [Range(0f, 1f)] public float catchMomentumKeep = 0.8f;
+    [Range(0f, 10f)] public float climbSpeed = 3f;
+
+    [Header("Прыжок с верёвки")]
+    [Tooltip("Множитель скорости раскачки при прыжке.")]
+    [Range(0.5f, 2f)] public float releaseVelocityMultiplier = 1.15f;
+    [Tooltip("Доля обычного прыжка (jump.thrust), добавляемая вверх.")]
+    [Range(0f, 1.5f)] public float jumpOffThrustMultiplier = 0.6f;
+    [Tooltip("Минимальная горизонтальная скорость в сторону зажатого направления.")]
+    [Range(0f, 10f)] public float minJumpOffSpeedX = 4f;
+    [Tooltip("Сколько секунд нельзя снова схватить ту же верёвку после отпускания.")]
+    [Range(0f, 1f)] public float regrabCooldown = 0.35f;
+
+    [Tooltip("Расхождение (юниты) между расчётной и фактической позицией, после которого раскачка считается упёршейся.")]
+    [Range(0.05f, 1f)] public float blockedTolerance = 0.15f;
 }
 
 [System.Serializable]

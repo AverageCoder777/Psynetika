@@ -27,6 +27,11 @@ public class JumpingState : AirStates
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        if (stateMachine.CurrentPlayerState != this)
+        {
+            return;
+        }
+
         if (movement.Rb.linearVelocity.y < settings.detection.jumpWallVelocityThreshold)
         {
             stateMachine.ChangeState(player.FlyingState);

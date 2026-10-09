@@ -65,6 +65,7 @@ public class PlayerController : MonoBehaviour
     public SpellSlot PendingSpellSlot { get; set; }
     public WallState WallState { get; set; }
     public LadderState LadderState { get; set; }
+    public RopeState RopeState { get; set; }
     public DyingState DyingState { get; set; }
     #endregion
     #region Unity MonoBehaviour Callbacks
