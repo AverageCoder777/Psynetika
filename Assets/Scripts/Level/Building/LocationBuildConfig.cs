@@ -73,8 +73,16 @@ public class LocationBuildConfig : ScriptableObject
 
         config.rules = new List<LocationLayerRule>
         {
-            new() { namePattern = "bg_*", action = new DecorationAction { renderSprite = true } },
+            // Фон: глубина по суффиксу в имени, первое совпадение выигрывает. Небо приклеено к камере.
+            // Параллакс только по горизонтали: по вертикали слои стоят как нарисованы.
+            Parallax("bg_sky*", 1f),
+            Parallax("bg_*far*", 0.8f),
+            Parallax("bg_*mid*", 0.5f),
+            Parallax("bg_*near*", 0.25f),
+            Parallax("bg_*", 0.5f),
             new() { namePattern = "art_*", action = new DecorationAction { renderSprite = true } },
+            // Передний план обгоняет мир. art_fg_* сюда не попадает: маска сверяется с начала имени.
+            Parallax("fg_*", -0.3f),
             new()
             {
                 namePattern = "col_*",
@@ -104,5 +112,14 @@ public class LocationBuildConfig : ScriptableObject
         config.defaultAction = new DecorationAction { renderSprite = true };
 
         return config;
+    }
+
+    private static LocationLayerRule Parallax(string namePattern, float factor)
+    {
+        return new LocationLayerRule
+        {
+            namePattern = namePattern,
+            action = new ParallaxAction { horizontal = factor, vertical = 0f }
+        };
     }
 }

@@ -1,7 +1,8 @@
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]
-public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, IAbilityStatOwner, IAttackable, IAbilityHealth
+public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, IAbilityStatOwner, IAttackable, IAbilityHealth,
+    IDamageDealtObserver, IAbilityEnergyOwner
 {
     private PlayerStaticSettings settings;
     private PlayerDynSettings status;
@@ -129,4 +130,26 @@ public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource,
     int IAbilityDamageSource.GetBaseHitDamage() => GetBaseDamage();
     int IAbilityHealth.GetMaxHP() => health != null ? health.GetCurrentMaxHP() : 0;
     int IAbilityHealth.TryDrainHP(int amount, int minHp) => health != null ? health.TryDrainHP(amount, minHp) : 0;
+
+    // Энергия ульты: PlayerAttack — Attacker во всех DamageEvent игрока, поэтому и точка входа.
+    // PlayerEnergy добавляет SpellController уже после нашего Awake — ищем лениво.
+    private PlayerEnergy energy;
+    private PlayerEnergy Energy
+    {
+        get
+        {
+            if (energy == null) energy = GetComponent<PlayerEnergy>();
+            return energy;
+        }
+    }
+
+    void IDamageDealtObserver.OnDamageDealt(DamageEvent ev, int dealt)
+    {
+        if (Energy != null) Energy.OnDamageDealt(ev, dealt);
+    }
+
+    void IAbilityEnergyOwner.AddEnergy(AbilityDefinition source, float amount)
+    {
+        if (Energy != null) Energy.AddFromAbility(source, amount);
+    }
 }

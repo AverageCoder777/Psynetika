@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerAttack))]
@@ -15,6 +16,10 @@ public class SpellController : MonoBehaviour
     private AbilityRunner abilityRunner;
     private PlayerAttack attackOwner;
     private PlayerHealth playerHealth;
+    private PlayerEnergy energy;
+
+    // Энергия, списанная под ещё не завершённый каст ульты, — вернётся, если каст не состоится.
+    private readonly Dictionary<AbilityDefinition, (PlayerCharacterType hero, float amount)> pendingUltimateSpends = new();
 
     private void Awake()
     {
@@ -29,6 +34,13 @@ public class SpellController : MonoBehaviour
         {
             abilityRunner.Initialize(attackOwner, new AbilityServices());
         }
+        abilityRunner.CastFinished += OnCastFinished;
+
+        energy = GetComponent<PlayerEnergy>();
+        if (energy == null)
+        {
+            energy = gameObject.AddComponent<PlayerEnergy>();
+        }
 
         playerHealth = GetComponent<PlayerHealth>();
         if (playerHealth != null)
@@ -39,6 +51,10 @@ public class SpellController : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (abilityRunner != null)
+        {
+            abilityRunner.CastFinished -= OnCastFinished;
+        }
         if (playerHealth != null)
         {
             playerHealth.Died -= OnOwnerDied;
@@ -58,6 +74,8 @@ public class SpellController : MonoBehaviour
     {
         ability = GetSlotData(isSatan, slot);
         if (ability == null || abilityRunner == null) return false;
+        // Ульта требует полную шкалу энергии своего героя.
+        if (slot == SpellSlot.Ultimate && !IsUltimateCharged(isSatan)) return false;
         return abilityRunner.IsReady(ability);
     }
 
@@ -68,8 +86,66 @@ public class SpellController : MonoBehaviour
             return false;
         }
 
-        return abilityRunner.TryCast(ability, target, aimPosition);
+        // Списываем до TryCast: раннер может завершить (и провалить) каст синхронно,
+        // и CastFinished должен уже видеть списанную сумму.
+        if (slot == SpellSlot.Ultimate && energy != null)
+        {
+            PlayerCharacterType hero = ToHero(isSatan);
+            pendingUltimateSpends[ability] = (hero, energy.SpendAll(hero));
+        }
+
+        bool casted = abilityRunner.TryCast(ability, target, aimPosition);
+        if (!casted)
+        {
+            RefundUltimate(ability);
+        }
+        return casted;
     }
+
+    public bool IsUltimateCharged(bool isSatan) => energy == null || energy.IsFull(ToHero(isSatan));
+
+    public float GetUltimateEnergyProgress(bool isSatan) => energy != null ? energy.GetNormalized(ToHero(isSatan)) : 1f;
+
+    // По способности находит героя и слот, в которых она стоит (для начисления энергии нужному герою).
+    public bool TryFindAbilityOwner(AbilityDefinition ability, out PlayerCharacterType hero, out SpellSlot slot)
+    {
+        hero = PlayerCharacterType.Satan;
+        slot = SpellSlot.Regular;
+        if (ability == null) return false;
+
+        if (ability == satanRegular) return true;
+        slot = SpellSlot.Ultimate;
+        if (ability == satanUltimate) return true;
+
+        hero = PlayerCharacterType.Dog;
+        slot = SpellSlot.Regular;
+        if (ability == sobakaRegular) return true;
+        slot = SpellSlot.Ultimate;
+        return ability == sobakaUltimate;
+    }
+
+    private void OnCastFinished(AbilityDefinition ability, bool fizzled)
+    {
+        if (fizzled)
+        {
+            RefundUltimate(ability);
+        }
+        else
+        {
+            pendingUltimateSpends.Remove(ability);
+        }
+    }
+
+    private void RefundUltimate(AbilityDefinition ability)
+    {
+        if (ability == null || !pendingUltimateSpends.Remove(ability, out var spend)) return;
+        if (energy != null)
+        {
+            energy.Add(spend.hero, spend.amount);
+        }
+    }
+
+    private static PlayerCharacterType ToHero(bool isSatan) => isSatan ? PlayerCharacterType.Satan : PlayerCharacterType.Dog;
 
     public float GetCooldownProgress(bool isSatan, SpellSlot slot)
     {

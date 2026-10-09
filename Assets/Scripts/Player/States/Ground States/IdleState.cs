@@ -37,6 +37,11 @@ public class IdleState : GroundedStates
         {
             stateMachine.ChangeState(player.CrouchingState);
         }
+        else if (movementInput.y > 0.5f && player.RopeState.TryFindRope())
+        {
+            // Верёвка свисает до земли — собака хватается, нажав «вверх».
+            stateMachine.ChangeState(player.RopeState);
+        }
         else if (jump)
         {
             grounded = false;

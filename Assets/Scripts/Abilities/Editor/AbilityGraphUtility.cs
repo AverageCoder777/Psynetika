@@ -47,6 +47,7 @@ public static class AbilityGraphUtility
             case DamageNode n: return $"{n.amount} урона ({n.type})";
             case ApplyDamageToTargetsNode n: return $"'{n.inputDamageKey}' по целям '{n.inputTargetsKey}' ({n.type})";
             case ComputeOwnerHitDamageNode n: return $"базовый ×{n.damageMultiplier} → '{n.outputDamageKey}'";
+            case GainEnergyNode n: return $"+{n.amount} энергии ульты";
             case DrainOwnerHpNode n: return $"-{Mathf.RoundToInt(n.drainPercent * 100)}% max HP, стоп на {Mathf.RoundToInt(n.criticalHpPercent * 100)}%";
             case SelectTargetsInBoxNode n: return $"{n.boxSize.x}×{n.boxSize.y}, слой '{n.layerName}' → '{n.outputTargetsKey}'";
             case SpawnProjectileNode n: return n.projectile != null ? n.projectile.name : "снаряд не задан!";

@@ -12,6 +12,7 @@ public class PlayerStateFactory
         controller.SwitchState = new SwitchState(controller, stateMachine, settings);
         controller.WallState = new WallState(controller, stateMachine, settings);
         controller.LadderState = new LadderState(controller, stateMachine, settings);
+        controller.RopeState = new RopeState(controller, stateMachine, settings);
         controller.DyingState = new DyingState(controller, stateMachine, settings);
     }
 }

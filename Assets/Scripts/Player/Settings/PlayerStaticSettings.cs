@@ -10,8 +10,10 @@ public class PlayerStaticSettings : ScriptableObject
     [Header("═══ ROLLING ═══")] public RollingSettings rolling;
     [Header("═══ WALL MECHANICS ═══")] public WallSettings wall;
     [Header("═══ LADDER MECHANICS ═══")] public LadderSettings ladder;
+    [Header("═══ ROPE (SWING) ═══")] public RopeSettings rope;
     [Header("═══ COMBAT SYSTEM ═══")] public CombatSettings combat;
     [Header("═══ HEALTH ═══")] public HealthSettings health;
+    [Header("═══ ENERGY (ULTIMATE) ═══")] public EnergySettings energy;
     [Header("═══ PHYSICS DETECTION ═══")] public PhysicsDetectionSettings detection;
 }
 
@@ -72,6 +74,34 @@ public class LadderSettings
 }
 
 [System.Serializable]
+public class RopeSettings
+{
+    [Tooltip("Точка хвата относительно центра героя (пасть/лапы собаки).")]
+    public Vector2 handOffset = new Vector2(0f, 0.6f);
+    [Range(0.1f, 3f)] public float swingGravityScale = 1.5f;
+    [Tooltip("Ускорение раскачки по касательной, пока зажато направление по ходу движения.")]
+    [Range(0f, 30f)] public float swingAcceleration = 5f;
+    [Range(0f, 2f)] public float swingDamping = 0.15f;
+    [Range(10f, 90f)] public float maxSwingAngle = 80f;
+    [Tooltip("Какая доля скорости влёта переходит в раскачку при хвате.")]
+    [Range(0f, 1f)] public float catchMomentumKeep = 0.8f;
+    [Range(0f, 10f)] public float climbSpeed = 3f;
+
+    [Header("Прыжок с верёвки")]
+    [Tooltip("Множитель скорости раскачки при прыжке.")]
+    [Range(0.5f, 2f)] public float releaseVelocityMultiplier = 1.15f;
+    [Tooltip("Доля обычного прыжка (jump.thrust), добавляемая вверх.")]
+    [Range(0f, 1.5f)] public float jumpOffThrustMultiplier = 0.6f;
+    [Tooltip("Минимальная горизонтальная скорость в сторону зажатого направления.")]
+    [Range(0f, 10f)] public float minJumpOffSpeedX = 4f;
+    [Tooltip("Сколько секунд нельзя снова схватить ту же верёвку после отпускания.")]
+    [Range(0f, 1f)] public float regrabCooldown = 0.35f;
+
+    [Tooltip("Расхождение (юниты) между расчётной и фактической позицией, после которого раскачка считается упёршейся.")]
+    [Range(0.05f, 1f)] public float blockedTolerance = 0.15f;
+}
+
+[System.Serializable]
 public class CombatSettings
 {
     [Header("Dog Combat")]
@@ -98,6 +128,37 @@ public class HealthSettings
     [Range(1, 500)] public int dogMaxHP = 100;
     [Range(1, 500)] public int satanMaxHP = 100;
     [Range(1f, 10f)] public float resurrectionDelay = 5.5f;
+}
+
+[System.Serializable]
+public class EnergySettings
+{
+    // Сатана (Лилит) по умолчанию ещё и копит энергию со временем — как Эдгар в Brawl Stars.
+    public HeroEnergySettings satan = new HeroEnergySettings { passiveRegenPerSecond = 2f };
+    public HeroEnergySettings dog = new HeroEnergySettings();
+}
+
+[System.Serializable]
+public class HeroEnergySettings
+{
+    [Tooltip("Размер шкалы. Ульта доступна только при полной шкале и тратит её целиком.")]
+    [Min(1f)] public float maxEnergy = 100f;
+    [Range(0f, 1f)] public float startEnergyNormalized = 0f;
+
+    [Header("От урона")]
+    [Tooltip("Энергия за 1 единицу реально снятого HP (оверкилл не считается).")]
+    [Min(0f)] public float energyPerDamage = 1f;
+    [Min(0f)] public float basicAttackDamageMultiplier = 1f;
+    [Tooltip("Урон обычной способности (E). Плоский бонус за каст — нода «Энергия/Получить энергию ульты» в графе способности.")]
+    [Min(0f)] public float regularAbilityDamageMultiplier = 1f;
+    [Tooltip("Урон самой ульты. 0 — ульта не заряжает сама себя.")]
+    [Min(0f)] public float ultimateDamageMultiplier = 0f;
+
+    [Header("Пассивно")]
+    [Min(0f)] public float passiveRegenPerSecond = 0f;
+    [Tooltip("Копить пассивную энергию, пока герой не активен (переключён).")]
+    public bool regenWhileInactive = false;
+    public bool resetOnDeath = false;
 }
 
 [System.Serializable]

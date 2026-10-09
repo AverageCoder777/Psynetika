@@ -4,7 +4,7 @@ using System;
 [RequireComponent(typeof(PlayerController))]
 [RequireComponent(typeof(PlayerDynSettings))]
 [RequireComponent(typeof(PlayerCharacterManager))]
-public class PlayerHealth : MonoBehaviour, IDamagable, IAbilityTarget, IDirectDamageReceiver
+public class PlayerHealth : MonoBehaviour, IDamagable, IAbilityTarget, IDirectDamageReceiver, IAbilityHealable
 {
     private PlayerStaticSettings settings;
     private PlayerDynSettings status;
@@ -128,5 +128,6 @@ public class PlayerHealth : MonoBehaviour, IDamagable, IAbilityTarget, IDirectDa
     Team IAbilityTarget.Team => Team.Player;
     void IAbilityTarget.ReceiveDamage(DamageEvent ev) => TakeDamage(Mathf.RoundToInt(ev.Amount));
     void IDirectDamageReceiver.ApplyDamage(DamageEvent ev) => TakeDamage(Mathf.RoundToInt(ev.Amount));
+    void IAbilityHealable.ReceiveHeal(float amount) => Heal(Mathf.RoundToInt(amount));
 }
 

@@ -18,6 +18,9 @@ public sealed class EnemySquad
     private float heldSince;
     private float freeAt;
 
+    // Кто сейчас держит очередь (null — никто). Только для чтения: логирование, отладка.
+    public EnemyAttack Holder => holder;
+
     // Реестр статический: при отключённом Domain Reload его нужно чистить вручную между запусками.
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetRegistry() => squads.Clear();

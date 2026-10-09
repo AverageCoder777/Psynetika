@@ -31,4 +31,14 @@ public static class DamageHelper
         });
         return true;
     }
+
+    // Вызывается целью после фактического снятия HP: сообщает атакующему, сколько он нанёс
+    // (на этом держится энергия ульты). Тики статусов без Attacker сюда не доходят.
+    public static void NotifyDamageDealt(DamageEvent ev, int dealt)
+    {
+        if (dealt > 0 && ev.Attacker is IDamageDealtObserver observer)
+        {
+            observer.OnDamageDealt(ev, dealt);
+        }
+    }
 }

@@ -57,9 +57,11 @@ public class EnemyHealth : MonoBehaviour, IAbilityTarget, IDirectDamageReceiver
         int amount = Mathf.Max(0, Mathf.RoundToInt(ev.Amount));
         if (amount <= 0) return;
 
+        int before = currentHp;
         currentHp = Mathf.Max(0, currentHp - amount);
         Damaged?.Invoke(ev);
         HpChanged?.Invoke(currentHp, maxHp);
+        DamageHelper.NotifyDamageDealt(ev, before - currentHp);
         if (currentHp <= 0)
         {
             Died?.Invoke();

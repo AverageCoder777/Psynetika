@@ -19,12 +19,27 @@ MonoBehaviour:
   minContourArea: 8
   minRectArea: 4
   rules:
+  - namePattern: bg_sky*
+    action:
+      rid: 6051856499987972201
+  - namePattern: bg_*far*
+    action:
+      rid: 6051856499987972202
+  - namePattern: bg_*mid*
+    action:
+      rid: 6051856499987972203
+  - namePattern: bg_*near*
+    action:
+      rid: 6051856499987972204
   - namePattern: bg_*
     action:
       rid: 6051856499987972192
   - namePattern: art_*
     action:
       rid: 6051856499987972193
+  - namePattern: fg_*
+    action:
+      rid: 6051856499987972205
   - namePattern: col_*
     action:
       rid: 6051856499987972194
@@ -49,12 +64,14 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 6051856499987972192
-      type: {class: DecorationAction, ns: , asm: Assembly-CSharp}
+      type: {class: ParallaxAction, ns: , asm: Assembly-CSharp}
       data:
         renderSprite: 1
         sortingLayer: Default
         sortingOrderOffset: 0
         zOffset: 0
+        horizontal: 0.5
+        vertical: 0
     - rid: 6051856499987972193
       type: {class: DecorationAction, ns: , asm: Assembly-CSharp}
       data:
@@ -130,3 +147,48 @@ MonoBehaviour:
         sortingLayer: Default
         sortingOrderOffset: 0
         zOffset: 0
+    - rid: 6051856499987972201
+      type: {class: ParallaxAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 1
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
+        horizontal: 1
+        vertical: 0
+    - rid: 6051856499987972202
+      type: {class: ParallaxAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 1
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
+        horizontal: 0.8
+        vertical: 0
+    - rid: 6051856499987972203
+      type: {class: ParallaxAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 1
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
+        horizontal: 0.5
+        vertical: 0
+    - rid: 6051856499987972204
+      type: {class: ParallaxAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 1
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
+        horizontal: 0.25
+        vertical: 0
+    - rid: 6051856499987972205
+      type: {class: ParallaxAction, ns: , asm: Assembly-CSharp}
+      data:
+        renderSprite: 1
+        sortingLayer: Default
+        sortingOrderOffset: 0
+        zOffset: 0
+        horizontal: -0.3
+        vertical: 0

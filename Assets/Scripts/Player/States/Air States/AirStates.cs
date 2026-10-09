@@ -47,6 +47,12 @@ public abstract class AirStates : State
             return;
         }
 
+        if (player.RopeState.TryFindRope())
+        {
+            stateMachine.ChangeState(player.RopeState);
+            return;
+        }
+
         Collider2D wall = DetectWall();
         if (wall != null
             && charManager.GetCurrentCharacterType() != PlayerCharacterType.Satan
@@ -63,7 +69,13 @@ public abstract class AirStates : State
         float currentVelocityX = movement.Rb.linearVelocity.x;
         float newVelocityX = currentVelocityX;
 
-        if (movement.MovementInput.x != 0)
+        // После прыжка с верёвки инерция раскачки сохраняется: управление может тормозить и разворачивать,
+        // но не срезает разгон до обычной воздушной скорости.
+        bool carryRopeMomentum = player.LastState is RopeState
+            && Mathf.Sign(currentVelocityX) == Mathf.Sign(targetVelocityX)
+            && Mathf.Abs(currentVelocityX) > Mathf.Abs(targetVelocityX);
+
+        if (movement.MovementInput.x != 0 && !carryRopeMomentum)
         {
             newVelocityX = Mathf.Lerp(
                 currentVelocityX,
