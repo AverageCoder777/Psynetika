@@ -553,7 +553,7 @@ PrefabInstance:
     - target: {fileID: 4449052849760632079, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
       propertyPath: satanRegular
       value: 
-      objectReference: {fileID: 11400000, guid: 6391c52be62015f4dbf3397641d5f7ce, type: 2}
+      objectReference: {fileID: 11400000, guid: 23a1bceb8b1a2e34590c4f17b7d5ca36, type: 2}
     - target: {fileID: 4449052849760632079, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
       propertyPath: sobakaRegular
       value: 

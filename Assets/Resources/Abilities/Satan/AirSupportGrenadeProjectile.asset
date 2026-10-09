@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9bf787fa05944d40bca2cd5ad0574a2, type: 3}
+  m_Name: AirSupportGrenadeProjectile
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectileDefinition
+  id: satan.air_support.grenade
+  prefab: {fileID: 4509787734431958146, guid: a317d5553e5cdad4f92c74eff71e92e8, type: 3}
+  speed: 7
+  lifetime: 3
+  spawnOffset: {x: 0.8, y: 0.5}
+  gravityScale: 2
+  launchUpSpeed: 7
+  onSpawn: []
+  onHit:
+  - rid: 3424677670206308436
+  - rid: 3424677670206308437
+  onExpire:
+  - rid: 3424677670206308438
+  - rid: 3424677670206308439
+  references:
+    version: 2
+    RefIds:
+    - rid: 3424677670206308436
+      type: {class: SpawnVfxAtPointNode, ns: , asm: Assembly-CSharp}
+      data:
+        vfxPrefab: {fileID: 1747842912770993739, guid: 86f63331685fdd6499e0fc87a218b788, type: 3}
+        offset: {x: 0, y: 0}
+        lifetime: 1.5
+    - rid: 3424677670206308437
+      type: {class: SpawnAbilityZoneNode, ns: , asm: Assembly-CSharp}
+      data:
+        zonePrefab: {fileID: 4562706903236411147, guid: 2a4e7cfc318e13b42a392eb823a4c522, type: 3}
+        scaleVisualToRadius: 1
+        offset: {x: 0, y: 0}
+        radius: 2.5
+        duration: 5
+        tickInterval: 1
+        tickOnSpawn: 1
+        allyHealPerTick: 5
+        enemyDamagePerTick: 4
+        damageType: 2
+        targetLayers:
+          serializedVersion: 2
+          m_Bits: 4294967295
+    - rid: 3424677670206308438
+      type: {class: SpawnVfxAtPointNode, ns: , asm: Assembly-CSharp}
+      data:
+        vfxPrefab: {fileID: 1747842912770993739, guid: 86f63331685fdd6499e0fc87a218b788, type: 3}
+        offset: {x: 0, y: 0}
+        lifetime: 1.5
+    - rid: 3424677670206308439
+      type: {class: SpawnAbilityZoneNode, ns: , asm: Assembly-CSharp}
+      data:
+        zonePrefab: {fileID: 4562706903236411147, guid: 2a4e7cfc318e13b42a392eb823a4c522, type: 3}
+        scaleVisualToRadius: 1
+        offset: {x: 0, y: 0}
+        radius: 2.5
+        duration: 5
+        tickInterval: 1
+        tickOnSpawn: 1
+        allyHealPerTick: 5
+        enemyDamagePerTick: 4
+        damageType: 2
+        targetLayers:
+          serializedVersion: 2
+          m_Bits: 4294967295

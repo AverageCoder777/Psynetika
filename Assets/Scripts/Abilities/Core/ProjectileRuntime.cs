@@ -47,7 +47,9 @@ public class ProjectileRuntime : MonoBehaviour
         }
 
         lifeCts = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
-        rb.linearVelocity = new Vector2(direction * definition.speed, 0f);
+        // Гравитацию задаёт определение, а не префаб: один префаб из пула может служить и пулей, и гранатой.
+        rb.gravityScale = definition.gravityScale;
+        rb.linearVelocity = new Vector2(direction * definition.speed, definition.launchUpSpeed);
         RunEventNodes(definition.onSpawn, null).Forget();
         ExpireAfterLifetime(lifeCts.Token).Forget();
     }
@@ -125,7 +127,9 @@ public class ProjectileRuntime : MonoBehaviour
         {
             // Союзников пролетаем насквозь, а не резолвимся об них.
             IgnoreCollisionsWith(target.Transform);
-            rb.linearVelocity = new Vector2(direction * definition.speed, 0f);
+            // Брошенный по дуге снаряд сохраняет вертикальную скорость, пуля — летит строго горизонтально.
+            float verticalSpeed = definition.gravityScale > 0f ? rb.linearVelocity.y : 0f;
+            rb.linearVelocity = new Vector2(direction * definition.speed, verticalSpeed);
             return;
         }
 
