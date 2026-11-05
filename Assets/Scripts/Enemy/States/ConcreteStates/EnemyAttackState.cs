@@ -74,8 +74,11 @@ public class EnemyAttackState : EnemyStates
         {
             if (elapsed < module.windup) return;
 
-            module.Execute(controller);
-            Attack.NotifyAttackUsed(module);
+            EnemyAttackModule used = module;
+            used.Execute(controller);
+            Attack.NotifyAttackUsed(used);
+            // Модуль сам перевёл врага в другой режим (захват игрока): Exit уже отработал.
+            if (stateMachine.CurrentEnemyState != this) return;
             executed = true;
             if (parameterHash != 0) SetFlag(parameterHash, false);
             return;

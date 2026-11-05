@@ -47,6 +47,8 @@ public class CrouchSettings
 {
     [Range(0.3f, 1f)] public float crouchHeightMultiplier = 0.7f;
     [Range(0.3f, 0.9f)] public float crouchSpeedMultiplier = 0.5f;
+    [Tooltip("Высота выстрела Сатаны в присяде: доля высоты пригнувшегося коллайдера от его низа. Низкий выстрел попадает по мелочи (нейрончикам), над которой проходят пули стоя.")]
+    [Range(0.05f, 1f)] public float shotHeight = 0.3f;
 }
 
 [System.Serializable]

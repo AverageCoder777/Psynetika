@@ -3,6 +3,7 @@ using System.Collections;
 public class CrouchingState : GroundedStates
 {
     private static readonly int CrouchingHash = Animator.StringToHash("Crouching");
+    private static readonly int CrouchShootingHash = Animator.StringToHash("CrouchShooting");
     BoxCollider2D capsule;
     Vector2 originalCapsuleSize;
     Vector2 originalCapsuleOffset;
@@ -11,6 +12,8 @@ public class CrouchingState : GroundedStates
     private bool jumpInput;
     private bool dropCompleted;
     private bool isDropping = false;
+    private bool shootInput;
+    private float nextShotTime;
 
     public CrouchingState(PlayerController player, StateMachine stateMachine, PlayerStaticSettings settings) : base(player, stateMachine, settings) { }
 
@@ -33,6 +36,7 @@ public class CrouchingState : GroundedStates
         base.HandleInput();
         crouchHeld = movement.PlayerInput.actions["Crouch"].IsPressed();
         jumpInput = movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
+        shootInput = movement.PlayerInput.actions["Attack"].WasPressedThisFrame();
     }
 
     public override void LogicUpdate()
@@ -51,6 +55,11 @@ public class CrouchingState : GroundedStates
         if (dropCompleted)
         {
             stateMachine.ChangeState(player.FlyingState);
+            return;
+        }
+        if (shootInput && stateMachine.CurrentPlayerState == this)
+        {
+            TryCrouchShot();
         }
     }
     public override void PhysicsUpdate()
@@ -75,6 +84,34 @@ public class CrouchingState : GroundedStates
         if (player.debugMessages) Debug.Log("Stood up successfully");
         charManager.ActiveAnimator.SetBool(CrouchingHash, false);
     }
+    // Нижний выстрел Сатаны: не вставая, пуля летит низко и попадает по мелочи вроде нейрончика.
+    // Перезарядка — то же время, что у выстрела стоя.
+    private void TryCrouchShot()
+    {
+        if (charManager.GetCurrentCharacterType() != PlayerCharacterType.Satan || Time.time < nextShotTime)
+        {
+            return;
+        }
+
+        nextShotTime = Time.time + attack.GetCurrentAttackStat<float>(AttackStatId.AttackSpeed);
+        float dir = charManager.ActiveSR.flipX ? -1f : 1f;
+        Bounds bounds = capsule.bounds;
+        Vector2 spawnPos = new(
+            bounds.center.x + dir * settings.combat.bulletSpawnOffsetX,
+            bounds.min.y + bounds.size.y * settings.crouch.shotHeight);
+        attack.FireBullet(spawnPos, dir);
+
+        Animator animator = charManager.ActiveAnimator;
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.nameHash == CrouchShootingHash)
+            {
+                animator.SetTrigger(CrouchShootingHash);
+                break;
+            }
+        }
+    }
+
     private bool CanStandUp()
     {
         Vector2 capsuleCenter = (Vector2)player.transform.position + capsule.offset;

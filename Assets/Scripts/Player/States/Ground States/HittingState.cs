@@ -126,21 +126,8 @@ public class HittingState : GroundedStates
             if (playerIsSatan && !shooted && hitElapsed >= (timeOfOneHit / 2))
             {
                 Vector2 spawnPos = new(origin.x + (direction.x * settings.combat.bulletSpawnOffsetX), origin.y + (direction.y * settings.combat.bulletSpawnOffsetY));
-                GameObject bulletObj = Object.Instantiate(
-                    attack.bulletPrefab,
-                    spawnPos,
-                    Quaternion.identity
-                );
                 Debug.DrawLine(spawnPos, spawnPos + Vector2.up * 0.1f, Color.blue, 0.1f);
-                Bullet bullet = bulletObj.GetComponent<Bullet>();
-                bullet.damage = attack.GetCurrentAttackStat<int>(AttackStatId.CurrentDamage);
-                bullet.Attacker = attack;
-                bullet.SetDirection(hitDir);
-                SpriteRenderer bulletSR = bulletObj.GetComponent<SpriteRenderer>();
-                if (bulletSR != null)
-                {
-                    bulletSR.flipX = hitDir < 0;
-                }
+                attack.FireBullet(spawnPos, hitDir);
                 shooted = true;
                 if (player.debugMessages)
                     Debug.Log("Shot a bullet in direction " + hitDir);

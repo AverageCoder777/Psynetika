@@ -43,7 +43,12 @@ public abstract class EnemyAttackModule
     public virtual bool CanUse(EnemyController controller) => true;
 
     // Момент удара: нанести урон, выстрелить, скастовать.
+    // Модуль может сам перевести врага в другой режим (захват) — EnemyAttackState тогда не мешает.
     public abstract void Execute(EnemyController controller);
+
+    // Атаке нужны свои режимы (держит игрока, замешательство)? Зарегистрировать их здесь.
+    // Вызывается для каждого врага после EnemyController.CreateStates(), поэтому наследник контроллера не нужен.
+    public virtual void RegisterStates(EnemyController controller) { }
 
     protected static IAbilityTarget ResolveTarget(EnemyController controller)
     {

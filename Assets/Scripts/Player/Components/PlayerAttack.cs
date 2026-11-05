@@ -107,6 +107,21 @@ public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource,
         settings = Resources.Load<PlayerStaticSettings>("PlayerDefaultSettings");
         status = GetComponent<PlayerDynSettings>();
     }
+    // Пуля Сатаны из точки spawnPos в сторону dir (±1) с текущим уроном. Общая для выстрела стоя и в присяде.
+    public Bullet FireBullet(Vector2 spawnPos, float dir)
+    {
+        GameObject bulletObj = Instantiate(bulletPrefab, spawnPos, Quaternion.identity);
+        Bullet bullet = bulletObj.GetComponent<Bullet>();
+        bullet.damage = GetCurrentDamage();
+        bullet.Attacker = this;
+        bullet.SetDirection(dir);
+        if (bulletObj.TryGetComponent(out SpriteRenderer bulletSR))
+        {
+            bulletSR.flipX = dir < 0;
+        }
+        return bullet;
+    }
+
     private float GetAttackSpeed()
     {
         float baseSpeed = player.PlayerCharManager.GetCurrentCharacterType() == PlayerCharacterType.Dog ? settings.combat.dogBaseHitTime : settings.combat.satanBaseHitTime;

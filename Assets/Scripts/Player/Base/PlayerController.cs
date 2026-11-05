@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour
     public LadderState LadderState { get; set; }
     public RopeState RopeState { get; set; }
     public DyingState DyingState { get; set; }
+    public GrabbedState GrabbedState { get; set; }
     #endregion
     #region Unity MonoBehaviour Callbacks
     void Awake()
@@ -116,6 +117,12 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        // Схваченный герой ничего не может, а F бывает кнопкой QTE.
+        if (PlayerSM != null && PlayerSM.CurrentPlayerState == GrabbedState)
+        {
+            return;
+        }
+
         if (interactionDetector == null)
         {
             return;
@@ -143,5 +150,12 @@ public class PlayerController : MonoBehaviour
     {
         isVisibleToEnemies = true;
     }
+    #endregion
+    #region Grab
+    // Захват врагом (нейрончик на лице) с QTE. False — схватить нельзя: игрок мёртв или уже схвачен.
+    public bool TryGrab(IPlayerGrabber grabber, QteSettings qte) => GrabbedState != null && GrabbedState.TryGrab(grabber, qte);
+
+    // Захватчик отпускает игрока сам (погиб и т.п.) — без последствий для игрока.
+    public void ReleaseGrab(IPlayerGrabber grabber) => GrabbedState?.Release(grabber);
     #endregion
 }

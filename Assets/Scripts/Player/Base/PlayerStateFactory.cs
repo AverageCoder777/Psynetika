@@ -14,5 +14,6 @@ public class PlayerStateFactory
         controller.LadderState = new LadderState(controller, stateMachine, settings);
         controller.RopeState = new RopeState(controller, stateMachine, settings);
         controller.DyingState = new DyingState(controller, stateMachine, settings);
+        controller.GrabbedState = new GrabbedState(controller, stateMachine, settings);
     }
 }

@@ -144,6 +144,21 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
+    // Тело вне физики: враг «прилип» к игроку и двигается за ним вручную, коллайдеры выключены.
+    // При возврате скорость не трогаем — сразу после него обычно идёт ApplyKnockback.
+    public void SetPhysicsSuspended(bool suspended)
+    {
+        if (rb == null) return;
+
+        IsMoving = false;
+        if (suspended)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+        rb.simulated = !suspended;
+    }
+
     // Отбрасывание: задаёт скорость и на lockTime отключает управление, чтобы полёт доигрался.
     public void ApplyKnockback(Vector2 velocity, float lockTime)
     {

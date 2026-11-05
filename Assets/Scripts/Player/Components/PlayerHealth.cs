@@ -79,6 +79,9 @@ public class PlayerHealth : MonoBehaviour, IDamagable, IAbilityTarget, IDirectDa
         }
     }
 
+    // Мгновенная смерть текущего героя (провал QTE захвата и т.п.).
+    public void KillCurrentCharacter() => TakeDamage(GetCurrentHPOfCharacter(charManager.GetCurrentCharacterType()));
+
     public void Heal(int amount)
     {
         if (amount <= 0) return;

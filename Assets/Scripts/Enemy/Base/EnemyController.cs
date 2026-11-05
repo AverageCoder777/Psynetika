@@ -72,6 +72,10 @@ public class EnemyController : MonoBehaviour
 
         StateMachine = new EnemyStateMachine();
         CreateStates();
+        foreach (EnemyAttackModule module in config.ResolveAttacks())
+        {
+            module.RegisterStates(this);
+        }
         Health.Died += OnDied;
     }
 
