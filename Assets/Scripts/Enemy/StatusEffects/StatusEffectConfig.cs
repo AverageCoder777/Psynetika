@@ -21,4 +21,13 @@ public class StatusEffectConfig : ScriptableObject
     [Header("Reaction")]
     [Min(0f)] public float explosionDamageMultiplier = 0.5f;
     [Min(0f)] public float explosionVfxLifetime = 2f;
+
+    [Header("Wind")]
+    [Tooltip("Радиус, в котором ветер разносит Burn/Glitch с поражённой цели на соседей")]
+    [Min(0.1f)] public float windSpreadRadius = 3f;
+    [Tooltip("Сколько ближайших соседей заражает одно попадание. 0 = все в радиусе")]
+    [Min(0)] public int windSpreadMaxTargets = 3;
+    [Tooltip("VFX на соседе, которому ветер принёс статус. Пусто = без VFX")]
+    public GameObject windSpreadVfxPrefab;
+    [Min(0.1f)] public float windSpreadVfxLifetime = 1f;
 }

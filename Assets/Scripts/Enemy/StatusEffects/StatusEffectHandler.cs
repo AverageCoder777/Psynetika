@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -6,6 +7,7 @@ using UnityEngine;
 // врагом, игроком или другим объектом.
 // Burn/Glitch накладываются уроном соответствующего типа (MaybeApplyStatusFromDamage),
 // Poison — явно источником с его параметрами (TryApplyPoison).
+// Wind статуса не накладывает: попадание ветром по носителю Burn/Glitch разносит их на соседей той же команды.
 public class StatusEffectHandler : MonoBehaviour
 {
     // Хардкод-дефолты на случай, если config не назначен — статусы работают без редакторской настройки,
@@ -18,6 +20,11 @@ public class StatusEffectHandler : MonoBehaviour
     private const int DefaultGlitchMaxStacks = 3;
     private const float DefaultExplosionMultiplier = 0.5f;
     private const float DefaultExplosionVfxLifetime = 2f;
+    private const float DefaultWindSpreadRadius = 3f;
+    private const int DefaultWindSpreadMaxTargets = 3;
+    private const float DefaultWindSpreadVfxLifetime = 1f;
+
+    private static readonly List<Collider2D> OverlapBuffer = new(32);
 
     [SerializeField] private StatusEffectConfig config;
 
@@ -38,9 +45,13 @@ public class StatusEffectHandler : MonoBehaviour
     private int GlitchMaxStacks => config != null ? config.glitchMaxStacks : DefaultGlitchMaxStacks;
     private float ExplosionMultiplier => config != null ? config.explosionDamageMultiplier : DefaultExplosionMultiplier;
     private float ExplosionVfxLifetime => config != null ? config.explosionVfxLifetime : DefaultExplosionVfxLifetime;
+    private float WindSpreadRadius => config != null ? config.windSpreadRadius : DefaultWindSpreadRadius;
+    private int WindSpreadMaxTargets => config != null ? config.windSpreadMaxTargets : DefaultWindSpreadMaxTargets;
+    private float WindSpreadVfxLifetime => config != null ? config.windSpreadVfxLifetime : DefaultWindSpreadVfxLifetime;
     private GameObject BurnVfxPrefab => config != null ? config.burnVfxPrefab : null;
     private GameObject GlitchVfxPrefab => config != null ? config.glitchVfxPrefab : null;
     private GameObject ExplosionVfxPrefab => config != null ? config.explosionVfxPrefab : null;
+    private GameObject WindSpreadVfxPrefab => config != null ? config.windSpreadVfxPrefab : null;
 
     private void Awake()
     {
@@ -97,6 +108,11 @@ public class StatusEffectHandler : MonoBehaviour
             return ev.Amount + bonus;
         }
 
+        if (ev.Type == DamageType.Wind)
+        {
+            SpreadByWind(ev);
+        }
+
         return ev.Amount;
     }
 
@@ -110,7 +126,7 @@ public class StatusEffectHandler : MonoBehaviour
         switch (ev.Type)
         {
             case DamageType.Fire:
-                ApplyBurnInternal();
+                ApplyBurnInternal(new BurnSource(ev.Attacker, ev.SourceAbility));
                 break;
             case DamageType.Glitch:
                 ApplyGlitchInternal();
@@ -156,10 +172,10 @@ public class StatusEffectHandler : MonoBehaviour
         poison.Start();
     }
 
-    private void ApplyBurnInternal()
+    private void ApplyBurnInternal(BurnSource source)
     {
         ClearBurn();
-        burn = new BurnRuntime(this);
+        burn = new BurnRuntime(this, source);
         burn.Start();
     }
 
@@ -168,12 +184,118 @@ public class StatusEffectHandler : MonoBehaviour
         if (glitch == null)
         {
             glitch = new GlitchRuntime(this);
-            glitch.Start();
+            glitch.Start(1);
         }
         else
         {
             glitch.AddStack();
         }
+    }
+
+    /*
+    Ветер разносит статусы носителя на ближайших соседей той же команды; сам носитель их не теряет.
+    Соседям статус передаётся напрямую, мимо ReceiveDamage, поэтому дальше по цепочке он сам не расходится —
+    только следующим попаданием ветра.
+    */
+    private void SpreadByWind(DamageEvent ev)
+    {
+        BurnSource? burnSource = burn?.Source;
+        int glitchStacks = glitch != null ? glitch.Stacks : 0;
+        if (burnSource == null && glitchStacks <= 0) return;
+
+        Team team = damageSink is IAbilityTarget carrier ? carrier.Team : Team.Neutral;
+        Vector2 center = transform.position;
+        float radius = Mathf.Max(0.1f, WindSpreadRadius);
+
+        ContactFilter2D filter = new ContactFilter2D { useTriggers = Physics2D.queriesHitTriggers };
+        int hitCount = Physics2D.OverlapCircle(center, radius, filter, OverlapBuffer);
+
+        // Свой список, а не общий буфер: взрыв-реакция у соседа может синхронно запустить ещё один порыв.
+        List<(StatusEffectHandler handler, float sqrDistance)> candidates = new();
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hit = OverlapBuffer[i];
+            if (hit == null) continue;
+
+            IDirectDamageReceiver receiver = hit.GetComponentInParent<IDirectDamageReceiver>();
+            if (receiver == null || ReferenceEquals(receiver, damageSink)) continue;
+            if (receiver is IAbilityTarget target && (!target.IsAlive || target.Team != team)) continue;
+
+            // Коллайдер может быть большим триггером (зона агро), поэтому радиус меряем по самому носителю.
+            Transform owner = ((Component)receiver).transform;
+            float sqrDistance = ((Vector2)owner.position - center).sqrMagnitude;
+            if (sqrDistance > radius * radius) continue;
+
+            if (!owner.TryGetComponent(out StatusEffectHandler handler))
+            {
+                handler = owner.gameObject.AddComponent<StatusEffectHandler>();
+            }
+            if (candidates.Exists(c => c.handler == handler)) continue;
+
+            candidates.Add((handler, sqrDistance));
+        }
+
+        candidates.Sort((a, b) => a.sqrDistance.CompareTo(b.sqrDistance));
+        int maxTargets = WindSpreadMaxTargets;
+        int count = maxTargets > 0 ? Mathf.Min(maxTargets, candidates.Count) : candidates.Count;
+        for (int i = 0; i < count; i++)
+        {
+            candidates[i].handler.ReceiveWindSpread(burnSource, glitchStacks, ev);
+        }
+    }
+
+    // Принесённый ветром статус, встретив противоположный, взрывается так же, как от удара;
+    // бонус считается от силы порыва и идёт сырым уроном, чтобы не запустить пайплайн заново.
+    // Горение переносится с исходным источником: тики считаются от его бафов, как у оригинала.
+    private void ReceiveWindSpread(BurnSource? burnSource, int glitchStacks, DamageEvent ev)
+    {
+        ResolveDependencies();
+        WarnIfConfigMissing();
+        if (!IsCarrierAlive) return;
+
+        bool reacted = false;
+        if (burnSource != null && glitch != null)
+        {
+            ClearGlitch();
+            reacted = true;
+        }
+        if (glitchStacks > 0 && burn != null)
+        {
+            ClearBurn();
+            reacted = true;
+        }
+
+        if (reacted)
+        {
+            SpawnExplosionVfx();
+            damageSink?.ApplyDamage(new DamageEvent
+            {
+                Attacker = ev.Attacker,
+                Target = damageSink as IAbilityTarget,
+                Amount = ev.Amount * ExplosionMultiplier,
+                Type = ev.Type,
+                SourceAbility = ev.SourceAbility
+            });
+            return;
+        }
+
+        if (burnSource != null)
+        {
+            ApplyBurnInternal(burnSource.Value);
+        }
+        if (glitchStacks > 0)
+        {
+            if (glitch == null)
+            {
+                glitch = new GlitchRuntime(this);
+                glitch.Start(glitchStacks);
+            }
+            else
+            {
+                glitch.SetStacks(Mathf.Max(glitch.Stacks, glitchStacks));
+            }
+        }
+        SpawnWindSpreadVfx();
     }
 
     private void ClearBurn()
@@ -209,15 +331,54 @@ public class StatusEffectHandler : MonoBehaviour
         Destroy(vfx, Mathf.Max(0.1f, ExplosionVfxLifetime));
     }
 
+    private void SpawnWindSpreadVfx()
+    {
+        if (WindSpreadVfxPrefab == null)
+        {
+            return;
+        }
+
+        GameObject vfx = Instantiate(WindSpreadVfxPrefab, transform.position, Quaternion.identity, transform);
+        Destroy(vfx, Mathf.Max(0.1f, WindSpreadVfxLifetime));
+    }
+
+    // Кто и чем поджёг. Разнесённое ветром горение несёт тот же источник, поэтому ведёт себя как исходное.
+    private readonly struct BurnSource
+    {
+        public readonly IAbilityCaster Attacker;
+        public readonly AbilityDefinition Ability;
+
+        public BurnSource(IAbilityCaster attacker, AbilityDefinition ability)
+        {
+            Attacker = attacker;
+            Ability = ability;
+        }
+
+        // Бафы урона поджигателя действуют на тики; читаются на каждом тике, так что баф, взятый
+        // уже во время горения, тоже учитывается. Без источника (или если он уничтожен) — множитель 1.
+        public float DamageMultiplier
+        {
+            get
+            {
+                if (Attacker is not IAbilityStatOwner statOwner) return 1f;
+                if (statOwner is Object unityObject && unityObject == null) return 1f;
+                return Mathf.Max(0f, statOwner.GetStatMult(StatMultId.CurrentDamageMult));
+            }
+        }
+    }
+
     private class BurnRuntime
     {
         private readonly StatusEffectHandler handler;
         private readonly CancellationTokenSource cts = new CancellationTokenSource();
         private GameObject vfxInstance;
 
-        public BurnRuntime(StatusEffectHandler handler)
+        public BurnSource Source { get; }
+
+        public BurnRuntime(StatusEffectHandler handler, BurnSource source)
         {
             this.handler = handler;
+            Source = source;
         }
 
         public void Start()
@@ -265,10 +426,12 @@ public class StatusEffectHandler : MonoBehaviour
                     }
                     // Тик обязан идти через ApplyDamage (сырой урон), не через ReceiveDamage —
                     // иначе Fire-тик бесконечно перенакладывал бы Burn на самого себя.
+                    // Attacker не передаём: тики статусов не начисляют энергию ульты.
                     handler.damageSink.ApplyDamage(new DamageEvent
                     {
-                        Amount = tickDamage,
-                        Type = DamageType.Fire
+                        Amount = Mathf.Max(1, Mathf.RoundToInt(tickDamage * Source.DamageMultiplier)),
+                        Type = DamageType.Fire,
+                        SourceAbility = Source.Ability
                     });
                 }
             }
@@ -367,20 +530,28 @@ public class StatusEffectHandler : MonoBehaviour
             this.handler = handler;
         }
 
-        public void Start()
+        public int Stacks => stacks;
+
+        public void Start(int initialStacks)
         {
             if (handler.GlitchVfxPrefab != null)
             {
                 vfxInstance = Object.Instantiate(handler.GlitchVfxPrefab, handler.transform);
             }
-            stacks = 1;
+            stacks = Mathf.Clamp(initialStacks, 1, Mathf.Max(1, handler.GlitchMaxStacks));
             ApplyMultipliers();
             Run(cts.Token).Forget();
         }
 
         public void AddStack()
         {
-            stacks = Mathf.Min(stacks + 1, Mathf.Max(1, handler.GlitchMaxStacks));
+            SetStacks(stacks + 1);
+        }
+
+        // Новое число стаков с перезапуском таймера.
+        public void SetStacks(int value)
+        {
+            stacks = Mathf.Clamp(value, 1, Mathf.Max(1, handler.GlitchMaxStacks));
             ApplyMultipliers();
 
             cts.Cancel();

@@ -15,6 +15,8 @@ public class HittingState : GroundedStates
     private float lastHitTime = 0f;
     private bool playerIsSatan;
     private bool shooted = false;
+    private EmpoweredAttackSession empoweredSwing;
+    private bool empoweredSwingFired = false;
 
     public HittingState(PlayerController player, StateMachine playerStateMachine, PlayerStaticSettings settings)
         : base(player, playerStateMachine, settings) { }
@@ -28,7 +30,7 @@ public class HittingState : GroundedStates
         }
         shooted = false;
         playerIsSatan = charManager.GetCurrentCharacterType() == PlayerCharacterType.Satan;
-        timeOfOneHit = attack.GetCurrentAttackStat<float>(AttackStatId.AttackSpeed);
+        PrepareSwing();
         hitDistance = attack.GetCurrentAttackStat<float>(AttackStatId.AttackRange);
         damage = attack.GetCurrentAttackStat<int>(AttackStatId.CurrentDamage);
         comboCount++;
@@ -143,7 +145,13 @@ public class HittingState : GroundedStates
                 if (player.debugMessages)
                     Debug.Log("Shot a bullet in direction " + hitDir);
             }
-            if (!playerIsSatan && hitElapsed >= timeOfOneHit)
+            if (empoweredSwing != null && !empoweredSwingFired
+                && hitElapsed >= timeOfOneHit * empoweredSwing.SwingMomentNormalized)
+            {
+                empoweredSwingFired = true;
+                empoweredSwing.TrySwing(hitDir);
+            }
+            if (!playerIsSatan && empoweredSwing == null && hitElapsed >= timeOfOneHit)
             {
                 // Create a box area in front of the player
                 Vector2 boxSize = new(hitDistance, hitDistance);
@@ -205,12 +213,28 @@ public class HittingState : GroundedStates
         }
     }
 
+    // Ину в режиме усиленных атак (её E): взмах быстрее, и вместо удара в упор он запускает
+    // ноды способности (воздушную волну). Решается на каждый взмах — режим мог кончиться посреди комбо.
+    private void PrepareSwing()
+    {
+        timeOfOneHit = attack.GetCurrentAttackStat<float>(AttackStatId.AttackSpeed);
+        empoweredSwing = playerIsSatan ? null : attack.EmpoweredAttack;
+        empoweredSwingFired = false;
+        if (empoweredSwing != null)
+        {
+            timeOfOneHit *= empoweredSwing.SwingTimeMultiplier;
+        }
+        // Анимацию взмаха ускоряем вместе с ним, иначе она обрежется на середине.
+        charManager.ActiveAnimator.speed = empoweredSwing != null ? 1f / empoweredSwing.SwingTimeMultiplier : 1f;
+    }
+
     private void RestartAttack()
     {
         hitElapsed = 0f;
         hitCompleted = false;
         shooted = false;
         attackRequested = false;
+        PrepareSwing();
 
         // Выключить текущий флаг комбо
         if (playerIsSatan)
@@ -255,6 +279,8 @@ public class HittingState : GroundedStates
         hitCompleted = false;
         shooted = false;
         attackRequested = false;
+        empoweredSwing = null;
+        charManager.ActiveAnimator.speed = 1f;
         ResetAnimator();
     }
 }

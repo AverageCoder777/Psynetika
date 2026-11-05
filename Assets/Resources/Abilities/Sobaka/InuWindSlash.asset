@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 331cdfcadb86fa8428850325c254d61b, type: 3}
+  m_Name: InuWindSlash
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityDefinition
+  id: sobaka.wind_slash
+  displayName: "\u0412\u043E\u0437\u0434\u0443\u0448\u043D\u044B\u0435 \u0432\u0437\u043C\u0430\u0445\u0438"
+  description: "10 \u0441\u0435\u043A\u0443\u043D\u0434 \u0430\u0442\u0430\u043A\u0438 \u0418\u043D\u0443 \u2014 \u0431\u044B\u0441\u0442\u0440\u044B\u0435 \u0432\u0437\u043C\u0430\u0445\u0438 \u043D\u043E\u0436\u043E\u043C (\u0434\u043E 4), \u043A\u0430\u0436\u0434\u044B\u0439 \u043F\u043E\u0441\u044B\u043B\u0430\u0435\u0442 \u0432\u043E\u0437\u0434\u0443\u0448\u043D\u0443\u044E \u0432\u043E\u043B\u043D\u0443. \u0412\u043E\u043B\u043D\u0430 \u043F\u0440\u043E\u0445\u043E\u0434\u0438\u0442 \u0441\u043A\u0432\u043E\u0437\u044C \u0432\u0440\u0430\u0433\u043E\u0432 \u0438 \u043D\u0430\u043D\u043E\u0441\u0438\u0442 \u0443\u0440\u043E\u043D \u0432\u0435\u0442\u0440\u043E\u043C: 90% \u0443\u0440\u043E\u043D\u0430 \u0430\u0442\u0430\u043A\u0438. \u0413\u043E\u0440\u044F\u0449\u0438\u0445 \u0432\u0440\u0430\u0433\u043E\u0432 \u0432\u0435\u0442\u0435\u0440 \u0437\u0430\u0441\u0442\u0430\u0432\u043B\u044F\u0435\u0442 \u043F\u043E\u0434\u0436\u0435\u0447\u044C \u0441\u043E\u0441\u0435\u0434\u0435\u0439."
+  icon: {fileID: 5553972759691046475, guid: de563b57c66f1d440af1dfd2482f4dba, type: 3}
+  slot: 2
+  cooldown: 16
+  animClip: {fileID: 0}
+  matchDurationToClip: 0
+  castDuration: 0.2
+  castMomentNormalized: 0.5
+  root:
+  - rid: 4723318887772103374
+  references:
+    version: 2
+    RefIds:
+    - rid: 4723318887772103374
+      type: {class: EmpoweredAttacksNode, ns: , asm: Assembly-CSharp}
+      data:
+        duration: 10
+        charges: 4
+        swingTimeMultiplier: 0.5
+        swingMomentNormalized: 0.5
+        onSwing:
+        - rid: 4991404023273273034
+        - rid: 3143792477030890545
+    - rid: 4991404023273273034
+      type: {class: ComputeOwnerHitDamageNode, ns: , asm: Assembly-CSharp}
+      data:
+        outputDamageKey: windslash.damage
+        damageMultiplier: 0.9
+        includeOwnerBuffs: 1
+    - rid: 3143792477030890545
+      type: {class: SpawnProjectileNode, ns: , asm: Assembly-CSharp}
+      data:
+        projectile: {fileID: 11400000, guid: e1b9c646bc8f47f4aa6524f8f1cd6008, type: 2}

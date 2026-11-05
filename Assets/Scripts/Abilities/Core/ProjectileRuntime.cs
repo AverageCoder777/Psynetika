@@ -15,6 +15,8 @@ public class ProjectileRuntime : MonoBehaviour
     private CancellationTokenSource lifeCts;
     private Action<ProjectileRuntime> releaseToPool;
     private readonly List<(Collider2D projectile, Collider2D other)> ignoredPairs = new();
+    private readonly HashSet<IAbilityTarget> piercedTargets = new();
+    private Vector2 spawnPosition;
 
     private void Awake()
     {
@@ -29,6 +31,8 @@ public class ProjectileRuntime : MonoBehaviour
         releaseToPool = releaseCallback;
         direction = Mathf.Approximately(facingDirection, 0f) ? 1f : Mathf.Sign(facingDirection);
         resolved = false;
+        piercedTargets.Clear();
+        spawnPosition = transform.position;
 
         if (rb == null)
         {
@@ -105,14 +109,70 @@ public class ProjectileRuntime : MonoBehaviour
             return;
         }
 
-        if (this == null || resolved)
+        if (this == null)
+        {
+            return;
+        }
+
+        Expire().Forget();
+    }
+
+    private async UniTaskVoid Expire()
+    {
+        if (resolved)
         {
             return;
         }
 
         resolved = true;
+        rb.linearVelocity = Vector2.zero;
         await RunEventNodes(definition.onExpire, null);
         Despawn();
+    }
+
+    private void FixedUpdate()
+    {
+        if (resolved || definition == null || definition.maxDistance <= 0f)
+        {
+            return;
+        }
+
+        if (((Vector2)transform.position - spawnPosition).sqrMagnitude >= definition.maxDistance * definition.maxDistance)
+        {
+            Expire().Forget();
+        }
+    }
+
+    // Пробивающий снаряд с триггер-коллайдером: цели не толкают его, а onHit срабатывает по каждой один раз.
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (resolved || definition == null || !definition.pierceTargets)
+        {
+            return;
+        }
+
+        // Чужие триггеры (зоны агро врагов, интерактивы) — не тела, сквозь них летим молча.
+        if (other.isTrigger)
+        {
+            return;
+        }
+
+        IAbilityTarget target = other.GetComponentInParent<IAbilityTarget>();
+        if (target == null)
+        {
+            if (definition.stopOnObstacles)
+            {
+                Expire().Forget();
+            }
+            return;
+        }
+
+        if (IsAlly(target) || !target.IsAlive || !piercedTargets.Add(target))
+        {
+            return;
+        }
+
+        RunEventNodes(definition.onHit, target).Forget();
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -130,6 +190,19 @@ public class ProjectileRuntime : MonoBehaviour
             // Брошенный по дуге снаряд сохраняет вертикальную скорость, пуля — летит строго горизонтально.
             float verticalSpeed = definition.gravityScale > 0f ? rb.linearVelocity.y : 0f;
             rb.linearVelocity = new Vector2(direction * definition.speed, verticalSpeed);
+            return;
+        }
+
+        // Пробивающий снаряд, у которого коллайдер всё же не триггер: ведём себя как с союзником, но бьём цель.
+        if (target != null && definition.pierceTargets)
+        {
+            IgnoreCollisionsWith(target.Transform);
+            float verticalSpeed = definition.gravityScale > 0f ? rb.linearVelocity.y : 0f;
+            rb.linearVelocity = new Vector2(direction * definition.speed, verticalSpeed);
+            if (target.IsAlive && piercedTargets.Add(target))
+            {
+                RunEventNodes(definition.onHit, target).Forget();
+            }
             return;
         }
 

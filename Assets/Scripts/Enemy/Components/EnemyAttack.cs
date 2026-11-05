@@ -282,6 +282,9 @@ public class EnemyAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, 
         return Mathf.RoundToInt(baseDamage * damageMultiplier);
     }
 
+    // Базовый урон врага уже учитывает его множитель урона.
+    int IAbilityDamageSource.GetCurrentHitDamage() => ((IAbilityDamageSource)this).GetBaseHitDamage();
+
     int IAbilityHealth.GetMaxHP() => health != null ? health.MaxHp : 0;
 
     int IAbilityHealth.TryDrainHP(int amount, int minHp)

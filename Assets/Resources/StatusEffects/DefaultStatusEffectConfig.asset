@@ -23,3 +23,7 @@ MonoBehaviour:
   glitchMaxStacks: 3
   explosionDamageMultiplier: 0.5
   explosionVfxLifetime: 2
+  windSpreadRadius: 3
+  windSpreadMaxTargets: 3
+  windSpreadVfxPrefab: {fileID: 2772299413769177048, guid: f430a80050b24a1c891a0952f84f0818, type: 3}
+  windSpreadVfxLifetime: 0.958

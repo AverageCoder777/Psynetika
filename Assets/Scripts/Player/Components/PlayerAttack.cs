@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]
 public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, IAbilityStatOwner, IAttackable, IAbilityHealth,
-    IDamageDealtObserver, IAbilityEnergyOwner
+    IDamageDealtObserver, IAbilityEnergyOwner, IEmpoweredAttackOwner
 {
     private PlayerStaticSettings settings;
     private PlayerDynSettings status;
@@ -128,6 +128,7 @@ public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource,
     }
 
     int IAbilityDamageSource.GetBaseHitDamage() => GetBaseDamage();
+    int IAbilityDamageSource.GetCurrentHitDamage() => GetCurrentDamage();
     int IAbilityHealth.GetMaxHP() => health != null ? health.GetCurrentMaxHP() : 0;
     int IAbilityHealth.TryDrainHP(int amount, int minHp) => health != null ? health.TryDrainHP(amount, minHp) : 0;
 
@@ -151,5 +152,20 @@ public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource,
     void IAbilityEnergyOwner.AddEnergy(AbilityDefinition source, float amount)
     {
         if (Energy != null) Energy.AddFromAbility(source, amount);
+    }
+
+    // Режим усиленных атак от способности (E Ину); HittingState тратит его заряды на взмахах.
+    private EmpoweredAttackSession empoweredAttack;
+    public EmpoweredAttackSession EmpoweredAttack => empoweredAttack != null && empoweredAttack.IsActive ? empoweredAttack : null;
+
+    void IEmpoweredAttackOwner.BeginEmpoweredAttacks(EmpoweredAttackSession session)
+    {
+        empoweredAttack?.End();
+        empoweredAttack = session;
+    }
+
+    void IEmpoweredAttackOwner.EndEmpoweredAttacks(EmpoweredAttackSession session)
+    {
+        if (empoweredAttack == session) empoweredAttack = null;
     }
 }
