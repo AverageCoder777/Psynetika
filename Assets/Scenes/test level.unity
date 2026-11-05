@@ -558,9 +558,33 @@ PrefabInstance:
       propertyPath: sobakaRegular
       value: 
       objectReference: {fileID: 11400000, guid: 9a696dcaf5cb4d94ba20494e54dcbdde, type: 2}
+    - target: {fileID: 4639005122991999287, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
+      propertyPath: m_SpriteSortPoint
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4671039469834000905, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4671039469834000905, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5491923253759782825, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5491923253759782825, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5868496344035386359, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7304481829281720441, guid: 1d48766914924ca4ca192e11c5b6d614, type: 3}
+      propertyPath: m_SpriteSortPoint
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
