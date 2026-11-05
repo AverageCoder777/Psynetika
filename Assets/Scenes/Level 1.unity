@@ -3599,7 +3599,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 185400646266643072, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: m_fontSize
-      value: 36
+      value: 39
       objectReference: {fileID: 0}
     - target: {fileID: 185400646266643072, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: m_overflowMode
@@ -3951,11 +3951,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4523991170321590779, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: m_fontSize
-      value: 100
+      value: 104
       objectReference: {fileID: 0}
     - target: {fileID: 4523991170321590779, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: m_fontSizeBase
-      value: 100
+      value: 104
       objectReference: {fileID: 0}
     - target: {fileID: 4870149218746762033, guid: 917f9fca2bfd12a4f9b84064fb603914, type: 3}
       propertyPath: FinishPanel
