@@ -339,7 +339,29 @@ public class StatusEffectHandler : MonoBehaviour
         }
 
         GameObject vfx = Instantiate(WindSpreadVfxPrefab, transform.position, Quaternion.identity, transform);
+        // Пивот врага бывает ниже ног, а угольки поднимаются от низа кадра — ставим низ эффекта на низ тела.
+        if (TryGetBodyBounds(out Bounds body) && vfx.TryGetComponent(out SpriteRenderer sprite))
+        {
+            Vector3 position = vfx.transform.position;
+            position.x = body.center.x;
+            position.y += body.min.y - sprite.bounds.min.y;
+            vfx.transform.position = position;
+        }
         Destroy(vfx, Mathf.Max(0.1f, WindSpreadVfxLifetime));
+    }
+
+    private bool TryGetBodyBounds(out Bounds bounds)
+    {
+        foreach (Collider2D collider in GetComponents<Collider2D>())
+        {
+            if (collider.enabled && !collider.isTrigger)
+            {
+                bounds = collider.bounds;
+                return true;
+            }
+        }
+        bounds = default;
+        return false;
     }
 
     // Кто и чем поджёг. Разнесённое ветром горение несёт тот же источник, поэтому ведёт себя как исходное.
