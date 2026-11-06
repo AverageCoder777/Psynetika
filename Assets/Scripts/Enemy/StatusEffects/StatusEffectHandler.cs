@@ -161,6 +161,10 @@ public class StatusEffectHandler : MonoBehaviour
         return true;
     }
 
+    // Отравление ещё идёт. Источники, которые травят постоянно (ядовитая лужа), не перезапускают его
+    // каждый кадр: перезапуск сбрасывает таймер тика, и урон не прошёл бы ни разу.
+    public bool IsPoisoned => poison != null;
+
     // Повторное отравление перезапускает эффект с новыми параметрами, а не складывает тики.
     public void ApplyPoison(PoisonSettings settings)
     {

@@ -4,7 +4,8 @@ using UnityEngine;
 Игрока схватили (нейрончик вцепился в лицо). Любые действия заблокированы, идёт QTE:
 одна случайная кнопка, каждое нажатие сокращает захват (QteSequence).
   захват кончился раньше таймера — захватчик сброшен, игрок снова управляем;
-  не кончился — персонаж совершает самоубийство (смерть текущего героя, дальше обычный DyingState).
+  не кончился — персонаж совершает самоубийство (смерть текущего героя, дальше обычный DyingState);
+               при QteSettings.killOnFail = false (паутина Мамы паука) — просто урон failDamage.
 
 Войти можно из любого состояния, кроме смерти и уже идущего захвата: от захвата не уклониться.
 Захватчик узнаёт исход через IPlayerGrabber.OnGrabEnded ровно один раз — в том числе когда
@@ -74,11 +75,23 @@ public class GrabbedState : State
 
             case QteSequence.Status.Failed:
                 Finish(GrabOutcome.Failed);
-                // Смерть придёт событием PlayerHealth.Died → PlayerController переведёт в DyingState.
-                player.GetComponent<PlayerHealth>().KillCurrentCharacter();
-                if (stateMachine.CurrentPlayerState == this)
+                QteSettings failed = qte.Settings;
+                if (failed == null || failed.killOnFail)
                 {
-                    ExitToControl();
+                    // Смерть придёт событием PlayerHealth.Died → PlayerController переведёт в DyingState.
+                    player.GetComponent<PlayerHealth>().KillCurrentCharacter();
+                    if (stateMachine.CurrentPlayerState == this)
+                    {
+                        ExitToControl();
+                    }
+                    break;
+                }
+
+                // Мягкий провал (паутина): захват просто кончился, остаётся урон.
+                ExitToControl();
+                if (failed.failDamage > 0)
+                {
+                    DamageHelper.TryDamage(player.GetComponent<PlayerHealth>(), failed.failDamage, DamageType.Physical);
                 }
                 break;
         }

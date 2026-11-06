@@ -22,6 +22,12 @@ public class QteSettings
 
     [Tooltip("Насколько нажатие другой кнопки из набора возвращает захват, нажатий. 0 = такие нажатия игнорируются")]
     [Min(0)] public int wrongKeyPenalty = 0;
+
+    [Tooltip("Не успел — персонаж погибает (захват нейрончика). Выключено — захват просто кончается и игрок получает failDamage (паутина)")]
+    public bool killOnFail = true;
+
+    [Tooltip("Урон при провале QTE, если killOnFail выключен")]
+    [Min(0)] public int failDamage = 0;
 }
 
 /*
@@ -40,6 +46,7 @@ public class QteSequence
     private readonly List<Key> candidates = new();
     private QteSettings settings;
 
+    public QteSettings Settings => settings;
     public Key TargetKey { get; private set; } = Key.Space;
     public int PressesLeft { get; private set; }
     public int PressesRequired => settings != null ? settings.pressesToEscape : 0;

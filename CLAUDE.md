@@ -16,7 +16,9 @@ Psynetika — 2D-платформер на **Unity 6000.3.13f1** (URP 2D). Ко�
 Сборки/тестов из командной строки в репозитории нет — всё через Unity Editor (версия должна совпадать
 с `ProjectSettings/ProjectVersion.txt`, иначе Unity переимпортирует проект).
 
-* Игровые сцены: `Assets/Scenes/Level 1.unity`, `Assets/Scenes/Main menu.unity`, `Assets/Scenes/test level.unity`.
+* Игровые сцены: `Assets/Scenes/Level 1.unity`, `Assets/Scenes/Main menu.unity`, `Assets/Scenes/test level.unity`,
+  `Assets/Scenes/Boss Arena - Mama Spider.unity` (песочница мини-босса, не в Build Settings; сама арена
+  стоит и в `Level 1` — объект `SpiderMother Arena` правее финиша).
 * Компиляцию скриптов можно проверить открытым редактором (окно Console) — `.csproj`/`.sln` в корне
   **генерируются Unity** и в `.gitignore`; править их руками бессмысленно.
 * Тестовых ассембли (`EditMode`/`PlayMode`) в проекте нет, хотя `com.unity.test-framework` подключён.

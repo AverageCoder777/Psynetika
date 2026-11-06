@@ -15,6 +15,10 @@ public class EnemyHealth : MonoBehaviour, IAbilityTarget, IDirectDamageReceiver
     public int MaxHp => maxHp;
     public bool IsAlive => currentHp > 0;
 
+    // Неуязвим: любой урон (и полный пайплайн, и сырые тики статусов) игнорируется.
+    // Например, босс под щитом — бить надо щит.
+    public bool IsInvulnerable { get; set; }
+
     private void Awake()
     {
         statusHandler = GetComponent<StatusEffectHandler>();
@@ -35,7 +39,7 @@ public class EnemyHealth : MonoBehaviour, IAbilityTarget, IDirectDamageReceiver
     // Полный пайплайн урона: реакции/резисты статусов -> урон -> наложение статуса.
     void IAbilityTarget.ReceiveDamage(DamageEvent ev)
     {
-        if (!IsAlive) return;
+        if (!IsAlive || IsInvulnerable) return;
 
         if (statusHandler != null)
         {
@@ -52,7 +56,7 @@ public class EnemyHealth : MonoBehaviour, IAbilityTarget, IDirectDamageReceiver
     // иначе каждый тик заново накладывал бы Burn через ReceiveDamage.
     public void ApplyDamage(DamageEvent ev)
     {
-        if (!IsAlive) return;
+        if (!IsAlive || IsInvulnerable) return;
 
         int amount = Mathf.Max(0, Mathf.RoundToInt(ev.Amount));
         if (amount <= 0) return;
