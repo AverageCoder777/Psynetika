@@ -33,6 +33,10 @@ public class IdleState : GroundedStates
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        if (Mathf.Abs(movementInput.y) < 0.01f)
+        {
+            movementInput.y = 0f;
+        }
         if (crouch)
         {
             stateMachine.ChangeState(player.CrouchingState);

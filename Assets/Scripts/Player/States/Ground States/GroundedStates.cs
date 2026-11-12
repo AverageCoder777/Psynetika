@@ -35,7 +35,14 @@ public abstract class GroundedStates : State
         {
             newVelocityX = 0f;
         }
-        movement.Rb.linearVelocity = new Vector2(newVelocityX, movement.Rb.linearVelocity.y);
+        if (Mathf.Abs(movement.Rb.linearVelocity.y) < 0.01f)
+        {
+            movement.Rb.linearVelocity = new Vector2(newVelocityX, 0f);
+        }
+        else
+        {
+            movement.Rb.linearVelocity = new Vector2(newVelocityX, movement.Rb.linearVelocity.y);
+        }
 
         if (movementInput.x > 0.01f)
             charManager.ActiveSR.flipX = false;
