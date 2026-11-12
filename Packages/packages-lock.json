@@ -5,7 +5,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "2fc7a2366437467e70b38dc756c7d9d06e4909b0"
+      "hash": "a709090ac35b99ab3a0a2ce380664387fd60bc22"
     },
     "com.coplaydev.unity-mcp": {
       "version": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#v10.3.0",

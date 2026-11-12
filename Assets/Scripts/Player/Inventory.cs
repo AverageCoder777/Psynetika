@@ -21,6 +21,13 @@ public class Inventory : MonoBehaviour
         InventoryChenged?.Invoke();
     }
 
+    // Стоит ли уже эта способность в слоте героя — чтобы магазин не брал деньги повторно.
+    public bool HasAbility(AbilityDefinition ability, SpellOwner owner, SpellSlot slot)
+    {
+        if (ability == null || _sc == null || owner == SpellOwner.Any) return false;
+        return _sc.GetAbilityData(owner == SpellOwner.Satan, slot) == ability;
+    }
+
     public void ChangeAbility(AbilityDefinition ability, SpellOwner owner, SpellSlot slot)
     {
         if (ability == null || _sc == null) return;

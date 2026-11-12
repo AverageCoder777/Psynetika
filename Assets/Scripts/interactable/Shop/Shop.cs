@@ -74,6 +74,12 @@ public class Shop : MonoBehaviour, IInteractable
             return;
         }
 
+        if (_inventory.HasAbility(item.ability, item.owner, item.slot))
+        {
+            Debug.Log("Ability already equipped");
+            return;
+        }
+
         if (_inventory.coins < item.amount)
         {
             Debug.Log("Not enough coins");
