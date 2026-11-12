@@ -8,6 +8,7 @@ public class WallState : State
     private Collider2D wallCollider;
     private Collider2D lastJumpedWall;
     private float lastWallJumpTime = float.NegativeInfinity;
+    public float LastWallJumpTime => lastWallJumpTime;
 
     public WallState(PlayerController player, StateMachine stateMachine, PlayerStaticSettings settings)
         : base(player, stateMachine, settings) { }
@@ -27,7 +28,8 @@ public class WallState : State
     public override void HandleInput()
     {
         base.HandleInput();
-        jumpInput = movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
+        // С буфером: прыжок, нажатый за миг до касания стены, тоже засчитывается.
+        jumpInput = movement.HasBufferedJump;
     }
 
     public override void LogicUpdate()
@@ -66,6 +68,7 @@ public class WallState : State
         float verticalVelocity = Mathf.Sqrt(settings.wall.wallJumpForce * settings.wall.wallVerticalMultiplier);
 
         movement.Rb.linearVelocity = new Vector2(horizontalVelocity, verticalVelocity);
+        movement.NotifyJumped(allowJumpCut: false);
 
         charManager.ActiveSR.flipX = !charManager.ActiveSR.flipX; // Через флип происходит и флип луча
     }

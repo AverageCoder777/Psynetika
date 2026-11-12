@@ -35,6 +35,11 @@ public abstract class GroundedStates : State
         float targetVelocityX = movementInput.x * movement.GetCurrentSpeed();
         float currentVelocityX = movement.Rb.linearVelocity.x;
         float accelerationToUse = movementInput.x != 0 ? settings.move.accelerationRate : settings.move.frictionRate;
+        if (currentVelocityX * targetVelocityX < 0f)
+        {
+            // Разворот на бегу — резче обычного разгона, чтобы герой не «буксовал».
+            accelerationToUse = settings.move.turnAccelerationRate;
+        }
         float newVelocityX = Mathf.Lerp(currentVelocityX, targetVelocityX, accelerationToUse * Time.fixedDeltaTime);
         
         movement.Rb.linearVelocity = new Vector2(newVelocityX, movement.Rb.linearVelocity.y);

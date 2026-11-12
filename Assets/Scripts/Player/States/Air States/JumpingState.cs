@@ -17,12 +17,6 @@ public class JumpingState : AirStates
         movement.Rb.gravityScale = settings.jump.upGravityScale;
     }
 
-    public override void PhysicsUpdate()
-    {
-        base.PhysicsUpdate();
-        movement.Rb.gravityScale = movement.Rb.linearVelocity.y >= 0 ? settings.jump.upGravityScale : settings.jump.downGravityScale;
-    }
-
     public override void LogicUpdate()
     {
         base.LogicUpdate();

@@ -23,7 +23,8 @@ public class IdleState : GroundedStates
     {
         base.HandleInput();
         crouch = movement.PlayerInput.actions["Crouch"].IsPressed();
-        jump = movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
+        // С буфером: прыжок, нажатый за миг до приземления, выполняется сразу при касании земли.
+        jump = movement.HasBufferedJump;
         roll = movement.PlayerInput.actions["Roll"].WasPressedThisFrame();
         @switch = movement.PlayerInput.actions["Switch"].WasPressedThisFrame();
         hit = movement.PlayerInput.actions["Attack"].WasPressedThisFrame();
@@ -33,6 +34,7 @@ public class IdleState : GroundedStates
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        movement.MarkGrounded();
         if (crouch)
         {
             stateMachine.ChangeState(player.CrouchingState);

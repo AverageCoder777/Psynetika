@@ -7,6 +7,11 @@ public class FlyingState : AirStates
     public FlyingState(PlayerController player, StateMachine stateMachine, PlayerStaticSettings settings)
         : base(player, stateMachine, settings) { }
 
+    // Сразу после отскока от стены ввод ненадолго отключён, чтобы зажатое «к стене» не гасило отскок.
+    // Потом возвращаются управление в воздухе и двойной прыжок.
+    private bool WallJumpLocked => player.PlayerSM.LastPlayerState is WallState
+        && Time.time - player.WallState.LastWallJumpTime < settings.wall.wallJumpControlLock;
+
     public override void Enter()
     {
         if (movement.Rb.linearVelocity.y < 0)
@@ -22,7 +27,7 @@ public class FlyingState : AirStates
 
     public override void HandleInput()
     {
-        if (player.PlayerSM.LastPlayerState is not WallState)
+        if (!WallJumpLocked)
         {
             base.HandleInput();
             TryDoubleJump();
@@ -31,26 +36,23 @@ public class FlyingState : AirStates
 
     public override void PhysicsUpdate()
     {
-        if (player.PlayerSM.LastPlayerState is not WallState)
+        if (!WallJumpLocked)
         {
             base.PhysicsUpdate();
         }
         else
         {
-            if (movement.Rb.linearVelocity.y > 0)
-            {
-                movement.Rb.gravityScale = settings.jump.upGravityScale;
-            }
-            else
-            {
-                movement.Rb.gravityScale = settings.jump.downGravityScale;
-            }
+            ApplyAirGravity();
         }
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        if (stateMachine.CurrentPlayerState != this)
+        {
+            return;
+        }
 
         if (DetectFloor() != "None")
         {
@@ -59,8 +61,7 @@ public class FlyingState : AirStates
                 return;
             }
 
-            player.Movement.ResetAirJumps();
-            stateMachine.ChangeState(player.IdleState);
+            Land();
         }
     }
 

@@ -50,6 +50,8 @@ public class CrouchingState : GroundedStates
         {
             grounded = false;
             isDropping = true;
+            // Нажатие ушло на спрыгивание — не даём буферу прыжка выстрелить, когда герой встанет.
+            movement.ConsumeBufferedJump();
             player.StartCoroutine(DropThroughPlatform());
         }
         if (dropCompleted)

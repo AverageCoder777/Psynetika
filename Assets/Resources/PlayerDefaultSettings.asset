@@ -19,24 +19,35 @@ MonoBehaviour:
     satanSpeed: 8
     accelerationRate: 15
     frictionRate: 20
+    turnAccelerationRate: 30
   jump:
-    airSpeedMultiplier: 0.75
+    airSpeedMultiplier: 0.9
     thrust: 8
     upGravityScale: 1.1
     downGravityScale: 2
-    maxAirJumpsCount: 3
+    maxAirJumpsCount: 2
+    coyoteTime: 0.1
+    jumpBufferTime: 0.12
+    jumpCutMultiplier: 0.5
+    apexHangSpeed: 1.5
+    apexGravityMultiplier: 0.6
+    maxFallSpeed: 18
+    airFrictionRate: 4
   crouch:
     crouchHeightMultiplier: 0.7
     crouchSpeedMultiplier: 0.5
   rolling:
     rollDistance: 4
     rollDuration: 0.25
+    jumpCancel: 1
+    keepRunSpeedOnExit: 1
   wall:
     wallSlideSpeed: 1
     wallJumpForce: 20
     wallWaitTime: 0.15
     wallJumpSpeed: 0.45
     wallVerticalMultiplier: 3
+    wallJumpControlLock: 0.15
   ladder:
     climbSpeed: 5
     exitDelay: 0.25
@@ -97,3 +108,12 @@ MonoBehaviour:
     movementInputThreshold: 0.001
     floorDetectionDistance: 0.8
     platformDetectionDistance: 1
+  squash:
+    enabled: 1
+    jumpStretch: 0.2
+    maxLandSquash: 0.25
+    landSquashFullSpeed: 14
+    airStretchPerSpeed: 0.008
+    maxAirStretch: 0.12
+    stiffness: 380
+    damping: 18

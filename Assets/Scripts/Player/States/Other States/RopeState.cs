@@ -217,6 +217,7 @@ public class RopeState : State
 
         movement.Rb.linearVelocity = velocity;
         player.Movement.TryConsumeAirJump();
+        movement.NotifyJumped(allowJumpCut: false);
     }
 
     private static Vector2 Tangent(float angleRad) => new Vector2(Mathf.Cos(angleRad), Mathf.Sin(angleRad));

@@ -16,6 +16,7 @@ public class RollingState : GroundedStates
     {
         base.Enter();
         rollElapsed = 0f;
+        rollEnd = false;
         rollDir = charManager.ActiveSR != null && charManager.ActiveSR.flipX ? -1f : 1f;
         charManager.ActiveAnimator.SetTrigger(RollingHash);
         charManager.ActiveAnimator.SetBool(GroundedHash, true);
@@ -23,15 +24,25 @@ public class RollingState : GroundedStates
     }
     public override void LogicUpdate()
     {
-        if (rollEnd)
+        // Прыжок из переката: разгон переката сохраняется — получается длинный «прыжок с разбега».
+        if (settings.rolling.jumpCancel && movement.JumpPressedThisFrame)
         {
-            if (Mathf.Abs(movement.Rb.linearVelocity.y) < settings.detection.movementInputThreshold)
-                stateMachine.ChangeState(player.IdleState);
-            else if (movement.Rb.linearVelocity.y < 0f)
-            {
-                charManager.ActiveAnimator.SetBool(GroundedHash, false);
-                stateMachine.ChangeState(player.FlyingState);
-            }
+            stateMachine.ChangeState(player.JumpingState);
+            return;
+        }
+
+        if (!rollEnd)
+        {
+            movement.MarkGrounded();
+            return;
+        }
+
+        if (Mathf.Abs(movement.Rb.linearVelocity.y) < settings.detection.movementInputThreshold)
+            stateMachine.ChangeState(player.IdleState);
+        else if (movement.Rb.linearVelocity.y < 0f)
+        {
+            charManager.ActiveAnimator.SetBool(GroundedHash, false);
+            stateMachine.ChangeState(player.FlyingState);
         }
     }
     public override void PhysicsUpdate()
@@ -47,7 +58,11 @@ public class RollingState : GroundedStates
             {
                 rollEnd = true;
                 Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, false);
-                movement.Rb.linearVelocity = new Vector2(0f, movement.Rb.linearVelocity.y);
+
+                // Зажато направление переката — выходим сразу на скорость бега, без замирания.
+                bool keepRunning = settings.rolling.keepRunSpeedOnExit && movementInput.x * rollDir > 0.01f;
+                float exitSpeedX = keepRunning ? rollDir * movement.GetCurrentSpeed() : 0f;
+                movement.Rb.linearVelocity = new Vector2(exitSpeedX, movement.Rb.linearVelocity.y);
             }
         }
     }
@@ -55,6 +70,8 @@ public class RollingState : GroundedStates
     {
         base.Exit();
         charManager.ActiveAnimator.ResetTrigger(RollingHash);
+        // Перекат мог прерваться (прыжок, смерть, захват) до конца — неуязвимость к врагам снимаем всегда.
+        Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, false);
         rollEnd = false;
     }
 }

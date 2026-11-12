@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 //Компоненты юнити
@@ -11,15 +12,28 @@ public class PlayerMoving : MonoBehaviour, IMovable, IJumpable
     private PlayerStaticSettings settings;
     private PlayerDynSettings status;
     public float Speed => GetCurrentSpeed();
-    public Vector2 MovementInput {get => movementInput ; set => movementInput = value;} 
+    public Vector2 MovementInput {get => movementInput ; set => movementInput = value;}
     private PlayerInput playerInput;
     private PlayerCharacterManager charManager;
     private Vector2 movementInput;
     private Rigidbody2D rb;
     private int airJumpsRemaining = 2;
+    private InputAction jumpAction;
+
+    // Состояния игрока — отдельные объекты, поэтому общее для них «чувство прыжка» живёт здесь.
+    private float lastJumpPressTime = float.NegativeInfinity;
+    private float lastGroundedTime = float.NegativeInfinity;
+    private bool jumpCutAvailable;
+    private float peakFallSpeed;
+
     public PlayerInput PlayerInput => playerInput;
     public Rigidbody2D Rb => rb;
-    public void ResetAirJumps() => airJumpsRemaining = 2;
+
+    // Визуальные реакции (squash & stretch и т.п.). Landed получает скорость падения (>= 0).
+    public event Action Jumped;
+    public event Action<float> Landed;
+
+    public void ResetAirJumps() => airJumpsRemaining = settings.jump.maxAirJumpsCount;
 
     private void Awake()
     {
@@ -29,6 +43,15 @@ public class PlayerMoving : MonoBehaviour, IMovable, IJumpable
         rb = GetComponent<Rigidbody2D>();
         settings = Resources.Load<PlayerStaticSettings>("PlayerDefaultSettings");
         airJumpsRemaining = settings.jump.maxAirJumpsCount;
+        jumpAction = playerInput.actions["Jump"];
+    }
+
+    private void Update()
+    {
+        if (jumpAction != null && jumpAction.WasPressedThisFrame())
+        {
+            lastJumpPressTime = Time.time;
+        }
     }
 
     public float GetCurrentSpeed()
@@ -51,5 +74,63 @@ public class PlayerMoving : MonoBehaviour, IMovable, IJumpable
         airJumpsRemaining--;
         return true;
     }
-}
 
+    #region Jump feel
+    public bool JumpPressedThisFrame => jumpAction != null && jumpAction.WasPressedThisFrame();
+    public bool JumpHeld => jumpAction != null && jumpAction.IsPressed();
+
+    // Нажатие этого кадра или недавнее, ещё не потраченное (буфер прыжка).
+    public bool HasBufferedJump => JumpPressedThisFrame || Time.time - lastJumpPressTime <= settings.jump.jumpBufferTime;
+    public void ConsumeBufferedJump() => lastJumpPressTime = float.NegativeInfinity;
+
+    // Вызывается, пока герой стоит на земле. Coyote time отсчитывается от последнего вызова.
+    public void MarkGrounded() => lastGroundedTime = Time.time;
+    public bool InCoyoteTime => Time.time - lastGroundedTime <= settings.jump.coyoteTime;
+
+    // Любой прыжок (с земли, в воздухе, от стены) — сбрасывает буфер и coyote, чтобы не прыгнуть дважды.
+    public void NotifyJumped(bool allowJumpCut)
+    {
+        ConsumeBufferedJump();
+        lastGroundedTime = float.NegativeInfinity;
+        jumpCutAvailable = allowJumpCut;
+        Jumped?.Invoke();
+    }
+
+    // Переменная высота прыжка: отпустил кнопку на подъёме — подъём обрезается. Срабатывает раз за прыжок.
+    public void TryCutJump()
+    {
+        if (!jumpCutAvailable)
+        {
+            return;
+        }
+        Vector2 v = rb.linearVelocity;
+        if (v.y <= 0f)
+        {
+            jumpCutAvailable = false;
+            return;
+        }
+        if (jumpAction != null && !jumpAction.IsPressed())
+        {
+            v.y *= settings.jump.jumpCutMultiplier;
+            rb.linearVelocity = v;
+            jumpCutAvailable = false;
+        }
+    }
+
+    public void TrackFall(float velocityY)
+    {
+        if (-velocityY > peakFallSpeed)
+        {
+            peakFallSpeed = -velocityY;
+        }
+    }
+
+    public void NotifyLanded()
+    {
+        jumpCutAvailable = false;
+        float speed = peakFallSpeed;
+        peakFallSpeed = 0f;
+        Landed?.Invoke(speed);
+    }
+    #endregion
+}

@@ -15,11 +15,24 @@ public abstract class AirStates : State
     {
         base.HandleInput();
         movement.MovementInput = movement.PlayerInput.actions["Move"].ReadValue<Vector2>();
+        movement.TryCutJump();
     }
 
     protected bool TryDoubleJump()
     {
-        if (!movement.PlayerInput.actions["Jump"].WasPressedThisFrame() || !player.Movement.TryConsumeAirJump())
+        if (!movement.JumpPressedThisFrame)
+        {
+            return false;
+        }
+
+        // Coyote time: только что сошёл с края — это ещё обычный прыжок с земли, а не двойной.
+        if (movement.InCoyoteTime)
+        {
+            stateMachine.ChangeState(player.JumpingState);
+            return true;
+        }
+
+        if (!player.Movement.TryConsumeAirJump())
         {
             return false;
         }
@@ -34,6 +47,15 @@ public abstract class AirStates : State
         Vector2 velocity = movement.Rb.linearVelocity;
         velocity.y = settings.jump.thrust / movement.Rb.mass;
         movement.Rb.linearVelocity = velocity;
+        movement.NotifyJumped(allowJumpCut: true);
+    }
+
+    // Приземление: общий выход в Idle для всех воздушных состояний.
+    protected void Land()
+    {
+        player.Movement.ResetAirJumps();
+        movement.NotifyLanded();
+        stateMachine.ChangeState(player.IdleState);
     }
 
     public override void LogicUpdate()
@@ -42,8 +64,7 @@ public abstract class AirStates : State
 
         if (movement.Rb.linearVelocity.y <= 0f && DetectFloor()=="Floor")
         {
-            player.Movement.ResetAirJumps();
-            stateMachine.ChangeState(player.IdleState);
+            Land();
             return;
         }
 
@@ -69,22 +90,23 @@ public abstract class AirStates : State
         float currentVelocityX = movement.Rb.linearVelocity.x;
         float newVelocityX = currentVelocityX;
 
-        // После прыжка с верёвки инерция раскачки сохраняется: управление может тормозить и разворачивать, 
+        // После прыжка с верёвки инерция раскачки сохраняется: управление может тормозить и разворачивать,
         // но не срезает разгон до обычной воздушной скорости.
-        bool carryRopeMomentum = player.PlayerSM.LastPlayerState is RopeState
+        bool fromRope = player.PlayerSM.LastPlayerState is RopeState;
+        bool carryRopeMomentum = fromRope
             && Mathf.Sign(currentVelocityX) == Mathf.Sign(targetVelocityX)
             && Mathf.Abs(currentVelocityX) > Mathf.Abs(targetVelocityX);
 
         if (movement.MovementInput.x != 0 && !carryRopeMomentum)
         {
-            newVelocityX = Mathf.Lerp(
-                currentVelocityX,
-                targetVelocityX,
-                settings.move.accelerationRate * Time.fixedDeltaTime);
+            bool turning = currentVelocityX * targetVelocityX < 0f;
+            float rate = turning ? settings.move.turnAccelerationRate : settings.move.accelerationRate;
+            newVelocityX = Mathf.Lerp(currentVelocityX, targetVelocityX, rate * Time.fixedDeltaTime);
         }
-        else if (Mathf.Abs(currentVelocityX) < 0.01f)
+        else if (movement.MovementInput.x == 0 && !fromRope)
         {
-            newVelocityX = currentVelocityX;
+            // Без ввода герой мягко гасит горизонтальную скорость, а не скользит бесконечно.
+            newVelocityX = Mathf.Lerp(currentVelocityX, 0f, settings.jump.airFrictionRate * Time.fixedDeltaTime);
         }
         movement.Rb.linearVelocity = new Vector2(newVelocityX, movement.Rb.linearVelocity.y);
 
@@ -92,15 +114,29 @@ public abstract class AirStates : State
             charManager.ActiveSR.flipX = false;
         else if (movement.MovementInput.x < -0.01f)
             charManager.ActiveSR.flipX = true;
-        if (movement.Rb.linearVelocity.y > 0)
-        {
-            movement.Rb.gravityScale = settings.jump.upGravityScale;
-        }
-        else
-        {
-            movement.Rb.gravityScale = settings.jump.downGravityScale;
-        }
+
+        ApplyAirGravity();
     }
+
+    // Гравитация в воздухе: сильнее при падении, слабее у вершины при зажатом прыжке, падение ограничено.
+    protected void ApplyAirGravity()
+    {
+        Vector2 velocity = movement.Rb.linearVelocity;
+        float gravity = velocity.y > 0f ? settings.jump.upGravityScale : settings.jump.downGravityScale;
+        if (Mathf.Abs(velocity.y) < settings.jump.apexHangSpeed && movement.JumpHeld)
+        {
+            gravity *= settings.jump.apexGravityMultiplier;
+        }
+        movement.Rb.gravityScale = gravity;
+
+        if (velocity.y < -settings.jump.maxFallSpeed)
+        {
+            velocity.y = -settings.jump.maxFallSpeed;
+            movement.Rb.linearVelocity = velocity;
+        }
+        movement.TrackFall(velocity.y);
+    }
+
     public override void Exit()
     {
         charManager.ActiveAnimator.ResetTrigger(DoubleJumpingHash);
