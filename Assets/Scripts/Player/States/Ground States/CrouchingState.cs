@@ -4,9 +4,10 @@ public class CrouchingState : GroundedStates
 {
     private static readonly int CrouchingHash = Animator.StringToHash("Crouching");
     private static readonly int CrouchShootingHash = Animator.StringToHash("CrouchShooting");
-    BoxCollider2D capsule;
-    Vector2 originalCapsuleSize;
-    Vector2 originalCapsuleOffset;
+    PolygonCollider2D capsule;
+    Vector2[][] originalCapsulePaths;
+    float originalCapsuleHeight;
+    float originalCapsuleBottom;
     private LayerMask obstacleMask = LayerMask.GetMask("Up Walls");
     private bool crouchHeld;
     private bool jumpInput;
@@ -22,13 +23,20 @@ public class CrouchingState : GroundedStates
         base.Enter();
         dropCompleted = false;
         isDropping = false;
-        capsule = player.GetComponent<BoxCollider2D>();
-        originalCapsuleSize = capsule.size;
-        originalCapsuleOffset = capsule.offset;
-        float newHeight = originalCapsuleSize.y * settings.crouch.crouchHeightMultiplier;
-        float delta = originalCapsuleSize.y - newHeight;
-        capsule.size = new Vector2(originalCapsuleSize.x, newHeight);
-        capsule.offset = new Vector2(originalCapsuleOffset.x, originalCapsuleOffset.y - delta / 2f);
+        capsule = player.GetComponent<PolygonCollider2D>();
+        originalCapsuleHeight = capsule.bounds.size.y;
+        originalCapsulePaths = new Vector2[capsule.pathCount][];
+        originalCapsuleBottom = float.PositiveInfinity;
+        for (int i = 0; i < capsule.pathCount; i++)
+        {
+            originalCapsulePaths[i] = capsule.GetPath(i);
+            foreach (Vector2 point in originalCapsulePaths[i])
+            {
+                originalCapsuleBottom = Mathf.Min(originalCapsuleBottom, point.y);
+            }
+        }
+
+        SetCapsuleHeight(settings.crouch.crouchHeightMultiplier);
         charManager.ActiveAnimator.SetBool(CrouchingHash, true);
     }
     public override void HandleInput()
@@ -79,8 +87,10 @@ public class CrouchingState : GroundedStates
     public override void Exit()
     {
         base.Exit();
-        capsule.size = originalCapsuleSize;
-        capsule.offset = originalCapsuleOffset;
+        for (int i = 0; i < originalCapsulePaths.Length; i++)
+        {
+            capsule.SetPath(i, originalCapsulePaths[i]);
+        }
         if (player.debugMessages) Debug.Log("Stood up successfully");
         charManager.ActiveAnimator.SetBool(CrouchingHash, false);
     }
@@ -114,20 +124,36 @@ public class CrouchingState : GroundedStates
 
     private bool CanStandUp()
     {
-        Vector2 capsuleCenter = (Vector2)player.transform.position + capsule.offset;
-        float halfWidth = capsule.size.x / 2f;
-        float heightDifference = originalCapsuleSize.y - capsule.size.y;
+        Bounds bounds = capsule.bounds;
+        float heightDifference = originalCapsuleHeight - bounds.size.y;
         float headroomNeeded = heightDifference + settings.detection.headCheckDistanceBuffer;
 
-        Vector2 origin = new(capsuleCenter.x, capsuleCenter.y + capsule.size.y / 2f);
+        Vector2 origin = new(bounds.center.x, bounds.max.y);
         RaycastHit2D hitCenter = Physics2D.Raycast(origin, Vector2.up, headroomNeeded, obstacleMask);
-        RaycastHit2D hitLeft = Physics2D.Raycast(origin + Vector2.left * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
-        RaycastHit2D hitRight = Physics2D.Raycast(origin + Vector2.right * halfWidth, Vector2.up, headroomNeeded, obstacleMask);
+        RaycastHit2D hitLeft = Physics2D.Raycast(new Vector2(bounds.min.x, bounds.max.y), Vector2.up, headroomNeeded, obstacleMask);
+        RaycastHit2D hitRight = Physics2D.Raycast(new Vector2(bounds.max.x, bounds.max.y), Vector2.up, headroomNeeded, obstacleMask);
 
         return !((hitCenter.collider != null && !hitCenter.collider.isTrigger) ||
                  (hitLeft.collider != null && !hitLeft.collider.isTrigger) ||
                  (hitRight.collider != null && !hitRight.collider.isTrigger));
     }
+
+    private void SetCapsuleHeight(float heightMultiplier)
+    {
+        for (int i = 0; i < originalCapsulePaths.Length; i++)
+        {
+            Vector2[] crouchedPath = new Vector2[originalCapsulePaths[i].Length];
+            for (int j = 0; j < crouchedPath.Length; j++)
+            {
+                Vector2 point = originalCapsulePaths[i][j];
+                point.y = originalCapsuleBottom + (point.y - originalCapsuleBottom) * heightMultiplier;
+                crouchedPath[j] = point;
+            }
+
+            capsule.SetPath(i, crouchedPath);
+        }
+    }
+
     IEnumerator DropThroughPlatform()
     {
         dropCompleted = false;

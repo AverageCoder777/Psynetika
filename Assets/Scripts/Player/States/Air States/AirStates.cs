@@ -40,7 +40,7 @@ public abstract class AirStates : State
     {
         base.LogicUpdate();
 
-        if (movement.Rb.linearVelocity.y <= 0f && DetectFloor()=="Floor")
+        if (movement.Rb.linearVelocity.y <= 0.05f && DetectFloor()=="Floor")
         {
             player.Movement.ResetAirJumps();
             stateMachine.ChangeState(player.IdleState);

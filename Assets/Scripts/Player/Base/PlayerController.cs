@@ -15,8 +15,9 @@ using UnityEngine;
 */
 public class PlayerController : MonoBehaviour
 {
+    private static readonly int XVelHash = Animator.StringToHash("XVel");
     #region Fields
-    private static readonly int VelocityHash = Animator.StringToHash("Velocity");
+    private static readonly int YVelHash = Animator.StringToHash("YVel");
     private PlayerMoving movement;
     private PlayerAttack attack;
     private PlayerHealth health;
@@ -102,7 +103,8 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         PlayerSM.CurrentPlayerState.PhysicsUpdate();
-        playerCharManager.ActiveAnimator.SetFloat(VelocityHash, movement.Rb.linearVelocity.y);
+        playerCharManager.ActiveAnimator.SetFloat(YVelHash, movement.Rb.linearVelocity.y);
+        playerCharManager.ActiveAnimator.SetFloat(XVelHash, movement.Rb.linearVelocity.x);
     }
 
     private void OnDied(PlayerCharacterType type)
