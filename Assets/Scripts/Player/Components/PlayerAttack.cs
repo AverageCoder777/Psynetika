@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerController))]
 public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource, IAbilityStatOwner, IAttackable, IAbilityHealth,
@@ -106,7 +107,29 @@ public class PlayerAttack : MonoBehaviour, IAbilityCaster, IAbilityDamageSource,
         health = GetComponent<PlayerHealth>();
         settings = Resources.Load<PlayerStaticSettings>("PlayerDefaultSettings");
         status = GetComponent<PlayerDynSettings>();
+        if (TryGetComponent(out PlayerInput playerInput))
+        {
+            attackAction = playerInput.actions["Attack"];
+        }
     }
+
+    private void Update()
+    {
+        if (attackAction != null && attackAction.WasPressedThisFrame())
+        {
+            lastAttackPressTime = Time.time;
+        }
+    }
+
+    #region Attack buffer
+    // Нажатие атаки, пока герой занят (перекат, приземление), не теряется, а выполняется, как только можно.
+    private InputAction attackAction;
+    private float lastAttackPressTime = float.NegativeInfinity;
+
+    public bool HasBufferedAttack => (attackAction != null && attackAction.WasPressedThisFrame())
+        || Time.time - lastAttackPressTime <= settings.combat.attackBufferTime;
+    public void ConsumeBufferedAttack() => lastAttackPressTime = float.NegativeInfinity;
+    #endregion
     // Пуля Сатаны из точки spawnPos в сторону dir (±1) с текущим уроном. Общая для выстрела стоя и в присяде.
     public Bullet FireBullet(Vector2 spawnPos, float dir)
     {

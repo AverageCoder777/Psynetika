@@ -27,7 +27,7 @@ public class IdleState : GroundedStates
         jump = movement.HasBufferedJump;
         roll = movement.PlayerInput.actions["Roll"].WasPressedThisFrame();
         @switch = movement.PlayerInput.actions["Switch"].WasPressedThisFrame();
-        hit = movement.PlayerInput.actions["Attack"].WasPressedThisFrame();
+        hit = attack.HasBufferedAttack;
         spell = movement.PlayerInput.actions["Spell"].WasPressedThisFrame();
         spellUltimate = movement.PlayerInput.actions["SpellUltimate"].WasPressedThisFrame();
     }

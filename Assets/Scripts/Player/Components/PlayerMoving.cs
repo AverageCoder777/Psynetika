@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 //Компоненты юнити
@@ -24,14 +23,9 @@ public class PlayerMoving : MonoBehaviour, IMovable, IJumpable
     private float lastJumpPressTime = float.NegativeInfinity;
     private float lastGroundedTime = float.NegativeInfinity;
     private bool jumpCutAvailable;
-    private float peakFallSpeed;
 
     public PlayerInput PlayerInput => playerInput;
     public Rigidbody2D Rb => rb;
-
-    // Визуальные реакции (squash & stretch и т.п.). Landed получает скорость падения (>= 0).
-    public event Action Jumped;
-    public event Action<float> Landed;
 
     public void ResetAirJumps() => airJumpsRemaining = settings.jump.maxAirJumpsCount;
 
@@ -93,7 +87,6 @@ public class PlayerMoving : MonoBehaviour, IMovable, IJumpable
         ConsumeBufferedJump();
         lastGroundedTime = float.NegativeInfinity;
         jumpCutAvailable = allowJumpCut;
-        Jumped?.Invoke();
     }
 
     // Переменная высота прыжка: отпустил кнопку на подъёме — подъём обрезается. Срабатывает раз за прыжок.
@@ -117,20 +110,9 @@ public class PlayerMoving : MonoBehaviour, IMovable, IJumpable
         }
     }
 
-    public void TrackFall(float velocityY)
-    {
-        if (-velocityY > peakFallSpeed)
-        {
-            peakFallSpeed = -velocityY;
-        }
-    }
-
     public void NotifyLanded()
     {
         jumpCutAvailable = false;
-        float speed = peakFallSpeed;
-        peakFallSpeed = 0f;
-        Landed?.Invoke(speed);
     }
     #endregion
 }

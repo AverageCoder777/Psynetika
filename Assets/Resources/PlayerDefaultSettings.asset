@@ -65,12 +65,19 @@ MonoBehaviour:
     regrabCooldown: 0.35
     blockedTolerance: 0.15
   combat:
-    dogBaseHitTime: 1
+    dogBaseHitTime: 0.45
     dogBaseHitDistance: 1
     dogBaseDamage: 10
-    satanBaseHitTime: 1
+    dogSwingClipLength: 1
+    satanBaseHitTime: 0.5
     satanBaseHitDistance: 2
     satanBaseDamage: 22
+    satanSwingClipLength: 1
+    hitMomentNormalized: 0.45
+    attackMoveSpeedMultiplier: 0.5
+    rollCancelsAttack: 1
+    moveCancelsRecovery: 1
+    attackBufferTime: 0.15
     comboResetTime: 2
     bulletSpawnOffsetX: 0.65
     bulletSpawnOffsetY: 0.22
@@ -108,12 +115,3 @@ MonoBehaviour:
     movementInputThreshold: 0.001
     floorDetectionDistance: 0.8
     platformDetectionDistance: 1
-  squash:
-    enabled: 1
-    jumpStretch: 0.2
-    maxLandSquash: 0.25
-    landSquashFullSpeed: 14
-    airStretchPerSpeed: 0.008
-    maxAirStretch: 0.12
-    stiffness: 380
-    damping: 18

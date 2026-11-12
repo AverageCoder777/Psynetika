@@ -134,7 +134,6 @@ public abstract class AirStates : State
             velocity.y = -settings.jump.maxFallSpeed;
             movement.Rb.linearVelocity = velocity;
         }
-        movement.TrackFall(velocity.y);
     }
 
     public override void Exit()

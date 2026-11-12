@@ -95,6 +95,7 @@ public class CrouchingState : GroundedStates
             return;
         }
 
+        attack.ConsumeBufferedAttack();
         nextShotTime = Time.time + attack.GetCurrentAttackStat<float>(AttackStatId.AttackSpeed);
         float dir = charManager.ActiveSR.flipX ? -1f : 1f;
         Bounds bounds = capsule.bounds;

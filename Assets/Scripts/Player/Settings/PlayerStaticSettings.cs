@@ -15,7 +15,6 @@ public class PlayerStaticSettings : ScriptableObject
     [Header("═══ HEALTH ═══")] public HealthSettings health;
     [Header("═══ ENERGY (ULTIMATE) ═══")] public EnergySettings energy;
     [Header("═══ PHYSICS DETECTION ═══")] public PhysicsDetectionSettings detection;
-    [Header("═══ SQUASH & STRETCH ═══")] public SquashStretchSettings squash;
 }
 
 [System.Serializable]
@@ -134,14 +133,31 @@ public class RopeSettings
 public class CombatSettings
 {
     [Header("Dog Combat")]
-    [Range(0.5f, 3f)] public float dogBaseHitTime = 1f;
+    [Tooltip("Длительность одного взмаха, сек. Анимация ускоряется под неё (см. dogSwingClipLength).")]
+    [Range(0.1f, 3f)] public float dogBaseHitTime = 0.45f;
     [Range(0.5f, 3f)] public float dogBaseHitDistance = 1f;
     [Range(1, 50)] public int dogBaseDamage = 10;
+    [Tooltip("Длина клипа удара собаки при скорости аниматора 1. Аниматор ускоряется в dogSwingClipLength / время взмаха раз.")]
+    [Range(0.1f, 3f)] public float dogSwingClipLength = 1f;
 
     [Header("Satan Combat")]
-    [Range(0.5f, 3f)] public float satanBaseHitTime = 2f;
+    [Tooltip("Длительность одного выстрела, сек. Анимация ускоряется под неё (см. satanSwingClipLength).")]
+    [Range(0.1f, 3f)] public float satanBaseHitTime = 0.5f;
     [Range(0.5f, 3f)] public float satanBaseHitDistance = 2f;
     [Range(1, 50)] public int satanBaseDamage = 22;
+    [Range(0.1f, 3f)] public float satanSwingClipLength = 1f;
+
+    [Header("Тайминг и отзывчивость")]
+    [Tooltip("Момент удара/выстрела как доля взмаха. До него — замах, после — восстановление.")]
+    [Range(0.05f, 1f)] public float hitMomentNormalized = 0.45f;
+    [Tooltip("Скорость ходьбы во время атаки относительно обычной. 0 — герой стоит на месте, как раньше.")]
+    [Range(0f, 1f)] public float attackMoveSpeedMultiplier = 0.5f;
+    [Tooltip("Перекат прерывает атаку в любой момент.")]
+    public bool rollCancelsAttack = true;
+    [Tooltip("После момента удара ввод направления прерывает восстановление (если следующий удар не заказан).")]
+    public bool moveCancelsRecovery = true;
+    [Tooltip("Буфер атаки: нажатие незадолго до конца переката/приземления выполнится сразу.")]
+    [Range(0f, 0.3f)] public float attackBufferTime = 0.15f;
 
     [Header("Combo System")]
     [Range(1f, 5f)] public float comboResetTime = 2f;
@@ -201,24 +217,4 @@ public class PhysicsDetectionSettings
     [Range(0.001f,0.1f)] public float movementInputThreshold = 0.001f;
     [Range (0.01f,2f)] public float floorDetectionDistance = 0.8f;
     [Range(0.1f, 1f)] public float platformDetectionDistance = 1f;
-}
-
-// Визуальная упругость героя. Масштабирует только дочерний визуал (Satan/Dog), коллайдер не меняется.
-[System.Serializable]
-public class SquashStretchSettings
-{
-    public bool enabled = true;
-    [Tooltip("Растяжение по вертикали в момент прыжка (0.2 — на 20% выше).")]
-    [Range(0f, 0.5f)] public float jumpStretch = 0.2f;
-    [Tooltip("Максимальное сплющивание при приземлении.")]
-    [Range(0f, 0.5f)] public float maxLandSquash = 0.25f;
-    [Tooltip("Скорость падения, при которой сплющивание максимально.")]
-    [Range(1f, 30f)] public float landSquashFullSpeed = 14f;
-    [Tooltip("Растяжение в полёте на единицу вертикальной скорости.")]
-    [Range(0f, 0.05f)] public float airStretchPerSpeed = 0.008f;
-    [Range(0f, 0.3f)] public float maxAirStretch = 0.12f;
-    [Tooltip("Жёсткость пружины возврата формы. Больше — быстрее и мельче колебания.")]
-    [Range(50f, 1000f)] public float stiffness = 380f;
-    [Tooltip("Демпфирование пружины. Меньше — дольше «желейно» покачивается.")]
-    [Range(1f, 60f)] public float damping = 18f;
 }

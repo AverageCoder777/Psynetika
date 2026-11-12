@@ -1,5 +1,8 @@
 using UnityEngine;
 
+// Удар собаки / выстрел Сатаны. Взмах делится на замах (до hitMomentNormalized) и восстановление.
+// Во время атаки можно медленно идти (attackMoveSpeedMultiplier); прыжок и перекат прерывают атаку
+// в любой момент, ввод направления — на восстановлении. Анимация ускоряется под длительность взмаха.
 public class HittingState : GroundedStates
 {
     private float hitElapsed = 0f;
@@ -9,14 +12,22 @@ public class HittingState : GroundedStates
     private int damage;
     private bool hitCompleted = false;
     private bool jumpRequested = false;
+    private bool rollRequested = false;
     private bool attackRequested = false;
     private LayerMask enemyMask = LayerMask.GetMask("Enemy");
     private int comboCount = 0;
     private float lastHitTime = 0f;
     private bool playerIsSatan;
     private bool shooted = false;
+    private bool meleeDone = false;
     private EmpoweredAttackSession empoweredSwing;
     private bool empoweredSwingFired = false;
+
+    // У усиленного взмаха Ину свой момент срабатывания — восстановление начинается только после него.
+    private float HitMoment => timeOfOneHit * (empoweredSwing != null
+        ? empoweredSwing.SwingMomentNormalized
+        : settings.combat.hitMomentNormalized);
+    private bool InRecovery => hitElapsed >= HitMoment;
 
     public HittingState(PlayerController player, StateMachine playerStateMachine, PlayerStaticSettings settings)
         : base(player, playerStateMachine, settings) { }
@@ -24,11 +35,15 @@ public class HittingState : GroundedStates
     public override void Enter()
     {
         base.Enter();
+        attack.ConsumeBufferedAttack();
         if (Time.time - lastHitTime > settings.combat.comboResetTime)
         {
             comboCount = 0;
         }
+        hitElapsed = 0f;
+        hitCompleted = false;
         shooted = false;
+        meleeDone = false;
         playerIsSatan = charManager.GetCurrentCharacterType() == PlayerCharacterType.Satan;
         PrepareSwing();
         hitDistance = attack.GetCurrentAttackStat<float>(AttackStatId.AttackRange);
@@ -36,47 +51,28 @@ public class HittingState : GroundedStates
         comboCount++;
         if (comboCount > 2) comboCount = 1;
 
-        if (playerIsSatan)
-        {
-            charManager.ActiveAnimator.SetTrigger("Shooting");
-        }
-        else
-        {
-            charManager.ActiveAnimator.SetTrigger("Hitting");
-        }
+        charManager.ActiveAnimator.SetTrigger(playerIsSatan ? "Shooting" : "Hitting");
 
         // Выключить все флаги комбо перед включением нового
-        if (playerIsSatan)
-        {
-            charManager.ActiveAnimator.SetBool("Shooting 1", false);
-            charManager.ActiveAnimator.SetBool("Shooting 2", false);
-            charManager.ActiveAnimator.SetBool("Shooting 3", false);
-        }
-        else
-        {
-            charManager.ActiveAnimator.SetBool("Hitting 1", false);
-            charManager.ActiveAnimator.SetBool("Hitting 2", false);
-            charManager.ActiveAnimator.SetBool("Hitting 3", false);
-        }
+        string prefix = ComboPrefix;
+        charManager.ActiveAnimator.SetBool(prefix + "1", false);
+        charManager.ActiveAnimator.SetBool(prefix + "2", false);
+        charManager.ActiveAnimator.SetBool(prefix + "3", false);
+        charManager.ActiveAnimator.SetBool(prefix + comboCount, true);
 
-        // Установить флаг для текущего комбо
-        if (playerIsSatan)
-        {
-            charManager.ActiveAnimator.SetBool("Shooting " + comboCount, true);
-        }
-        else
-        {
-            charManager.ActiveAnimator.SetBool("Hitting " + comboCount, true);
-        }
         lastHitTime = Time.time;
         jumpRequested = false;
+        rollRequested = false;
         attackRequested = false;
-        movement.Rb.linearVelocity = new Vector2(0f, movement.Rb.linearVelocity.y);
     }
+
+    private string ComboPrefix => playerIsSatan ? "Shooting " : "Hitting ";
+
     public override void HandleInput()
     {
         base.HandleInput();
         jumpRequested = movement.PlayerInput.actions["Jump"].WasPressedThisFrame();
+        rollRequested = movement.PlayerInput.actions["Roll"].WasPressedThisFrame();
         attackRequested = attackRequested || movement.PlayerInput.actions["Attack"].WasPressedThisFrame();
     }
 
@@ -84,24 +80,37 @@ public class HittingState : GroundedStates
     {
         if (jumpRequested)
         {
-            if (playerIsSatan)
-            {
-
-                charManager.ActiveAnimator.SetBool("Shooting " + comboCount, false);
-            }
-            else
-            {
-                charManager.ActiveAnimator.SetBool("Hitting " + comboCount, false);
-            }
-            hitCompleted = true;
             if (player.debugMessages)
                 Debug.Log("Hitting interrupted by jump input -> switching to JumpingState");
             stateMachine.ChangeState(player.JumpingState);
             return;
         }
+
+        if (rollRequested && settings.combat.rollCancelsAttack)
+        {
+            // Перекат в сторону зажатого направления — уход из-под удара назад тоже работает.
+            if (Mathf.Abs(movementInput.x) > 0.01f)
+                charManager.ActiveSR.flipX = movementInput.x < 0f;
+            stateMachine.ChangeState(player.RollingState);
+            return;
+        }
+
+        // Атакуя на ходу, можно сойти с края — тогда падаем, а не «висим» в ударе.
+        if (movement.Rb.linearVelocity.y < settings.detection.jumpWallVelocityThreshold && DetectFloor() == "None")
+        {
+            stateMachine.ChangeState(player.FlyingState);
+            return;
+        }
+
+        if (InRecovery && settings.combat.moveCancelsRecovery && !attackRequested
+            && Mathf.Abs(movementInput.x) > 0.01f)
+        {
+            stateMachine.ChangeState(player.IdleState);
+            return;
+        }
+
         if (hitCompleted)
         {
-            Debug.Log("Sostoyanie attackRequested: " + attackRequested);
             if (attackRequested)
             {
                 RestartAttack();
@@ -115,87 +124,104 @@ public class HittingState : GroundedStates
 
     public override void PhysicsUpdate()
     {
-        movement.Rb.linearVelocity = new Vector2(0f, movement.Rb.linearVelocity.y);
+        UpdateMovement();
+
         hitDir = charManager.ActiveSR.flipX ? -1f : 1f;
-        hitElapsed += Time.deltaTime;
+        hitElapsed += Time.fixedDeltaTime;
         BoxCollider2D box = player.GetComponent<BoxCollider2D>();
         Vector2 origin = (box != null) ? box.bounds.center : (Vector2)player.transform.position;
         Vector2 direction = Vector2.right * hitDir;
-        if (!hitCompleted)
+        if (hitCompleted)
         {
-            if (playerIsSatan && !shooted && hitElapsed >= (timeOfOneHit / 2))
+            return;
+        }
+
+        if (playerIsSatan && !shooted && hitElapsed >= HitMoment)
+        {
+            Vector2 spawnPos = new(origin.x + (direction.x * settings.combat.bulletSpawnOffsetX), origin.y + (direction.y * settings.combat.bulletSpawnOffsetY));
+            Debug.DrawLine(spawnPos, spawnPos + Vector2.up * 0.1f, Color.blue, 0.1f);
+            attack.FireBullet(spawnPos, hitDir);
+            shooted = true;
+            if (player.debugMessages)
+                Debug.Log("Shot a bullet in direction " + hitDir);
+        }
+        if (empoweredSwing != null && !empoweredSwingFired && hitElapsed >= HitMoment)
+        {
+            empoweredSwingFired = true;
+            empoweredSwing.TrySwing(hitDir);
+        }
+        if (!playerIsSatan && empoweredSwing == null && !meleeDone && hitElapsed >= HitMoment)
+        {
+            meleeDone = true;
+            DoMeleeHit(origin, direction);
+        }
+        if (hitElapsed >= timeOfOneHit)
+        {
+            hitCompleted = true;
+        }
+    }
+
+    // Ходьба во время атаки: медленнее обычного. Направление взгляда фиксировано на замахе
+    // (удар не «перевернётся»), на восстановлении можно развернуться к следующему удару комбо.
+    private void UpdateMovement()
+    {
+        float targetX = movementInput.x * movement.GetCurrentSpeed() * settings.combat.attackMoveSpeedMultiplier;
+        float currentX = movement.Rb.linearVelocity.x;
+        float rate = Mathf.Abs(movementInput.x) > 0.01f ? settings.move.accelerationRate : settings.move.frictionRate;
+        float newX = Mathf.Lerp(currentX, targetX, rate * Time.fixedDeltaTime);
+        movement.Rb.linearVelocity = new Vector2(newX, movement.Rb.linearVelocity.y);
+
+        if (InRecovery)
+        {
+            if (movementInput.x > 0.01f)
+                charManager.ActiveSR.flipX = false;
+            else if (movementInput.x < -0.01f)
+                charManager.ActiveSR.flipX = true;
+        }
+    }
+
+    private void DoMeleeHit(Vector2 origin, Vector2 direction)
+    {
+        // Зона удара — квадрат перед героем
+        Vector2 boxSize = new(hitDistance, hitDistance);
+        Vector2 boxCenter = origin + direction * (hitDistance / 2f);
+
+        Collider2D[] hits = Physics2D.OverlapBoxAll(boxCenter, boxSize, 0f, enemyMask);
+
+        Debug.DrawLine(boxCenter + new Vector2(-boxSize.x/2, -boxSize.y/2),
+                      boxCenter + new Vector2(boxSize.x/2, -boxSize.y/2), Color.green);
+        Debug.DrawLine(boxCenter + new Vector2(boxSize.x/2, -boxSize.y/2),
+                      boxCenter + new Vector2(boxSize.x/2, boxSize.y/2), Color.green);
+        Debug.DrawLine(boxCenter + new Vector2(boxSize.x/2, boxSize.y/2),
+                      boxCenter + new Vector2(-boxSize.x/2, boxSize.y/2), Color.green);
+        Debug.DrawLine(boxCenter + new Vector2(-boxSize.x/2, boxSize.y/2),
+                      boxCenter + new Vector2(-boxSize.x/2, -boxSize.y/2), Color.green);
+
+        if (hits.Length == 0)
+        {
+            if (player.debugMessages)
+                Debug.Log("No enemies hit in area");
+            return;
+        }
+
+        foreach (Collider2D collider in hits)
+        {
+            if (player.debugMessages)
+                Debug.Log("Hit " + collider.name);
+            if (DamageHelper.TryDamage(collider, attack.GetCurrentAttackStat<int>(AttackStatId.CurrentDamage), DamageType.Physical, attack))
             {
-                Vector2 spawnPos = new(origin.x + (direction.x * settings.combat.bulletSpawnOffsetX), origin.y + (direction.y * settings.combat.bulletSpawnOffsetY));
-                Debug.DrawLine(spawnPos, spawnPos + Vector2.up * 0.1f, Color.blue, 0.1f);
-                attack.FireBullet(spawnPos, hitDir);
-                shooted = true;
                 if (player.debugMessages)
-                    Debug.Log("Shot a bullet in direction " + hitDir);
+                    Debug.Log("Player hit " + collider.name + " with " + attack.GetCurrentAttackStat<int>(AttackStatId.CurrentDamage) + " damage points");
             }
-            if (empoweredSwing != null && !empoweredSwingFired
-                && hitElapsed >= timeOfOneHit * empoweredSwing.SwingMomentNormalized)
+            else
             {
-                empoweredSwingFired = true;
-                empoweredSwing.TrySwing(hitDir);
-            }
-            if (!playerIsSatan && empoweredSwing == null && hitElapsed >= timeOfOneHit)
-            {
-                // Create a box area in front of the player
-                Vector2 boxSize = new(hitDistance, hitDistance);
-                Vector2 boxCenter = origin + direction * (hitDistance / 2f);
-                
-                Collider2D[] hits = Physics2D.OverlapBoxAll(boxCenter, boxSize, 0f, enemyMask);
-                
-                // Draw debug box
-                Debug.DrawLine(boxCenter + new Vector2(-boxSize.x/2, -boxSize.y/2), 
-                              boxCenter + new Vector2(boxSize.x/2, -boxSize.y/2), Color.green);
-                Debug.DrawLine(boxCenter + new Vector2(boxSize.x/2, -boxSize.y/2), 
-                              boxCenter + new Vector2(boxSize.x/2, boxSize.y/2), Color.green);
-                Debug.DrawLine(boxCenter + new Vector2(boxSize.x/2, boxSize.y/2), 
-                              boxCenter + new Vector2(-boxSize.x/2, boxSize.y/2), Color.green);
-                Debug.DrawLine(boxCenter + new Vector2(-boxSize.x/2, boxSize.y/2), 
-                              boxCenter + new Vector2(-boxSize.x/2, -boxSize.y/2), Color.green);
-                
-                if (hits.Length > 0)
+                DamageDummy dummy = collider.GetComponent<DamageDummy>();
+                if (dummy != null)
                 {
-                    foreach (Collider2D collider in hits)
-                    {
-                        if (player.debugMessages)
-                            Debug.Log("Hit " + collider.name);
-                        if (DamageHelper.TryDamage(collider, attack.GetCurrentAttackStat<int>(AttackStatId.CurrentDamage), DamageType.Physical, attack)
-                            && player.debugMessages)
-                        {
-                            Debug.Log("Player hit " + collider.name + " with " + attack.GetCurrentAttackStat<int>(AttackStatId.CurrentDamage) + " damage points");
-                            //enemy.TakeDamage(damage); !!!!!!ПОЧИНИТЬ С УЧЕТОМ НОВОЙ СТРУКТУРЫ РАБОТЫ ENEMY
-                            Debug.Log(
-                                "Player hitted enemy with "
-                                    + damage
-                                    + " damage points"
-                            );
-                        }
-                        else
-                        {
-                            DamageDummy dummy = collider.GetComponent<DamageDummy>();
-                            if (dummy != null)
-                            {
-                                dummy.TakeDamage(damage);
-                                Debug.Log(
-                                    "Player hitted dummy with "
-                                        + damage
-                                        + " damage points"
-                                );
-                            }
-                        }
-                    }
+                    dummy.TakeDamage(damage);
+                    if (player.debugMessages)
+                        Debug.Log("Player hitted dummy with " + damage + " damage points");
                 }
-                else if (player.debugMessages)
-                {
-                    Debug.Log("No enemies hit in area");
-                }
-            }
-            if (hitElapsed >= timeOfOneHit)
-            {
-                hitCompleted = true;
             }
         }
     }
@@ -212,7 +238,8 @@ public class HittingState : GroundedStates
             timeOfOneHit *= empoweredSwing.SwingTimeMultiplier;
         }
         // Анимацию взмаха ускоряем вместе с ним, иначе она обрежется на середине.
-        charManager.ActiveAnimator.speed = empoweredSwing != null ? 1f / empoweredSwing.SwingTimeMultiplier : 1f;
+        float clipLength = playerIsSatan ? settings.combat.satanSwingClipLength : settings.combat.dogSwingClipLength;
+        charManager.ActiveAnimator.speed = clipLength / Mathf.Max(0.05f, timeOfOneHit);
     }
 
     private void RestartAttack()
@@ -220,43 +247,24 @@ public class HittingState : GroundedStates
         hitElapsed = 0f;
         hitCompleted = false;
         shooted = false;
+        meleeDone = false;
         attackRequested = false;
+        attack.ConsumeBufferedAttack();
         PrepareSwing();
 
-        // Выключить текущий флаг комбо
-        if (playerIsSatan)
-        {
-            charManager.ActiveAnimator.SetBool("Shooting " + comboCount, false);
-        }
-        else
-        {
-            charManager.ActiveAnimator.SetBool("Hitting " + comboCount, false);
-        }
+        string prefix = ComboPrefix;
+        charManager.ActiveAnimator.SetBool(prefix + comboCount, false);
 
-        // Перейти на следующий комбо
         comboCount++;
         if (comboCount > 2) comboCount = 1;
 
-        // Включить новый флаг комбо
-        if (playerIsSatan)
-        {
-            charManager.ActiveAnimator.SetBool("Shooting " + comboCount, true);
-        }
-        else
-        {
-            charManager.ActiveAnimator.SetBool("Hitting " + comboCount, true);
-        }
+        charManager.ActiveAnimator.SetBool(prefix + comboCount, true);
+        lastHitTime = Time.time;
     }
+
     private void ResetAnimator()
     {
-        if (playerIsSatan)
-        {
-            charManager.ActiveAnimator.SetBool("Shooting " + comboCount, false);
-        }
-        else
-        {
-            charManager.ActiveAnimator.SetBool("Hitting " + comboCount, false);
-        }
+        charManager.ActiveAnimator.SetBool(ComboPrefix + comboCount, false);
     }
 
     public override void Exit()
@@ -265,6 +273,7 @@ public class HittingState : GroundedStates
         hitElapsed = 0f;
         hitCompleted = false;
         shooted = false;
+        meleeDone = false;
         attackRequested = false;
         empoweredSwing = null;
         charManager.ActiveAnimator.speed = 1f;

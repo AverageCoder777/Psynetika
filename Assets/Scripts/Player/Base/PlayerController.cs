@@ -67,12 +67,6 @@ public class PlayerController : MonoBehaviour
         spellController = GetComponent<SpellController>();
         interactionDetector = GetComponentInChildren<InteractionDetector>();
         playerCharManager = GetComponent<PlayerCharacterManager>();
-
-        // Визуальная упругость (squash & stretch) — добавляем сами, чтобы не трогать префаб.
-        if (!TryGetComponent(out PlayerSquashStretch _))
-        {
-            gameObject.AddComponent<PlayerSquashStretch>();
-        }
     }
 
     private void Start()
