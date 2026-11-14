@@ -91,10 +91,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: Shooting 1
+    m_ConditionEvent: Attack 1
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: Shooting 2
+    m_ConditionEvent: Attack 2
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 274474377370214310}
@@ -224,10 +224,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: Shooting 1
+    m_ConditionEvent: Attack 1
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: Shooting 2
+    m_ConditionEvent: Attack 2
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 8343119604687435278}
@@ -549,7 +549,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: Shooting 1
+    m_ConditionEvent: Attack 1
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 0}
@@ -947,25 +947,25 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Shooting 1
+  - m_Name: Attack 1
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Shooting 2
+  - m_Name: Attack 2
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Shooting 3
+  - m_Name: Attack 3
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Shooting
+  - m_Name: Attack
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -1194,10 +1194,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: Shooting 1
+    m_ConditionEvent: Attack 1
     m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: Shooting 2
+    m_ConditionEvent: Attack 2
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 8347445479197167203}
@@ -1382,10 +1382,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Shooting 1
+    m_ConditionEvent: Attack 1
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: Shooting 2
+    m_ConditionEvent: Attack 2
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 894570230592660476}
@@ -1491,10 +1491,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Shooting
+    m_ConditionEvent: Attack
     m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: Shooting 2
+    m_ConditionEvent: Attack 2
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 8347445479197167203}
@@ -1519,10 +1519,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Shooting 1
+    m_ConditionEvent: Attack 1
     m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: Shooting
+    m_ConditionEvent: Attack
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 894570230592660476}
@@ -1624,10 +1624,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: Shooting 2
+    m_ConditionEvent: Attack 2
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: Shooting 1
+    m_ConditionEvent: Attack 1
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 0}

@@ -36,38 +36,12 @@ public class HittingState : GroundedStates
         comboCount++;
         if (comboCount > 2) comboCount = 1;
 
-        if (playerIsSatan)
-        {
-            charManager.ActiveAnimator.SetTrigger("Shooting");
-        }
-        else
-        {
-            charManager.ActiveAnimator.SetTrigger("Hitting");
-        }
+        charManager.ActiveAnimator.SetTrigger("Attack");
+        charManager.ActiveAnimator.SetBool("Attack 1", false);
+        charManager.ActiveAnimator.SetBool("Attack 2", false);
+        charManager.ActiveAnimator.SetBool("Attack 3", false);
+        charManager.ActiveAnimator.SetBool("Attack " + comboCount, true);
 
-        // Выключить все флаги комбо перед включением нового
-        if (playerIsSatan)
-        {
-            charManager.ActiveAnimator.SetBool("Shooting 1", false);
-            charManager.ActiveAnimator.SetBool("Shooting 2", false);
-            charManager.ActiveAnimator.SetBool("Shooting 3", false);
-        }
-        else
-        {
-            charManager.ActiveAnimator.SetBool("Hitting 1", false);
-            charManager.ActiveAnimator.SetBool("Hitting 2", false);
-            charManager.ActiveAnimator.SetBool("Hitting 3", false);
-        }
-
-        // Установить флаг для текущего комбо
-        if (playerIsSatan)
-        {
-            charManager.ActiveAnimator.SetBool("Shooting " + comboCount, true);
-        }
-        else
-        {
-            charManager.ActiveAnimator.SetBool("Hitting " + comboCount, true);
-        }
         lastHitTime = Time.time;
         jumpRequested = false;
         attackRequested = false;
@@ -84,15 +58,7 @@ public class HittingState : GroundedStates
     {
         if (jumpRequested)
         {
-            if (playerIsSatan)
-            {
-
-                charManager.ActiveAnimator.SetBool("Shooting " + comboCount, false);
-            }
-            else
-            {
-                charManager.ActiveAnimator.SetBool("Hitting " + comboCount, false);
-            }
+            charManager.ActiveAnimator.SetBool("Attack " + comboCount, false);
             hitCompleted = true;
             if (player.debugMessages)
                 Debug.Log("Hitting interrupted by jump input -> switching to JumpingState");
@@ -143,19 +109,19 @@ public class HittingState : GroundedStates
                 // Create a box area in front of the player
                 Vector2 boxSize = new(hitDistance, hitDistance);
                 Vector2 boxCenter = origin + direction * (hitDistance / 2f);
-                
+
                 Collider2D[] hits = Physics2D.OverlapBoxAll(boxCenter, boxSize, 0f, enemyMask);
-                
+
                 // Draw debug box
-                Debug.DrawLine(boxCenter + new Vector2(-boxSize.x/2, -boxSize.y/2), 
-                              boxCenter + new Vector2(boxSize.x/2, -boxSize.y/2), Color.green);
-                Debug.DrawLine(boxCenter + new Vector2(boxSize.x/2, -boxSize.y/2), 
-                              boxCenter + new Vector2(boxSize.x/2, boxSize.y/2), Color.green);
-                Debug.DrawLine(boxCenter + new Vector2(boxSize.x/2, boxSize.y/2), 
-                              boxCenter + new Vector2(-boxSize.x/2, boxSize.y/2), Color.green);
-                Debug.DrawLine(boxCenter + new Vector2(-boxSize.x/2, boxSize.y/2), 
-                              boxCenter + new Vector2(-boxSize.x/2, -boxSize.y/2), Color.green);
-                
+                Debug.DrawLine(boxCenter + new Vector2(-boxSize.x / 2, -boxSize.y / 2),
+                              boxCenter + new Vector2(boxSize.x / 2, -boxSize.y / 2), Color.green);
+                Debug.DrawLine(boxCenter + new Vector2(boxSize.x / 2, -boxSize.y / 2),
+                              boxCenter + new Vector2(boxSize.x / 2, boxSize.y / 2), Color.green);
+                Debug.DrawLine(boxCenter + new Vector2(boxSize.x / 2, boxSize.y / 2),
+                              boxCenter + new Vector2(-boxSize.x / 2, boxSize.y / 2), Color.green);
+                Debug.DrawLine(boxCenter + new Vector2(-boxSize.x / 2, boxSize.y / 2),
+                              boxCenter + new Vector2(-boxSize.x / 2, -boxSize.y / 2), Color.green);
+
                 if (hits.Length > 0)
                 {
                     foreach (Collider2D collider in hits)
@@ -222,41 +188,12 @@ public class HittingState : GroundedStates
         shooted = false;
         attackRequested = false;
         PrepareSwing();
-
-        // Выключить текущий флаг комбо
-        if (playerIsSatan)
-        {
-            charManager.ActiveAnimator.SetBool("Shooting " + comboCount, false);
-        }
-        else
-        {
-            charManager.ActiveAnimator.SetBool("Hitting " + comboCount, false);
-        }
+        charManager.ActiveAnimator.SetBool("Attack " + comboCount, false);
 
         // Перейти на следующий комбо
         comboCount++;
         if (comboCount > 2) comboCount = 1;
-
-        // Включить новый флаг комбо
-        if (playerIsSatan)
-        {
-            charManager.ActiveAnimator.SetBool("Shooting " + comboCount, true);
-        }
-        else
-        {
-            charManager.ActiveAnimator.SetBool("Hitting " + comboCount, true);
-        }
-    }
-    private void ResetAnimator()
-    {
-        if (playerIsSatan)
-        {
-            charManager.ActiveAnimator.SetBool("Shooting " + comboCount, false);
-        }
-        else
-        {
-            charManager.ActiveAnimator.SetBool("Hitting " + comboCount, false);
-        }
+        charManager.ActiveAnimator.SetBool("Attack " + comboCount, true);
     }
 
     public override void Exit()
@@ -268,6 +205,6 @@ public class HittingState : GroundedStates
         attackRequested = false;
         empoweredSwing = null;
         charManager.ActiveAnimator.speed = 1f;
-        ResetAnimator();
+        charManager.ActiveAnimator.SetBool("Attack " + comboCount, false);
     }
 }
