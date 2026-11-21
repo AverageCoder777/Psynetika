@@ -215,7 +215,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1258554789045574420, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 26.89545
+      value: 26.624592
       objectReference: {fileID: 0}
     - target: {fileID: 1258554789045574420, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.z
@@ -227,7 +227,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1341792782285845634, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 26.89545
+      value: 26.624592
       objectReference: {fileID: 0}
     - target: {fileID: 1341792782285845634, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.z
@@ -235,7 +235,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1469289354788526059, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: Lens.OrthographicSize
-      value: 4.844486
+      value: 4.360038
       objectReference: {fileID: 0}
     - target: {fileID: 1469289354788526059, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: Target.TrackingTarget
@@ -251,7 +251,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1978735069803015246, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: TargetOffset.y
-      value: 2.708591
+      value: 2.437732
       objectReference: {fileID: 0}
     - target: {fileID: 1978735069803015246, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: Composition.DeadZone.Size.x
@@ -282,6 +282,10 @@ PrefabInstance:
       value: 22.18686
       objectReference: {fileID: 0}
     - target: {fileID: 6075483445262118679, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
+      propertyPath: m_TargetEye
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6075483445262118679, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: far clip plane
       value: 1000
       objectReference: {fileID: 0}
@@ -291,7 +295,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6075483445262118679, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: orthographic size
-      value: 4.844486
+      value: 4.360038
       objectReference: {fileID: 0}
     - target: {fileID: 7206567984529963706, guid: 817b67576fb49094ebbcdf1e1a97e343, type: 3}
       propertyPath: m_LocalPosition.x
