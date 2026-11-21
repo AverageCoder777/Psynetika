@@ -6,8 +6,10 @@ public class LinearDialogue : ScriptableObject, IDialogueSource
     [System.Serializable]
     public struct Line
     {
-        public string speaker;
-        [TextArea(2, 5)] public string text;
+        [TextArea(1, 2)] public string speakerRu;
+        [TextArea(1, 2)] public string speakerEn;
+        [TextArea(2, 5)] public string textRu;
+        [TextArea(2, 5)] public string textEn;
     }
 
     [SerializeField] private Line[] lines;

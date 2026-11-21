@@ -1089,7 +1089,7 @@ PrefabInstance:
     - target: {fileID: 4119613097012847939, guid: 6e025cb45f9659943960e7acfa99ddac, type: 3}
       propertyPath: dialogueSource
       value: 
-      objectReference: {fileID: 11400000, guid: 5e06fdc574133dc49916127ef92c8f01, type: 2}
+      objectReference: {fileID: 11400000, guid: fe5273e618a6c4543a12084447faf245, type: 2}
     - target: {fileID: 4119613097012847939, guid: 6e025cb45f9659943960e7acfa99ddac, type: 3}
       propertyPath: onDialogueStarted.m_PersistentCalls.m_Calls.Array.size
       value: 0
@@ -2146,6 +2146,51 @@ PolygonCollider2D:
       - {x: -3.3498535, y: -0.39244246}
       - {x: -9.777815, y: -0.516335}
   m_UseDelaunayMesh: 1
+--- !u!1 &266823546
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 266823547}
+  - component: {fileID: 266823548}
+  m_Layer: 0
+  m_Name: LanguageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &266823547
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266823546}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 167.33, y: 12.2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &266823548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266823546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d0e149692be4b34486585ba19ff402a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LanguageSwitcher
+  currentLanguage: 1
 --- !u!1 &283079921
 GameObject:
   m_ObjectHideFlags: 0
@@ -3572,7 +3617,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 704672c767af774449743b0ddad8ca45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueTriggerZone
-  dialogueSource: {fileID: 11400000, guid: 5f79f04b9b53b154abb71419384e2814, type: 2}
+  dialogueSource: {fileID: 11400000, guid: bd6900120e310174391f9c771bdaf9b2, type: 2}
   playerInput: {fileID: 822954290}
   playerTag: Player
   triggerOnce: 1
@@ -3700,7 +3745,7 @@ PrefabInstance:
     - target: {fileID: 4119613097012847939, guid: 6e025cb45f9659943960e7acfa99ddac, type: 3}
       propertyPath: dialogueSource
       value: 
-      objectReference: {fileID: 11400000, guid: 2bf2e7f5942df924ab9e0bf3e7a2b898, type: 2}
+      objectReference: {fileID: 11400000, guid: 6135926ef8acfc943b69bac3c0cf467f, type: 2}
     - target: {fileID: 4119613097012847939, guid: 6e025cb45f9659943960e7acfa99ddac, type: 3}
       propertyPath: onDialogueStarted.m_PersistentCalls.m_Calls.Array.size
       value: 0
@@ -7663,7 +7708,7 @@ PrefabInstance:
     - target: {fileID: 4119613097012847939, guid: 6e025cb45f9659943960e7acfa99ddac, type: 3}
       propertyPath: dialogueSource
       value: 
-      objectReference: {fileID: 11400000, guid: d62f23dd8b4631e4ca340aad7aae9cee, type: 2}
+      objectReference: {fileID: 11400000, guid: c2dbc1ca08780d640bed30cbf71736aa, type: 2}
     - target: {fileID: 4119613097012847939, guid: 6e025cb45f9659943960e7acfa99ddac, type: 3}
       propertyPath: onDialogueStarted.m_PersistentCalls.m_Calls.Array.size
       value: 0
@@ -10342,7 +10387,7 @@ PrefabInstance:
     - target: {fileID: 4119613097012847939, guid: 6e025cb45f9659943960e7acfa99ddac, type: 3}
       propertyPath: dialogueSource
       value: 
-      objectReference: {fileID: 11400000, guid: 02953eb7174191e46837e6082d4fa52c, type: 2}
+      objectReference: {fileID: 11400000, guid: 0077b49fbbb38c1418750e8b0ec07e22, type: 2}
     - target: {fileID: 4119613097012847939, guid: 6e025cb45f9659943960e7acfa99ddac, type: 3}
       propertyPath: onDialogueStarted.m_PersistentCalls.m_Calls.Array.size
       value: 0
@@ -12696,4 +12741,5 @@ SceneRoots:
   - {fileID: 619365477}
   - {fileID: 805979599}
   - {fileID: 313578103}
+  - {fileID: 266823547}
   - {fileID: 1676792702}

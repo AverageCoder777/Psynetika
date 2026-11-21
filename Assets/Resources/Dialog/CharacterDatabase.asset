@@ -16,7 +16,13 @@ MonoBehaviour:
     _serializedList:
     - Key: "\u041B\u0438\u043B\u0438\u0442"
       Value: {fileID: -6834473982651433350, guid: c5caad6e9fdcef4459ac849b39bb0323, type: 3}
+    - Key: Lilit
+      Value: {fileID: -6834473982651433350, guid: c5caad6e9fdcef4459ac849b39bb0323, type: 3}
     - Key: "\u0418\u043D\u0443"
       Value: {fileID: 7129721582556727193, guid: e770415722d76d8428d77b257d51326b, type: 3}
+    - Key: Inu
+      Value: {fileID: 7129721582556727193, guid: e770415722d76d8428d77b257d51326b, type: 3}
     - Key: "\u041F\u0440\u043E\u0432\u043E\u0434\u043D\u0438\u0446\u0430"
+      Value: {fileID: -8059211965823472006, guid: 580e8a664bc137448a5f9b663f1021d9, type: 3}
+    - Key: 'The Seer '
       Value: {fileID: -8059211965823472006, guid: 580e8a664bc137448a5f9b663f1021d9, type: 3}

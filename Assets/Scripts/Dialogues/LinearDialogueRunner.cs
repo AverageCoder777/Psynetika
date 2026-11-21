@@ -27,13 +27,14 @@ public class LinearDialogueRunner : IDialogueRunner
         while (index < dialogue.Lines.Length)
         {
             LinearDialogue.Line current = dialogue.Lines[index++];
-            if (string.IsNullOrWhiteSpace(current.text))
+            string text = LanguageManager.GetText(current.textRu, current.textEn);
+            if (string.IsNullOrWhiteSpace(text))
             {
                 continue;
             }
 
-            line = current.text;
-            speaker = current.speaker ?? string.Empty;
+            line = text;
+            speaker = LanguageManager.GetText(current.speakerRu, current.speakerEn);
             return true;
         }
 
